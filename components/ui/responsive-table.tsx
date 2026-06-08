@@ -60,7 +60,7 @@ export function ResponsiveTable<T>({
 
       <div className="flex flex-col gap-3 md:hidden">
         {data.map((row) => (
-          <div
+          <dl
             key={keyExtractor(row)}
             className={cn(
               "rounded-xl border border-card-border bg-card p-4 space-y-2",
@@ -68,16 +68,16 @@ export function ResponsiveTable<T>({
             )}
           >
             {columns.map((col) => (
-              <div key={col.key} className="flex justify-between gap-3 text-sm">
-                <span className="text-muted shrink-0">
+              <div key={col.key} className="grid gap-1 text-sm">
+                <dt className="text-xs font-medium uppercase tracking-wider text-muted">
                   {col.mobileLabel ?? col.header}
-                </span>
-                <span className={cn("text-right font-medium", col.className)}>
+                </dt>
+                <dd className={cn("min-w-0 font-medium text-foreground", col.className)}>
                   {col.render(row)}
-                </span>
+                </dd>
               </div>
             ))}
-          </div>
+          </dl>
         ))}
       </div>
     </>

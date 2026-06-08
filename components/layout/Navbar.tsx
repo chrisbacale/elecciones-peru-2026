@@ -12,6 +12,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { FollowXNavLink } from "./FollowX";
 import { ThemeToggle } from "./ThemeToggle";
 
 const NAV_ITEMS = [
@@ -75,6 +76,7 @@ export function Navbar() {
             );
           })}
         </nav>
+        <FollowXNavLink />
         <ThemeToggle />
       </div>
     </header>

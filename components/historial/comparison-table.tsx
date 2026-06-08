@@ -132,7 +132,7 @@ export function ComparisonTable({ rows }: ComparisonTableProps) {
                       row.highlight === "2011-boca-error" &&
                         "font-medium text-alerta",
                       row.highlight === "2021-leader-flip" &&
-                        "font-medium text-violet-200"
+                        "font-medium text-sanchez"
                     )}
                   >
                     {row.note}

@@ -221,18 +221,18 @@ export default function MetodologiaPage() {
         {/* Disclaimer */}
         <Card
           role="alert"
-          className="border-amber-800/50 bg-amber-950/30"
+          className="border-alerta/40 bg-alerta-muted"
         >
           <CardContent className="flex gap-4 pt-5">
             <AlertTriangle
-              className="mt-0.5 h-5 w-5 shrink-0 text-amber-400"
+              className="mt-0.5 h-5 w-5 shrink-0 text-alerta"
               aria-hidden
             />
             <div className="space-y-2 text-sm leading-relaxed">
-              <p className="font-semibold text-amber-200">
+              <p className="font-semibold text-foreground">
                 Las encuestadoras no son autoridad electoral
               </p>
-              <p className="text-amber-100/80">
+              <p className="text-foreground/85">
                 La fuente oficial del resultado es la{" "}
                 <strong>ONPE</strong> (escrutinio) y el{" "}
                 <strong>JNE</strong> (proclamación). Ipsos, Datum y otras
@@ -249,7 +249,7 @@ export default function MetodologiaPage() {
         {/* Instrument definitions */}
         <section className="space-y-4">
           <div className="flex items-center gap-2">
-            <BookOpen className="h-5 w-5 text-slate-400" aria-hidden />
+            <BookOpen className="h-5 w-5 text-muted" aria-hidden />
             <h2 className="text-lg font-semibold">
               ¿En qué se diferencian los instrumentos?
             </h2>
@@ -267,13 +267,13 @@ export default function MetodologiaPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <p className="text-sm leading-relaxed text-slate-300">
+                  <p className="text-sm leading-relaxed text-muted">
                     {def.description}
                   </p>
-                  <ul className="space-y-1.5 text-sm text-slate-400">
+                  <ul className="space-y-1.5 text-sm text-muted">
                     {def.keyPoints.map((point) => (
                       <li key={point} className="flex gap-2">
-                        <span className="text-slate-600" aria-hidden>
+                        <span className="text-muted" aria-hidden>
                           •
                         </span>
                         <span>{point}</span>
@@ -294,7 +294,7 @@ export default function MetodologiaPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm leading-relaxed text-slate-300">
+            <p className="text-sm leading-relaxed text-muted">
               El parcial de la ONPE no es muestra aleatoria: es un censo
               incompleto cuya composición cambia según qué distritos entran
               primero. En 2026, Lima —fortaleza de Fujimori— tiende a
@@ -309,30 +309,30 @@ export default function MetodologiaPage() {
         {/* 2026 instruments table */}
         <section className="space-y-4">
           <div className="flex items-center gap-2">
-            <Scale className="h-5 w-5 text-slate-400" aria-hidden />
+            <Scale className="h-5 w-5 text-muted" aria-hidden />
             <h2 className="text-lg font-semibold">
               Instrumentos y márgenes — Segunda vuelta 2026
             </h2>
           </div>
-          <div className="overflow-x-auto rounded-xl border border-slate-800">
+          <div className="overflow-x-auto rounded-xl border border-card-border">
             <table className="w-full min-w-[640px] text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-800 bg-slate-900/80 text-xs uppercase tracking-wider text-slate-400">
+                <tr className="border-b border-card-border bg-accent/45 text-xs uppercase tracking-wider text-muted">
                   <th className="px-4 py-3 font-medium">Instrumento</th>
                   <th className="px-4 py-3 font-medium">Fuente</th>
                   <th className="px-4 py-3 font-medium">Margen / error</th>
                   <th className="px-4 py-3 font-medium">Lectura</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800">
+              <tbody className="divide-y divide-card-border">
                 {INSTRUMENTS_2026.map((row) => (
                   <tr
                     key={row.instrument}
-                    className="hover:bg-slate-900/50 transition-colors"
+                    className="transition-colors hover:bg-accent/40"
                   >
                     <td className="px-4 py-3">
                       <div className="flex flex-col gap-1.5">
-                        <span className="font-medium text-slate-100">
+                        <span className="font-medium text-foreground">
                           {row.instrument}
                         </span>
                         <Badge variant={row.type} className="w-fit">
@@ -340,20 +340,20 @@ export default function MetodologiaPage() {
                         </Badge>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-slate-400">{row.source}</td>
-                    <td className="px-4 py-3 font-mono text-xs text-slate-300">
+                    <td className="px-4 py-3 text-muted">{row.source}</td>
+                    <td className="px-4 py-3 font-mono text-xs text-foreground">
                       {row.margin}
                     </td>
-                    <td className="px-4 py-3 text-slate-400">{row.reading}</td>
+                    <td className="px-4 py-3 text-muted">{row.reading}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-muted">
             Votos válidos excluyen blanco y nulo. Porcentajes ONPE parcial del
             snapshot en{" "}
-            <code className="rounded bg-slate-800 px-1 text-slate-300">
+            <code className="rounded bg-accent px-1 text-foreground">
               data/2026/flash-electoral.json
             </code>
             .
@@ -365,24 +365,24 @@ export default function MetodologiaPage() {
           <h2 className="text-lg font-semibold">
             Error histórico Ipsos vs ONPE 100% (2001–2021)
           </h2>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-muted">
             Calculado sobre{" "}
-            <code className="rounded bg-slate-800 px-1 text-slate-300">
+            <code className="rounded bg-accent px-1 text-foreground">
               data/historical/segunda-vuelta.json
             </code>
             . Error por candidato = |estimado − ONPE|; error de margen =
             |margen estimado − margen ONPE|.
           </p>
-          <div className="overflow-x-auto rounded-xl border border-slate-800">
+          <div className="overflow-x-auto rounded-xl border border-card-border">
             <table className="w-full min-w-[480px] text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-800 bg-slate-900/80 text-xs uppercase tracking-wider text-slate-400">
+                <tr className="border-b border-card-border bg-accent/45 text-xs uppercase tracking-wider text-muted">
                   <th className="px-4 py-3 font-medium">Métrica</th>
                   <th className="px-4 py-3 font-medium">Boca de urna</th>
                   <th className="px-4 py-3 font-medium">Conteo rápido</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800">
+              <tbody className="divide-y divide-card-border">
                 {(
                   [
                     ["Error promedio por candidato", "candidateError", "mean"],
@@ -395,18 +395,18 @@ export default function MetodologiaPage() {
                 ).map(([label, group, stat]) => (
                   <tr
                     key={label}
-                    className="hover:bg-slate-900/50 transition-colors"
+                    className="transition-colors hover:bg-accent/40"
                   >
-                    <td className="px-4 py-3 font-medium text-slate-200">
+                    <td className="px-4 py-3 font-medium text-foreground">
                       {label}
                     </td>
-                    <td className="px-4 py-3 font-mono text-slate-300">
+                    <td className="px-4 py-3 font-mono text-foreground">
                       {formatPp(
                         metrics.bocaUrna[group][stat],
                         metrics.bocaUrna[group][stat] % 1 === 0 ? 1 : 2
                       )}
                     </td>
-                    <td className="px-4 py-3 font-mono text-slate-300">
+                    <td className="px-4 py-3 font-mono text-foreground">
                       {formatPp(
                         metrics.conteoRapido[group][stat],
                         metrics.conteoRapido[group][stat] % 1 === 0 ? 1 : 2
@@ -417,7 +417,7 @@ export default function MetodologiaPage() {
               </tbody>
             </table>
           </div>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-muted">
             El margen del CR Ipsos 2026 (Sánchez +0.6 pp) está dentro de la
             calibración histórica ex post del conteo rápido: error máximo
             histórico de margen {formatPp(metrics.conteoRapido.marginError.max)}.
@@ -431,7 +431,7 @@ export default function MetodologiaPage() {
           <h2 className="text-lg font-semibold">Fuentes auditadas</h2>
           {AUDITED_SOURCES.map((group) => (
             <div key={group.category}>
-              <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted">
                 {group.category}
               </h3>
               <ul className="space-y-1">
@@ -441,20 +441,20 @@ export default function MetodologiaPage() {
                       href={item.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex items-start gap-2 rounded-lg px-3 py-2 transition-colors hover:bg-slate-900"
+                      className="group flex items-start gap-2 rounded-lg px-3 py-2 transition-colors hover:bg-accent/50"
                     >
                       <ExternalLink
-                        className="mt-0.5 h-4 w-4 shrink-0 text-slate-500 group-hover:text-encuesta"
+                        className="mt-0.5 h-4 w-4 shrink-0 text-muted group-hover:text-encuesta"
                         aria-hidden
                       />
                       <span>
                         <span className="font-medium text-encuesta group-hover:underline">
                           {item.label}
                         </span>
-                        <span className="mt-0.5 block text-xs text-slate-500">
+                        <span className="mt-0.5 block text-xs text-muted">
                           {item.note}
                         </span>
-                        <span className="mt-0.5 block break-all font-mono text-xs text-slate-600">
+                        <span className="mt-0.5 block break-all font-mono text-xs text-muted">
                           {item.url}
                         </span>
                       </span>
@@ -466,7 +466,7 @@ export default function MetodologiaPage() {
           ))}
         </section>
 
-        <footer className="border-t border-slate-800 pt-6 text-xs text-slate-500">
+        <footer className="border-t border-card-border pt-6 text-xs text-muted">
           <p>
             Datos verificados contra PDFs Ipsos, portales ONPE/JNE y cobertura
             periodística. Última revisión: junio 2026. ONPE 100% de 2026

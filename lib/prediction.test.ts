@@ -5,6 +5,7 @@ import {
   projectFinalFromPendingShare,
   requiredPendingShare,
 } from "./prediction";
+import type { OnpeResumen } from "./types";
 
 describe("requiredPendingShare", () => {
   it("calcula el bloque no contabilizado requerido para empate", () => {
@@ -48,7 +49,10 @@ describe("buildPredictionSnapshot", () => {
   it("incluye simulación determinística con intervalos y probabilidades", () => {
     const snapshot = buildPredictionSnapshot();
 
+    expect(snapshot.projection.modelVersion).toBe("prediction-v2.2");
     expect(snapshot.projection.simulations).toBe(20000);
+    expect(snapshot.projection.countedWeightPct).toBeCloseTo(90.488, 2);
+    expect(snapshot.projection.weightingNote).toContain("proxy");
     expect(snapshot.projection.sanchezCi80[0]).toBeLessThan(
       snapshot.projection.sanchezCi80[1],
     );
@@ -68,5 +72,43 @@ describe("buildPredictionSnapshot", () => {
 
     expect(snapshot.errorBudget.length).toBeGreaterThanOrEqual(5);
     expect(snapshot.criticalDrivers.map((driver) => driver.id)).toContain("foreign");
+    expect(snapshot.trendSignals.map((signal) => signal.id)).toEqual([
+      "official-gap",
+      "late-delta",
+      "tie-threshold",
+      "modeled-margin",
+    ]);
+  });
+
+  it("mantiene la semilla estable si solo cambia el timestamp", () => {
+    const base = buildPredictionSnapshot();
+    const onpe: OnpeResumen = {
+      status: "live",
+      timestamp: "2026-06-08T04:16:00.854-05:00",
+      advancePct: 90.488,
+      actasProcesadas: 83942,
+      actasTotal: 92766,
+      actasEnviadasJee: 1489,
+      actasPendientesJee: 7335,
+      actasEnviadasJeePct: 1.605,
+      actasPendientesJeePct: 7.907,
+      candidates: {
+        keiko: { votes: 8639146, pct: 50.46 },
+        sanchez: { votes: 8481592, pct: 49.54 },
+      },
+      validVotes: 17106649,
+      blankVotes: 107713,
+      nullVotes: 1089705,
+      marginPp: 0.92,
+      marginLeader: "Keiko Fujimori",
+      source: "test",
+    };
+    const shifted = buildPredictionSnapshot({
+      ...onpe,
+      timestamp: "2026-06-08T04:00:00.000-05:00",
+    });
+
+    expect(buildPredictionSnapshot(onpe).projection.seed).toBe(base.projection.seed);
+    expect(shifted.projection.seed).toBe(base.projection.seed);
   });
 });
