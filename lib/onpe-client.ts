@@ -7,8 +7,8 @@ export const ONPE_BASES = [
   "https://resultadoelectoral.onpe.gob.pe/presentacion-backend",
 ] as const;
 
-/** idEleccion probados para segunda vuelta presidencial 2026 (11 es el más probable). */
-export const ONPE_ELECTION_IDS = [11, 10, 12] as const;
+/** idEleccion vivo para Segunda Elección Presidencial 2026. */
+export const ONPE_ELECTION_IDS = [10, 11, 12] as const;
 
 const KEIKO_NAMES = ["FUJIMORI", "KEIKO"];
 const SANCHEZ_NAMES = ["SANCHEZ", "SÁNCHEZ", "ROBERTO"];
@@ -20,24 +20,24 @@ const DEPARTMENTS: Record<string, string> = {
   "040000": "Arequipa",
   "050000": "Ayacucho",
   "060000": "Cajamarca",
-  "070000": "Callao",
-  "080000": "Cusco",
-  "090000": "Huancavelica",
-  "100000": "Huánuco",
-  "110000": "Ica",
-  "120000": "Junín",
-  "130000": "La Libertad",
-  "140000": "Lambayeque",
-  "150000": "Lima",
-  "160000": "Loreto",
-  "170000": "Madre de Dios",
-  "180000": "Moquegua",
-  "190000": "Pasco",
-  "200000": "Piura",
-  "210000": "Puno",
-  "220000": "San Martín",
-  "230000": "Tacna",
-  "240000": "Tumbes",
+  "240000": "Callao",
+  "070000": "Cusco",
+  "080000": "Huancavelica",
+  "090000": "Huánuco",
+  "100000": "Ica",
+  "110000": "Junín",
+  "120000": "La Libertad",
+  "130000": "Lambayeque",
+  "140000": "Lima",
+  "150000": "Loreto",
+  "160000": "Madre de Dios",
+  "170000": "Moquegua",
+  "180000": "Pasco",
+  "190000": "Piura",
+  "200000": "Puno",
+  "210000": "San Martín",
+  "220000": "Tacna",
+  "230000": "Tumbes",
   "250000": "Ucayali",
 };
 
@@ -72,7 +72,15 @@ async function fetchJson(url: string): Promise<unknown | null> {
     const res = await fetch(url, {
       headers: {
         Accept: "application/json, text/plain, */*",
-        "User-Agent": "RadarElectoralPeru/1.0",
+        "Accept-Language": "es-PE,es;q=0.9,en;q=0.8",
+        Origin: "https://resultadosegundavuelta.onpe.gob.pe",
+        Referer: "https://resultadosegundavuelta.onpe.gob.pe/main/actas",
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-origin",
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36",
+        "X-Requested-With": "XMLHttpRequest",
       },
       cache: "no-store",
     });
@@ -118,16 +126,25 @@ function buildUrl(
 type VoteRow = {
   nombreCandidato?: string;
   votos?: number;
+  totalVotosValidos?: number;
   porcentajeVotos?: number;
+  porcentajeVotosValidos?: number;
 };
 
 type ActasData = {
   porcentajeActasContabilizadas?: number;
+  actasContabilizadas?: number;
   totalActasContabilizadas?: number;
+  contabilizadas?: number;
   totalActas?: number;
   totalVotosValidos?: number;
   totalVotosBlancos?: number;
   totalVotosNulos?: number;
+  fechaActualizacion?: number;
+  actasEnviadasJee?: number;
+  enviadasJee?: number;
+  actasPendientesJee?: number;
+  pendientesJee?: number;
 };
 
 /** Snapshot documentado en data/2026/flash-electoral.json (fuente ONPE parcial). */
@@ -146,8 +163,13 @@ export function getKnownOnpeSnapshot(): OnpeResumen {
     status: "snapshot",
     timestamp,
     advancePct: data?.advancePct ?? onpePartial?.advancePct ?? 76.966,
-    actasProcesadas: 71398,
-    actasTotal: 92766,
+    actasProcesadas:
+      data?.actasProcesadas ?? onpePartial?.actasProcesadas ?? 71398,
+    actasTotal: data?.actasTotal ?? onpePartial?.actasTotal ?? 92766,
+    actasEnviadasJee: data?.actasJee ?? null,
+    actasPendientesJee: data?.actasPendientes ?? null,
+    actasEnviadasJeePct: data?.actasJeePct ?? null,
+    actasPendientesJeePct: data?.actasPendientesPct ?? null,
     candidates: {
       keiko: {
         votes: data?.votesA ?? onpePartial?.votesA ?? null,
@@ -170,7 +192,7 @@ export function getKnownOnpeSnapshot(): OnpeResumen {
     marginLeader: "Keiko Fujimori",
     source: "data/2026/flash-electoral.json",
     message:
-      "API ONPE intermitente — mostrando último snapshot conocido (ONPE parcial 76.966%)",
+      "API ONPE intermitente — mostrando último snapshot conocido",
   };
 }
 
@@ -187,17 +209,15 @@ async function tryFetchNational(): Promise<{
   for (const base of ONPE_BASES) {
     for (const electionId of electionIds) {
       const actasUrl = buildUrl(base, "/resumen-general/totales", {
-        idAmbitoGeografico: 1,
         idEleccion: electionId,
-        tipoFiltro: "ubigeo_nivel_00",
+        tipoFiltro: "eleccion",
       });
 
       const votesUrl = buildUrl(
         base,
         "/eleccion-presidencial/participantes-ubicacion-geografica-nombre",
         {
-          tipoFiltro: "ubigeo_nivel_00",
-          idAmbitoGeografico: 1,
+          tipoFiltro: "eleccion",
           idEleccion: electionId,
         }
       );
@@ -238,9 +258,23 @@ function extractCandidateVotes(
     matchesCandidate(v.nombreCandidato ?? "", patterns)
   );
   return {
-    votes: row?.votos ?? 0,
-    pct: row?.porcentajeVotos ?? 0,
+    votes: row?.totalVotosValidos ?? row?.votos ?? 0,
+    pct: row?.porcentajeVotosValidos ?? row?.porcentajeVotos ?? 0,
   };
+}
+
+function getActasAdvance(actas: ActasData | null | undefined): number {
+  return actas?.actasContabilizadas ?? actas?.porcentajeActasContabilizadas ?? 0;
+}
+
+function getActasContabilizadas(actas: ActasData | null | undefined): number | null {
+  return actas?.contabilizadas ?? actas?.totalActasContabilizadas ?? null;
+}
+
+function getActasTimestamp(actas: ActasData | null | undefined): string {
+  return actas?.fechaActualizacion
+    ? new Date(actas.fechaActualizacion).toISOString()
+    : new Date().toISOString();
 }
 
 export async function fetchOnpeResumen(
@@ -271,10 +305,14 @@ export async function fetchOnpeResumen(
 
   return {
     status: "live",
-    timestamp: new Date().toISOString(),
-    advancePct: result.actas?.porcentajeActasContabilizadas ?? 0,
-    actasProcesadas: result.actas?.totalActasContabilizadas ?? null,
+    timestamp: getActasTimestamp(result.actas),
+    advancePct: getActasAdvance(result.actas),
+    actasProcesadas: getActasContabilizadas(result.actas),
     actasTotal: result.actas?.totalActas ?? null,
+    actasEnviadasJee: result.actas?.enviadasJee ?? null,
+    actasPendientesJee: result.actas?.pendientesJee ?? null,
+    actasEnviadasJeePct: result.actas?.actasEnviadasJee ?? null,
+    actasPendientesJeePct: result.actas?.actasPendientesJee ?? null,
     candidates: {
       keiko: { votes: keiko.votes, pct: Math.round(keikoPct * 1000) / 1000 },
       sanchez: {

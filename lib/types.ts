@@ -26,6 +26,14 @@ export type CandidatePair = {
   validVoteDerived?: boolean;
   timestamp?: string;
   advancePct?: number;
+  actasProcesadas?: number;
+  actasTotal?: number;
+  actasJee?: number;
+  actasPendientes?: number;
+  actasJeePct?: number;
+  actasPendientesPct?: number;
+  actasNote?: string;
+  derivedActas?: boolean;
 };
 
 export type InstrumentResult = {
@@ -97,6 +105,10 @@ export type OnpeResumen = {
   advancePct: number;
   actasProcesadas: number | null;
   actasTotal: number | null;
+  actasEnviadasJee?: number | null;
+  actasPendientesJee?: number | null;
+  actasEnviadasJeePct?: number | null;
+  actasPendientesJeePct?: number | null;
   candidates: {
     keiko: { votes: number | null; pct: number };
     sanchez: { votes: number | null; pct: number };
