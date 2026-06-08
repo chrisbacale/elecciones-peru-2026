@@ -106,6 +106,7 @@ export type TrendSignalRow = {
 };
 
 export type PredictionSnapshot = {
+  modelVersion: string;
   asOf: string;
   status: ProjectionStatus;
   statusLabel: string;
@@ -1496,6 +1497,7 @@ export function buildPredictionSnapshot(
       : null;
 
   return {
+    modelVersion: MODEL_VERSION,
     asOf: onpe.timestamp,
     status: status.status,
     statusLabel: status.label,
