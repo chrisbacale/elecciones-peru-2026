@@ -54,7 +54,9 @@ export function WaterfallChart({ flash }: { flash: FlashElectoral2026 }) {
               tickFormatter={(v) => `${v > 0 ? "+" : ""}${v} pp`}
             />
             <Tooltip
+              allowEscapeViewBox={{ x: true, y: true }}
               cursor={{ fill: "var(--accent)" }}
+              wrapperStyle={{ zIndex: 60, outline: "none" }}
               content={
                 <ChartTooltip
                   nameFormatter={() => "Margen"}

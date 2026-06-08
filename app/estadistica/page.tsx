@@ -65,6 +65,27 @@ export default function EstadisticaPage() {
 
       <CurrentRaceSnapshot />
 
+      <Card className="border-onpe/30 bg-onpe-muted">
+        <CardHeader>
+          <CardTitle>Cómo leer Perú/JEE snapshot vs predicción live</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="max-w-4xl text-sm leading-relaxed text-foreground/85">
+            Esta página mezcla historia estadística con un snapshot auditado de
+            JEE/ciudad-distrito. La ruta de predicción separa la aritmética
+            operativa en cinco bloques: ONPE del corte, Perú pendiente, JEE,
+            solo Perú + JEE y exterior agregado. Así no se confunde una
+            simulación secundaria con el cierre matemático por componentes.
+          </p>
+          <a
+            href="/prediccion#lectura-componentes"
+            className="inline-flex rounded-lg border border-onpe/35 bg-card px-3 py-2 text-sm font-semibold text-onpe transition-colors hover:bg-onpe hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            Ver lectura principal por componentes
+          </a>
+        </CardContent>
+      </Card>
+
       <JeeMonteCarloSection model={jeeResolutionModel as JeeResolutionModel} />
 
       <section>

@@ -98,14 +98,14 @@ const departmentColumns: ResponsiveColumn<JeeDepartmentRow>[] = [
       <div>
         <p className="font-semibold">{row.department}</p>
         <p className="text-xs text-muted">
-          Actual: {row.currentLeader === "Keiko" ? "Keiko" : "Sánchez"}
+          Snapshot reconciliado: {row.currentLeader === "Keiko" ? "Keiko" : "Sánchez"}
         </p>
       </div>
     ),
   },
   {
     key: "current",
-    header: "Margen actual",
+    header: "Margen snapshot",
     render: (row) => (
       <span className={cn("font-mono font-semibold tabular-nums", gapClass(row.currentGapKeikoMinusSanchez))}>
         {leaderGap(row.currentGapKeikoMinusSanchez)}
@@ -242,7 +242,7 @@ function SummaryTab({ model }: { model: JeeResolutionModel }) {
     <div className="space-y-5">
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
         <Tile
-          label="ONPE actual"
+          label="ONPE corte auditado"
           value={leaderGap(model.officialCurrent.marginKeikoMinusSanchez)}
           detail={`${formatVotes(model.officialCurrent.keikoVotes)} Keiko · ${formatVotes(model.officialCurrent.sanchezVotes)} Sánchez`}
           tone={toneFromGap(model.officialCurrent.marginKeikoMinusSanchez)}
@@ -276,7 +276,7 @@ function SummaryTab({ model }: { model: JeeResolutionModel }) {
       <div className="grid gap-3 lg:grid-cols-3">
         <div className="rounded-lg border border-card-border bg-accent/35 p-4">
           <p className="text-xs font-medium uppercase tracking-wider text-muted">
-            Monte Carlo con exterior agregado
+            Monte Carlo exterior base agregado
           </p>
           <p className={cn("mt-2 font-mono text-xl font-semibold tabular-nums", gapClass(mc.median))}>
             {leaderGap(mc.median)}
@@ -411,7 +411,9 @@ function MonteCarloTab({ model }: { model: JeeResolutionModel }) {
                 width={56}
               />
               <Tooltip
+                allowEscapeViewBox={{ x: true, y: true }}
                 cursor={{ fill: "var(--accent)" }}
+                wrapperStyle={{ zIndex: 60, outline: "none" }}
                 content={
                   <ChartTooltip
                     labelFormatter={(label) => `Margen ${label}`}

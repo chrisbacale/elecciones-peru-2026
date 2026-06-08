@@ -6,7 +6,7 @@
     "cityForecast": "onpe-rla-analysis/output/sep2026_city_level_forecast.json",
     "territorial": "data/2026/onpe-territorial-snapshot.json"
   },
-  "generatedAt": "2026-06-08T19:06:02.482Z",
+  "generatedAt": "2026-06-08T20:32:16.946Z",
   "cutPeru": "2026-06-08T13:12:00-05:00",
   "cutUtc": "2026-06-08T18:12:00Z",
   "officialCurrent": {

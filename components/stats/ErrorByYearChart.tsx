@@ -63,7 +63,9 @@ export function ErrorByYearChart({ metrics }: { metrics: ErrorMetrics }) {
                 tickFormatter={(v) => `${v} pp`}
               />
               <Tooltip
+                allowEscapeViewBox={{ x: true, y: true }}
                 cursor={{ fill: "var(--accent)" }}
+                wrapperStyle={{ zIndex: 60, outline: "none" }}
                 content={
                   <ChartTooltip
                     nameFormatter={(name) =>

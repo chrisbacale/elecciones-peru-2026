@@ -115,7 +115,9 @@ export function CurrentRaceSnapshot() {
                 width={58}
               />
               <Tooltip
+                allowEscapeViewBox={{ x: true, y: true }}
                 cursor={{ fill: "var(--accent)" }}
+                wrapperStyle={{ zIndex: 60, outline: "none" }}
                 content={
                   <ChartTooltip
                     labelFormatter={(label) => label}

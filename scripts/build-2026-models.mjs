@@ -307,10 +307,18 @@ function compactCityForecast(raw) {
       .slice(0, 25),
     topProvincesPeru: raw.top_provinces_city_weighted
       .filter((row) => row.scope_label === "PERU")
-      .slice(0, 24),
+      .slice(0, 50),
     topDistrictsPeru: raw.top_leaf_city_weighted
       .filter((row) => row.scope_label === "PERU")
-      .slice(0, 24),
+      .slice(0, 100),
+    publishedCoverage: {
+      unresolvedLeafCount: raw.unresolved_leaf_count,
+      rankedDistrictRowsAvailable: raw.top_leaf_city_weighted.filter(
+        (row) => row.scope_label === "PERU",
+      ).length,
+      note:
+        "El analisis fuente entrega ranking compacto de mayor impacto; no publica las 621 unidades completas con proyeccion. La app muestra todas las filas peruanas disponibles y no inventa distritos faltantes.",
+    },
     method: raw.method,
     privacyNote:
       "El exterior se muestra solo como agregado; no se publican paises ni ciudades del extranjero en este snapshot compacto.",

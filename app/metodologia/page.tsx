@@ -158,7 +158,7 @@ const INSTRUMENT_DEFINITIONS = [
     description:
       "Encuesta aplicada a votantes al salir del local. Estima el electorado con muestra probabilística; no cuenta actas. Ipsos y Datum publican flashes el día de la elección.",
     keyPoints: [
-      "Muestra grande (18,000 encuestados en 2026) con margen de error propio",
+      "Ipsos 2026 reporta muestra grande; no todas las fuentes publican un ± único comparable",
       "Puede sesgarse por voto tardío o composición territorial",
       "Error histórico promedio ~0.50 pp por candidato vs ONPE 100%",
       "En 2021 la boca favoreció a Keiko; el CR y el final favorecieron a Castillo",
@@ -170,9 +170,9 @@ const INSTRUMENT_DEFINITIONS = [
     subtitle: "Muestra de actas oficiales",
     badge: "muestra" as const,
     description:
-      "Proyección sobre muestra aleatoria de actas ya emitidas por la ONPE. Ipsos/Transparencia y Datum calculan intervalos de confianza (p. ej. 1,037 actas, ±1.9 pp en 2026).",
+      "Proyección sobre muestra de actas. Ipsos/Transparencia publica ficha primaria con 1,037 actas, ±1.9 pp y 95% de confianza; Datum se muestra como referencia con ficha/documentación localizada de calidad desigual.",
     keyPoints: [
-      "Margen de error explícito al 95% de confianza",
+      "Margen de error explícito al 95% de confianza cuando la fuente lo publica de forma primaria",
       "Error histórico promedio ~0.20 pp por candidato — más preciso que la boca",
       "No es resultado oficial; el JNE proclama solo tras el 100%",
       "En 2026 ambos CR proyectaron ligera ventaja de Sánchez",

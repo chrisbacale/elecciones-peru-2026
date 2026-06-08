@@ -72,6 +72,17 @@ describe("buildPredictionSnapshot", () => {
     expect(snapshot.projection.modelParameters.blendWeights.quickCountAnchor).toBeLessThan(0.06);
     expect(snapshot.projection.modelParameters.regimeWeights.exteriorAdjusted).toBeGreaterThan(0);
     expect(snapshot.projection.histogram).toHaveLength(8);
+    expect(snapshot.componentRead.source).toBe("data/2026/jee-resolution-model.json");
+    expect(snapshot.componentRead.officialGapKeikoMinusSanchez).toBeLessThan(0);
+    expect(snapshot.componentRead.pendingPeruGapKeikoMinusSanchez).toBeLessThan(0);
+    expect(snapshot.componentRead.expectedJeeGapKeikoMinusSanchez).toBeGreaterThan(0);
+    expect(snapshot.componentRead.peruOnlyExpectedGapKeikoMinusSanchez).toBeLessThan(0);
+    expect(
+      snapshot.componentRead.peruPlusExteriorThirtyPpGapKeikoMinusSanchez,
+    ).toBeGreaterThan(0);
+    expect(snapshot.componentRead.foreignValidVotesUsed).toBe(
+      snapshot.exterior.validVoteEstimate,
+    );
   });
 
   it("publica drivers críticos y presupuesto de error", () => {

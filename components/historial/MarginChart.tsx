@@ -41,6 +41,8 @@ export function MarginChart({ elections }: { elections: ElectionRecord[] }) {
             <XAxis dataKey="year" tick={{ fill: "var(--muted)" }} />
             <YAxis tick={{ fill: "var(--muted)" }} unit=" pp" />
             <Tooltip
+              allowEscapeViewBox={{ x: true, y: true }}
+              wrapperStyle={{ zIndex: 60, outline: "none" }}
               content={
                 <ChartTooltip
                   nameFormatter={(name) =>
