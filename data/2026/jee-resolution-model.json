@@ -1,0 +1,2511 @@
+{
+  "status": "snapshot",
+  "source": {
+    "onpeAudit": "onpe-rla-analysis/output/sep2026_pending_jee_audit.json",
+    "sensitivity": "onpe-rla-analysis/output/sep2026_jee_sensitivity.json",
+    "cityForecast": "onpe-rla-analysis/output/sep2026_city_level_forecast.json",
+    "territorial": "https://elecciones-peru-2026-liart.vercel.app/api/onpe/territorial"
+  },
+  "generatedAt": "2026-06-08T18:35:25.800Z",
+  "cutPeru": "2026-06-08T13:12:00-05:00",
+  "cutUtc": "2026-06-08T18:12:00Z",
+  "officialCurrent": {
+    "keikoVotes": 8789754,
+    "sanchezVotes": 8795043,
+    "marginKeikoMinusSanchez": -5289
+  },
+  "reconciliation": {
+    "rootTotals": {
+      "actasContabilizadas": 93.976,
+      "contabilizadas": 87178,
+      "totalActas": 92766,
+      "participacionCiudadana": 68.863,
+      "actasEnviadasJee": 1.634,
+      "enviadasJee": 1516,
+      "actasPendientesJee": 4.39,
+      "pendientesJee": 4072,
+      "fechaActualizacion": 1780942320503,
+      "idUbigeoDepartamento": null,
+      "idUbigeoProvincia": null,
+      "idUbigeoDistrito": null,
+      "idUbigeoDistritoElectoral": null,
+      "totalVotosEmitidos": 18817075,
+      "totalVotosValidos": 17584797,
+      "porcentajeVotosEmitidos": 100,
+      "porcentajeVotosValidos": 100
+    },
+    "rootMinusLeafTotals": {
+      "totalActas": 0,
+      "contabilizadas": -30,
+      "enviadasJee": 0,
+      "pendientesJee": 30,
+      "totalVotosValidos": -3115,
+      "totalVotosEmitidos": -3391
+    },
+    "note": "Los endpoints raiz y hoja de ONPE no siempre cierran al mismo segundo; la tabla por departamento usa hojas territoriales del corte auditado."
+  },
+  "currentTerritorialSource": {
+    "status": "live",
+    "timestamp": "2026-06-08T18:35:26.644Z",
+    "source": "https://elecciones-peru-2026-liart.vercel.app/api/onpe/territorial"
+  },
+  "historicalJeeResolution": {
+    "rows": [
+      {
+        "year": 2011,
+        "totalActas": 107449,
+        "observedActas": 4575,
+        "annulledActas": 607,
+        "sourceId": "jne-dnef-perfil-2021",
+        "countedObservedActas": 3968,
+        "observedPctOfTotal": 0.042578,
+        "annulledPctOfTotal": 0.005649,
+        "annulledPctOfObserved": 0.132678,
+        "countedPctOfObserved": 0.867322
+      },
+      {
+        "year": 2016,
+        "totalActas": 77307,
+        "observedActas": 1637,
+        "annulledActas": 300,
+        "sourceId": "jne-dnef-perfil-2021",
+        "countedObservedActas": 1337,
+        "observedPctOfTotal": 0.021175,
+        "annulledPctOfTotal": 0.003881,
+        "annulledPctOfObserved": 0.183262,
+        "countedPctOfObserved": 0.816738
+      },
+      {
+        "year": 2021,
+        "totalActas": 86488,
+        "observedActas": 1619,
+        "annulledActas": 222,
+        "onpeOperationalAnnulledActas": 214,
+        "sourceId": "jne-dnef-perfil-2021",
+        "countedObservedActas": 1397,
+        "observedPctOfTotal": 0.018719,
+        "annulledPctOfTotal": 0.002567,
+        "annulledPctOfObserved": 0.137122,
+        "countedPctOfObserved": 0.862878
+      }
+    ],
+    "pooled": {
+      "totalActas": 271244,
+      "observedActas": 7831,
+      "annulledActas": 1129,
+      "countedObservedActas": 6702,
+      "observedRate": 0.028871,
+      "annulledRateOfTotal": 0.004162,
+      "annulledRateOfObserved": 0.144171,
+      "countedRateOfObserved": 0.855829,
+      "betaPrior": {
+        "annulledAlpha": 1130,
+        "annulledBeta": 6703,
+        "countedAlpha": 6703,
+        "countedBeta": 1130
+      }
+    }
+  },
+  "currentUnresolved": {
+    "peru": {
+      "scope_label": "PERU",
+      "total_actas": 90223,
+      "contabilizadas": 87187,
+      "enviadas_jee_observadas": 1516,
+      "pendientes": 1520,
+      "unresolved_total": 3036,
+      "valid_votes_counted": 17584055,
+      "emitted_votes_counted": 18816215,
+      "pct_unresolved": 0.03365,
+      "pct_jee": 0.016803,
+      "pct_pending": 0.016847
+    },
+    "foreignAggregate": {
+      "scope_label": "EXTRANJERO",
+      "total_actas": 2543,
+      "contabilizadas": 21,
+      "enviadas_jee_observadas": 0,
+      "pendientes": 2522,
+      "unresolved_total": 2522,
+      "valid_votes_counted": 3857,
+      "emitted_votes_counted": 4251,
+      "pct_unresolved": 0.991742,
+      "pct_jee": 0,
+      "pct_pending": 0.991742
+    },
+    "rootTotals": {
+      "actasContabilizadas": 93.976,
+      "contabilizadas": 87178,
+      "totalActas": 92766,
+      "participacionCiudadana": 68.863,
+      "actasEnviadasJee": 1.634,
+      "enviadasJee": 1516,
+      "actasPendientesJee": 4.39,
+      "pendientesJee": 4072,
+      "fechaActualizacion": 1780942320503,
+      "idUbigeoDepartamento": null,
+      "idUbigeoProvincia": null,
+      "idUbigeoDistrito": null,
+      "idUbigeoDistritoElectoral": null,
+      "totalVotosEmitidos": 18817075,
+      "totalVotosValidos": 17584797,
+      "porcentajeVotosEmitidos": 100,
+      "porcentajeVotosValidos": 100
+    },
+    "totals": {
+      "leaves_with_unresolved": 621,
+      "leaves_with_jee": 339,
+      "leaves_with_pending": 292,
+      "unresolved_total": 5558,
+      "enviadas_jee_observadas": 1516,
+      "pendientes": 4042
+    }
+  },
+  "components": {
+    "pendingPeru": {
+      "keiko": 80278.4,
+      "roberto": 143918.9,
+      "valid": 224197.3,
+      "actas": 1520,
+      "margin_keiko_minus_roberto": -63640.5
+    },
+    "foreignPendingAggregate": {
+      "keiko": 206865.5,
+      "roberto": 130666,
+      "valid": 337531.5,
+      "actas": 2522,
+      "margin_keiko_minus_roberto": 76199.5
+    },
+    "jeeAtRisk": {
+      "keiko": 182972.5,
+      "roberto": 135363.3,
+      "valid": 318335.8,
+      "actas": 1516,
+      "margin_keiko_minus_roberto": 47609.3
+    },
+    "expectedJeeResolution": {
+      "admissionRate": 0.855829,
+      "annulmentRate": 0.144171,
+      "expectedCountedActas": 1297.4,
+      "expectedAnnulledActas": 218.6,
+      "expectedCountedValidVotes": 272441.1,
+      "expectedNotCountedValidVotes": 45894.7,
+      "expectedCountedKeikoVotes": 156593.2,
+      "expectedCountedSanchezVotes": 115847.9,
+      "expectedCountedMarginKeikoMinusSanchez": 40745.4
+    }
+  },
+  "scenarios": {
+    "cityWeighted": {
+      "label": "Ciudad/distrito ponderado",
+      "description": "Usa el patron observado por distrito cuando existe y un fallback territorial para distritos con bajo conteo.",
+      "sensitivityByJeeAdmissionRate": [
+        {
+          "jeeAdmissionRate": 0,
+          "finalKeikoVotes": 9076898,
+          "finalSanchezVotes": 9069627.9,
+          "marginKeikoMinusSanchez": 7270.1,
+          "keikoPct": 0.5002,
+          "sanchezPct": 0.4998,
+          "jeeValidVotesCounted": 0,
+          "jeeVotesNotCountedOrInvalidated": 318335.8
+        },
+        {
+          "jeeAdmissionRate": 0.25,
+          "finalKeikoVotes": 9122641.1,
+          "finalSanchezVotes": 9103468.7,
+          "marginKeikoMinusSanchez": 19172.4,
+          "keikoPct": 0.500526,
+          "sanchezPct": 0.499474,
+          "jeeValidVotesCounted": 79583.9,
+          "jeeVotesNotCountedOrInvalidated": 238751.8
+        },
+        {
+          "jeeAdmissionRate": 0.5,
+          "finalKeikoVotes": 9168384.2,
+          "finalSanchezVotes": 9137309.5,
+          "marginKeikoMinusSanchez": 31074.7,
+          "keikoPct": 0.500849,
+          "sanchezPct": 0.499151,
+          "jeeValidVotesCounted": 159167.9,
+          "jeeVotesNotCountedOrInvalidated": 159167.9
+        },
+        {
+          "jeeAdmissionRate": 0.75,
+          "finalKeikoVotes": 9214127.3,
+          "finalSanchezVotes": 9171150.3,
+          "marginKeikoMinusSanchez": 42977,
+          "keikoPct": 0.501169,
+          "sanchezPct": 0.498831,
+          "jeeValidVotesCounted": 238751.8,
+          "jeeVotesNotCountedOrInvalidated": 79583.9
+        },
+        {
+          "jeeAdmissionRate": 0.9,
+          "finalKeikoVotes": 9241573.2,
+          "finalSanchezVotes": 9191454.8,
+          "marginKeikoMinusSanchez": 50118.4,
+          "keikoPct": 0.501359,
+          "sanchezPct": 0.498641,
+          "jeeValidVotesCounted": 286502.2,
+          "jeeVotesNotCountedOrInvalidated": 31833.6
+        },
+        {
+          "jeeAdmissionRate": 1,
+          "finalKeikoVotes": 9259870.5,
+          "finalSanchezVotes": 9204991.1,
+          "marginKeikoMinusSanchez": 54879.3,
+          "keikoPct": 0.501486,
+          "sanchezPct": 0.498514,
+          "jeeValidVotesCounted": 318335.8,
+          "jeeVotesNotCountedOrInvalidated": 0
+        }
+      ],
+      "monteCarlo": {
+        "iterations": 20000,
+        "seed": 20260608,
+        "scenarioKey": "city_weighted",
+        "finalMarginKeikoMinusSanchez": {
+          "mean": 47599.4,
+          "median": 47921.7,
+          "p10": 19287.8,
+          "p90": 75649.7,
+          "p025": 3908.2,
+          "p975": 90145.6,
+          "modeledMarginOfError90": 28181,
+          "modeledMarginOfError95": 43118.7,
+          "probabilityKeikoLeads": 0.9836,
+          "probabilitySanchezLeads": 0.0164,
+          "probabilityWithin20000Votes": 0.10415
+        },
+        "peruOnlyMarginKeikoMinusSanchez": {
+          "mean": -28319.3,
+          "median": -28335.1,
+          "p10": -46029.1,
+          "p90": -10804.2,
+          "p025": -55428.2,
+          "p975": -1372.5,
+          "modeledMarginOfError90": 17612.5,
+          "modeledMarginOfError95": 27027.9,
+          "probabilityKeikoLeads": 0.02055,
+          "probabilitySanchezLeads": 0.97945,
+          "probabilityWithin20000Votes": 0.2717
+        },
+        "jeeAdmissionRate": {
+          "mean": 0.855775,
+          "median": 0.855822,
+          "p10": 0.850712,
+          "p90": 0.86084,
+          "p025": 0.84784,
+          "p975": 0.863394,
+          "modeledMarginOfError90": 0.005064,
+          "modeledMarginOfError95": 0.007777,
+          "probabilityKeikoLeads": 1,
+          "probabilitySanchezLeads": 0,
+          "probabilityWithin20000Votes": 1
+        },
+        "histogram": [
+          {
+            "from": -39341.8,
+            "to": -35136.9,
+            "midpoint": -37239.3,
+            "count": 2,
+            "pct": 0.0001,
+            "label": "-39k a -35k"
+          },
+          {
+            "from": -35136.9,
+            "to": -30932,
+            "midpoint": -33034.4,
+            "count": 3,
+            "pct": 0.00015,
+            "label": "-35k a -31k"
+          },
+          {
+            "from": -30932,
+            "to": -26727,
+            "midpoint": -28829.5,
+            "count": 3,
+            "pct": 0.00015,
+            "label": "-31k a -27k"
+          },
+          {
+            "from": -26727,
+            "to": -22522.1,
+            "midpoint": -24624.6,
+            "count": 7,
+            "pct": 0.00035,
+            "label": "-27k a -23k"
+          },
+          {
+            "from": -22522.1,
+            "to": -18317.2,
+            "midpoint": -20419.6,
+            "count": 14,
+            "pct": 0.0007,
+            "label": "-23k a -18k"
+          },
+          {
+            "from": -18317.2,
+            "to": -14112.2,
+            "midpoint": -16214.7,
+            "count": 23,
+            "pct": 0.00115,
+            "label": "-18k a -14k"
+          },
+          {
+            "from": -14112.2,
+            "to": -9907.3,
+            "midpoint": -12009.8,
+            "count": 35,
+            "pct": 0.00175,
+            "label": "-14k a -10k"
+          },
+          {
+            "from": -9907.3,
+            "to": -5702.4,
+            "midpoint": -7804.8,
+            "count": 78,
+            "pct": 0.0039,
+            "label": "-10k a -6k"
+          },
+          {
+            "from": -5702.4,
+            "to": -1497.4,
+            "midpoint": -3599.9,
+            "count": 108,
+            "pct": 0.0054,
+            "label": "-6k a -1k"
+          },
+          {
+            "from": -1497.4,
+            "to": 2707.5,
+            "midpoint": 605,
+            "count": 170,
+            "pct": 0.0085,
+            "label": "-1k a 3k"
+          },
+          {
+            "from": 2707.5,
+            "to": 6912.4,
+            "midpoint": 4810,
+            "count": 217,
+            "pct": 0.01085,
+            "label": "3k a 7k"
+          },
+          {
+            "from": 6912.4,
+            "to": 11117.4,
+            "midpoint": 9014.9,
+            "count": 337,
+            "pct": 0.01685,
+            "label": "7k a 11k"
+          },
+          {
+            "from": 11117.4,
+            "to": 15322.3,
+            "midpoint": 13219.8,
+            "count": 443,
+            "pct": 0.02215,
+            "label": "11k a 15k"
+          },
+          {
+            "from": 15322.3,
+            "to": 19527.2,
+            "midpoint": 17424.7,
+            "count": 590,
+            "pct": 0.0295,
+            "label": "15k a 20k"
+          },
+          {
+            "from": 19527.2,
+            "to": 23732.1,
+            "midpoint": 21629.7,
+            "count": 792,
+            "pct": 0.0396,
+            "label": "20k a 24k"
+          },
+          {
+            "from": 23732.1,
+            "to": 27937.1,
+            "midpoint": 25834.6,
+            "count": 876,
+            "pct": 0.0438,
+            "label": "24k a 28k"
+          },
+          {
+            "from": 27937.1,
+            "to": 32142,
+            "midpoint": 30039.5,
+            "count": 1085,
+            "pct": 0.05425,
+            "label": "28k a 32k"
+          },
+          {
+            "from": 32142,
+            "to": 36346.9,
+            "midpoint": 34244.5,
+            "count": 1289,
+            "pct": 0.06445,
+            "label": "32k a 36k"
+          },
+          {
+            "from": 36346.9,
+            "to": 40551.9,
+            "midpoint": 38449.4,
+            "count": 1410,
+            "pct": 0.0705,
+            "label": "36k a 41k"
+          },
+          {
+            "from": 40551.9,
+            "to": 44756.8,
+            "midpoint": 42654.3,
+            "count": 1368,
+            "pct": 0.0684,
+            "label": "41k a 45k"
+          },
+          {
+            "from": 44756.8,
+            "to": 48961.7,
+            "midpoint": 46859.3,
+            "count": 1536,
+            "pct": 0.0768,
+            "label": "45k a 49k"
+          },
+          {
+            "from": 48961.7,
+            "to": 53166.7,
+            "midpoint": 51064.2,
+            "count": 1503,
+            "pct": 0.07515,
+            "label": "49k a 53k"
+          },
+          {
+            "from": 53166.7,
+            "to": 57371.6,
+            "midpoint": 55269.1,
+            "count": 1566,
+            "pct": 0.0783,
+            "label": "53k a 57k"
+          },
+          {
+            "from": 57371.6,
+            "to": 61576.5,
+            "midpoint": 59474,
+            "count": 1314,
+            "pct": 0.0657,
+            "label": "57k a 62k"
+          },
+          {
+            "from": 61576.5,
+            "to": 65781.4,
+            "midpoint": 63679,
+            "count": 1167,
+            "pct": 0.05835,
+            "label": "62k a 66k"
+          },
+          {
+            "from": 65781.4,
+            "to": 69986.4,
+            "midpoint": 67883.9,
+            "count": 1015,
+            "pct": 0.05075,
+            "label": "66k a 70k"
+          },
+          {
+            "from": 69986.4,
+            "to": 74191.3,
+            "midpoint": 72088.8,
+            "count": 806,
+            "pct": 0.0403,
+            "label": "70k a 74k"
+          },
+          {
+            "from": 74191.3,
+            "to": 78396.2,
+            "midpoint": 76293.8,
+            "count": 642,
+            "pct": 0.0321,
+            "label": "74k a 78k"
+          },
+          {
+            "from": 78396.2,
+            "to": 82601.2,
+            "midpoint": 80498.7,
+            "count": 507,
+            "pct": 0.02535,
+            "label": "78k a 83k"
+          },
+          {
+            "from": 82601.2,
+            "to": 86806.1,
+            "midpoint": 84703.6,
+            "count": 362,
+            "pct": 0.0181,
+            "label": "83k a 87k"
+          },
+          {
+            "from": 86806.1,
+            "to": 91011,
+            "midpoint": 88908.6,
+            "count": 285,
+            "pct": 0.01425,
+            "label": "87k a 91k"
+          },
+          {
+            "from": 91011,
+            "to": 95216,
+            "midpoint": 93113.5,
+            "count": 158,
+            "pct": 0.0079,
+            "label": "91k a 95k"
+          },
+          {
+            "from": 95216,
+            "to": 99420.9,
+            "midpoint": 97318.4,
+            "count": 117,
+            "pct": 0.00585,
+            "label": "95k a 99k"
+          },
+          {
+            "from": 99420.9,
+            "to": 103625.8,
+            "midpoint": 101523.4,
+            "count": 66,
+            "pct": 0.0033,
+            "label": "99k a 104k"
+          },
+          {
+            "from": 103625.8,
+            "to": 107830.7,
+            "midpoint": 105728.3,
+            "count": 47,
+            "pct": 0.00235,
+            "label": "104k a 108k"
+          },
+          {
+            "from": 107830.7,
+            "to": 112035.7,
+            "midpoint": 109933.2,
+            "count": 23,
+            "pct": 0.00115,
+            "label": "108k a 112k"
+          },
+          {
+            "from": 112035.7,
+            "to": 116240.6,
+            "midpoint": 114138.1,
+            "count": 15,
+            "pct": 0.00075,
+            "label": "112k a 116k"
+          },
+          {
+            "from": 116240.6,
+            "to": 120445.5,
+            "midpoint": 118343.1,
+            "count": 12,
+            "pct": 0.0006,
+            "label": "116k a 120k"
+          },
+          {
+            "from": 120445.5,
+            "to": 124650.5,
+            "midpoint": 122548,
+            "count": 6,
+            "pct": 0.0003,
+            "label": "120k a 125k"
+          },
+          {
+            "from": 124650.5,
+            "to": 128855.4,
+            "midpoint": 126752.9,
+            "count": 2,
+            "pct": 0.0001,
+            "label": "125k a 129k"
+          },
+          {
+            "from": 128855.4,
+            "to": 133060.3,
+            "midpoint": 130957.9,
+            "count": 1,
+            "pct": 0.00005,
+            "label": "129k a 133k"
+          }
+        ],
+        "uncertaintyModel": {
+          "pendingPeruShareConcentration": 900,
+          "foreignShareConcentration": 360,
+          "jeeShareConcentration": 520,
+          "jeeLegalResolutionPrior": "Beta(anuladas+1, contabilizadas+1)"
+        }
+      }
+    },
+    "foreignKeikoPlus30": {
+      "label": "Exterior Keiko +30 pp",
+      "description": "Misma base nacional y JEE; exterior agregado forzado a 65/35 para probar una ventaja neta de 30 puntos.",
+      "sensitivityByJeeAdmissionRate": [
+        {
+          "jeeAdmissionRate": 0,
+          "finalKeikoVotes": 9089427.9,
+          "finalSanchezVotes": 9057097.9,
+          "marginKeikoMinusSanchez": 32330,
+          "keikoPct": 0.500891,
+          "sanchezPct": 0.499109,
+          "jeeValidVotesCounted": 0,
+          "jeeVotesNotCountedOrInvalidated": 318335.8
+        },
+        {
+          "jeeAdmissionRate": 0.25,
+          "finalKeikoVotes": 9135171,
+          "finalSanchezVotes": 9090938.7,
+          "marginKeikoMinusSanchez": 44232.3,
+          "keikoPct": 0.501213,
+          "sanchezPct": 0.498787,
+          "jeeValidVotesCounted": 79583.9,
+          "jeeVotesNotCountedOrInvalidated": 238751.8
+        },
+        {
+          "jeeAdmissionRate": 0.5,
+          "finalKeikoVotes": 9180914.2,
+          "finalSanchezVotes": 9124779.5,
+          "marginKeikoMinusSanchez": 56134.6,
+          "keikoPct": 0.501533,
+          "sanchezPct": 0.498467,
+          "jeeValidVotesCounted": 159167.9,
+          "jeeVotesNotCountedOrInvalidated": 159167.9
+        },
+        {
+          "jeeAdmissionRate": 0.75,
+          "finalKeikoVotes": 9226657.3,
+          "finalSanchezVotes": 9158620.4,
+          "marginKeikoMinusSanchez": 68036.9,
+          "keikoPct": 0.50185,
+          "sanchezPct": 0.49815,
+          "jeeValidVotesCounted": 238751.8,
+          "jeeVotesNotCountedOrInvalidated": 79583.9
+        },
+        {
+          "jeeAdmissionRate": 0.9,
+          "finalKeikoVotes": 9254103.2,
+          "finalSanchezVotes": 9178924.9,
+          "marginKeikoMinusSanchez": 75178.3,
+          "keikoPct": 0.502039,
+          "sanchezPct": 0.497961,
+          "jeeValidVotesCounted": 286502.2,
+          "jeeVotesNotCountedOrInvalidated": 31833.6
+        },
+        {
+          "jeeAdmissionRate": 1,
+          "finalKeikoVotes": 9272400.4,
+          "finalSanchezVotes": 9192461.2,
+          "marginKeikoMinusSanchez": 79939.2,
+          "keikoPct": 0.502165,
+          "sanchezPct": 0.497835,
+          "jeeValidVotesCounted": 318335.8,
+          "jeeVotesNotCountedOrInvalidated": 0
+        }
+      ],
+      "monteCarlo": {
+        "iterations": 20000,
+        "seed": 20260609,
+        "scenarioKey": "foreign_keiko_plus30",
+        "finalMarginKeikoMinusSanchez": {
+          "mean": 72367.5,
+          "median": 72559.2,
+          "p10": 43951.2,
+          "p90": 100521.6,
+          "p025": 29641.8,
+          "p975": 114784.7,
+          "modeledMarginOfError90": 28285.2,
+          "modeledMarginOfError95": 42571.5,
+          "probabilityKeikoLeads": 0.9996,
+          "probabilitySanchezLeads": 0.0004,
+          "probabilityWithin20000Votes": 0.0086
+        },
+        "peruOnlyMarginKeikoMinusSanchez": {
+          "mean": -28097.9,
+          "median": -28149,
+          "p10": -45791.8,
+          "p90": -10410.4,
+          "p025": -54975.9,
+          "p975": -1174.1,
+          "modeledMarginOfError90": 17690.7,
+          "modeledMarginOfError95": 26900.9,
+          "probabilityKeikoLeads": 0.02055,
+          "probabilitySanchezLeads": 0.97945,
+          "probabilityWithin20000Votes": 0.27605
+        },
+        "jeeAdmissionRate": {
+          "mean": 0.855725,
+          "median": 0.855802,
+          "p10": 0.850617,
+          "p90": 0.860746,
+          "p025": 0.847884,
+          "p975": 0.863487,
+          "modeledMarginOfError90": 0.005064,
+          "modeledMarginOfError95": 0.007801,
+          "probabilityKeikoLeads": 1,
+          "probabilitySanchezLeads": 0,
+          "probabilityWithin20000Votes": 1
+        },
+        "histogram": [
+          {
+            "from": -11033.1,
+            "to": -6913.1,
+            "midpoint": -8973.1,
+            "count": 5,
+            "pct": 0.00025,
+            "label": "-11k a -7k"
+          },
+          {
+            "from": -6913.1,
+            "to": -2793,
+            "midpoint": -4853.1,
+            "count": 2,
+            "pct": 0.0001,
+            "label": "-7k a -3k"
+          },
+          {
+            "from": -2793,
+            "to": 1327,
+            "midpoint": -733,
+            "count": 9,
+            "pct": 0.00045,
+            "label": "-3k a 1k"
+          },
+          {
+            "from": 1327,
+            "to": 5447.1,
+            "midpoint": 3387,
+            "count": 16,
+            "pct": 0.0008,
+            "label": "1k a 5k"
+          },
+          {
+            "from": 5447.1,
+            "to": 9567.1,
+            "midpoint": 7507.1,
+            "count": 16,
+            "pct": 0.0008,
+            "label": "5k a 10k"
+          },
+          {
+            "from": 9567.1,
+            "to": 13687.2,
+            "midpoint": 11627.1,
+            "count": 32,
+            "pct": 0.0016,
+            "label": "10k a 14k"
+          },
+          {
+            "from": 13687.2,
+            "to": 17807.2,
+            "midpoint": 15747.2,
+            "count": 40,
+            "pct": 0.002,
+            "label": "14k a 18k"
+          },
+          {
+            "from": 17807.2,
+            "to": 21927.3,
+            "midpoint": 19867.2,
+            "count": 94,
+            "pct": 0.0047,
+            "label": "18k a 22k"
+          },
+          {
+            "from": 21927.3,
+            "to": 26047.3,
+            "midpoint": 23987.3,
+            "count": 135,
+            "pct": 0.00675,
+            "label": "22k a 26k"
+          },
+          {
+            "from": 26047.3,
+            "to": 30167.3,
+            "midpoint": 28107.3,
+            "count": 174,
+            "pct": 0.0087,
+            "label": "26k a 30k"
+          },
+          {
+            "from": 30167.3,
+            "to": 34287.4,
+            "midpoint": 32227.4,
+            "count": 337,
+            "pct": 0.01685,
+            "label": "30k a 34k"
+          },
+          {
+            "from": 34287.4,
+            "to": 38407.4,
+            "midpoint": 36347.4,
+            "count": 375,
+            "pct": 0.01875,
+            "label": "34k a 38k"
+          },
+          {
+            "from": 38407.4,
+            "to": 42527.5,
+            "midpoint": 40467.5,
+            "count": 534,
+            "pct": 0.0267,
+            "label": "38k a 43k"
+          },
+          {
+            "from": 42527.5,
+            "to": 46647.5,
+            "midpoint": 44587.5,
+            "count": 647,
+            "pct": 0.03235,
+            "label": "43k a 47k"
+          },
+          {
+            "from": 46647.5,
+            "to": 50767.6,
+            "midpoint": 48707.6,
+            "count": 859,
+            "pct": 0.04295,
+            "label": "47k a 51k"
+          },
+          {
+            "from": 50767.6,
+            "to": 54887.6,
+            "midpoint": 52827.6,
+            "count": 967,
+            "pct": 0.04835,
+            "label": "51k a 55k"
+          },
+          {
+            "from": 54887.6,
+            "to": 59007.7,
+            "midpoint": 56947.7,
+            "count": 1142,
+            "pct": 0.0571,
+            "label": "55k a 59k"
+          },
+          {
+            "from": 59007.7,
+            "to": 63127.7,
+            "midpoint": 61067.7,
+            "count": 1292,
+            "pct": 0.0646,
+            "label": "59k a 63k"
+          },
+          {
+            "from": 63127.7,
+            "to": 67247.8,
+            "midpoint": 65187.8,
+            "count": 1416,
+            "pct": 0.0708,
+            "label": "63k a 67k"
+          },
+          {
+            "from": 67247.8,
+            "to": 71367.8,
+            "midpoint": 69307.8,
+            "count": 1479,
+            "pct": 0.07395,
+            "label": "67k a 71k"
+          },
+          {
+            "from": 71367.8,
+            "to": 75487.9,
+            "midpoint": 73427.9,
+            "count": 1576,
+            "pct": 0.0788,
+            "label": "71k a 75k"
+          },
+          {
+            "from": 75487.9,
+            "to": 79607.9,
+            "midpoint": 77547.9,
+            "count": 1449,
+            "pct": 0.07245,
+            "label": "75k a 80k"
+          },
+          {
+            "from": 79607.9,
+            "to": 83728,
+            "midpoint": 81668,
+            "count": 1369,
+            "pct": 0.06845,
+            "label": "80k a 84k"
+          },
+          {
+            "from": 83728,
+            "to": 87848,
+            "midpoint": 85788,
+            "count": 1226,
+            "pct": 0.0613,
+            "label": "84k a 88k"
+          },
+          {
+            "from": 87848,
+            "to": 91968.1,
+            "midpoint": 89908.1,
+            "count": 1074,
+            "pct": 0.0537,
+            "label": "88k a 92k"
+          },
+          {
+            "from": 91968.1,
+            "to": 96088.1,
+            "midpoint": 94028.1,
+            "count": 907,
+            "pct": 0.04535,
+            "label": "92k a 96k"
+          },
+          {
+            "from": 96088.1,
+            "to": 100208.2,
+            "midpoint": 98148.2,
+            "count": 778,
+            "pct": 0.0389,
+            "label": "96k a 100k"
+          },
+          {
+            "from": 100208.2,
+            "to": 104328.2,
+            "midpoint": 102268.2,
+            "count": 617,
+            "pct": 0.03085,
+            "label": "100k a 104k"
+          },
+          {
+            "from": 104328.2,
+            "to": 108448.3,
+            "midpoint": 106388.3,
+            "count": 442,
+            "pct": 0.0221,
+            "label": "104k a 108k"
+          },
+          {
+            "from": 108448.3,
+            "to": 112568.3,
+            "midpoint": 110508.3,
+            "count": 355,
+            "pct": 0.01775,
+            "label": "108k a 113k"
+          },
+          {
+            "from": 112568.3,
+            "to": 116688.4,
+            "midpoint": 114628.4,
+            "count": 235,
+            "pct": 0.01175,
+            "label": "113k a 117k"
+          },
+          {
+            "from": 116688.4,
+            "to": 120808.4,
+            "midpoint": 118748.4,
+            "count": 154,
+            "pct": 0.0077,
+            "label": "117k a 121k"
+          },
+          {
+            "from": 120808.4,
+            "to": 124928.5,
+            "midpoint": 122868.5,
+            "count": 95,
+            "pct": 0.00475,
+            "label": "121k a 125k"
+          },
+          {
+            "from": 124928.5,
+            "to": 129048.5,
+            "midpoint": 126988.5,
+            "count": 64,
+            "pct": 0.0032,
+            "label": "125k a 129k"
+          },
+          {
+            "from": 129048.5,
+            "to": 133168.6,
+            "midpoint": 131108.6,
+            "count": 46,
+            "pct": 0.0023,
+            "label": "129k a 133k"
+          },
+          {
+            "from": 133168.6,
+            "to": 137288.6,
+            "midpoint": 135228.6,
+            "count": 20,
+            "pct": 0.001,
+            "label": "133k a 137k"
+          },
+          {
+            "from": 137288.6,
+            "to": 141408.7,
+            "midpoint": 139348.6,
+            "count": 13,
+            "pct": 0.00065,
+            "label": "137k a 141k"
+          },
+          {
+            "from": 141408.7,
+            "to": 145528.7,
+            "midpoint": 143468.7,
+            "count": 5,
+            "pct": 0.00025,
+            "label": "141k a 146k"
+          },
+          {
+            "from": 145528.7,
+            "to": 149648.8,
+            "midpoint": 147588.7,
+            "count": 2,
+            "pct": 0.0001,
+            "label": "146k a 150k"
+          },
+          {
+            "from": 149648.8,
+            "to": 153768.8,
+            "midpoint": 151708.8,
+            "count": 1,
+            "pct": 0.00005,
+            "label": "150k a 154k"
+          },
+          {
+            "from": 153768.8,
+            "to": 157888.9,
+            "midpoint": 155828.8,
+            "count": 1,
+            "pct": 0.00005,
+            "label": "154k a 158k"
+          }
+        ],
+        "uncertaintyModel": {
+          "pendingPeruShareConcentration": 900,
+          "foreignShareConcentration": 360,
+          "jeeShareConcentration": 520,
+          "jeeLegalResolutionPrior": "Beta(anuladas+1, contabilizadas+1)"
+        }
+      }
+    },
+    "foreign5050": {
+      "label": "Exterior 50/50",
+      "description": "Escenario conservador donde el exterior agregado no aporta margen neto.",
+      "sensitivityByJeeAdmissionRate": [
+        {
+          "jeeAdmissionRate": 0,
+          "finalKeikoVotes": 9038798.2,
+          "finalSanchezVotes": 9107727.6,
+          "marginKeikoMinusSanchez": -68929.5,
+          "keikoPct": 0.498101,
+          "sanchezPct": 0.501899,
+          "jeeValidVotesCounted": 0,
+          "jeeVotesNotCountedOrInvalidated": 318335.8
+        },
+        {
+          "jeeAdmissionRate": 0.25,
+          "finalKeikoVotes": 9084541.3,
+          "finalSanchezVotes": 9141568.5,
+          "marginKeikoMinusSanchez": -57027.1,
+          "keikoPct": 0.498436,
+          "sanchezPct": 0.501564,
+          "jeeValidVotesCounted": 79583.9,
+          "jeeVotesNotCountedOrInvalidated": 238751.8
+        },
+        {
+          "jeeAdmissionRate": 0.5,
+          "finalKeikoVotes": 9130284.4,
+          "finalSanchezVotes": 9175409.3,
+          "marginKeikoMinusSanchez": -45124.8,
+          "keikoPct": 0.498767,
+          "sanchezPct": 0.501233,
+          "jeeValidVotesCounted": 159167.9,
+          "jeeVotesNotCountedOrInvalidated": 159167.9
+        },
+        {
+          "jeeAdmissionRate": 0.75,
+          "finalKeikoVotes": 9176027.6,
+          "finalSanchezVotes": 9209250.1,
+          "marginKeikoMinusSanchez": -33222.5,
+          "keikoPct": 0.499096,
+          "sanchezPct": 0.500904,
+          "jeeValidVotesCounted": 238751.8,
+          "jeeVotesNotCountedOrInvalidated": 79583.9
+        },
+        {
+          "jeeAdmissionRate": 0.9,
+          "finalKeikoVotes": 9203473.4,
+          "finalSanchezVotes": 9229554.6,
+          "marginKeikoMinusSanchez": -26081.1,
+          "keikoPct": 0.499293,
+          "sanchezPct": 0.500707,
+          "jeeValidVotesCounted": 286502.2,
+          "jeeVotesNotCountedOrInvalidated": 31833.6
+        },
+        {
+          "jeeAdmissionRate": 1,
+          "finalKeikoVotes": 9221770.7,
+          "finalSanchezVotes": 9243090.9,
+          "marginKeikoMinusSanchez": -21320.2,
+          "keikoPct": 0.499423,
+          "sanchezPct": 0.500577,
+          "jeeValidVotesCounted": 318335.8,
+          "jeeVotesNotCountedOrInvalidated": 0
+        }
+      ],
+      "monteCarlo": {
+        "iterations": 20000,
+        "seed": 20260610,
+        "scenarioKey": "foreign_50_50",
+        "finalMarginKeikoMinusSanchez": {
+          "mean": -28196.3,
+          "median": -28220.1,
+          "p10": -57027.7,
+          "p90": 375.6,
+          "p025": -71891.4,
+          "p975": 15499,
+          "modeledMarginOfError90": 28701.6,
+          "modeledMarginOfError95": 43695.2,
+          "probabilityKeikoLeads": 0.1034,
+          "probabilitySanchezLeads": 0.8966,
+          "probabilityWithin20000Votes": 0.34295
+        },
+        "peruOnlyMarginKeikoMinusSanchez": {
+          "mean": -28129,
+          "median": -28108.4,
+          "p10": -45999.5,
+          "p90": -10386.4,
+          "p025": -55086.7,
+          "p975": -1275.1,
+          "modeledMarginOfError90": 17806.5,
+          "modeledMarginOfError95": 26905.8,
+          "probabilityKeikoLeads": 0.0204,
+          "probabilitySanchezLeads": 0.9796,
+          "probabilityWithin20000Votes": 0.2784
+        },
+        "jeeAdmissionRate": {
+          "mean": 0.855741,
+          "median": 0.855804,
+          "p10": 0.85066,
+          "p90": 0.860803,
+          "p025": 0.847827,
+          "p975": 0.8635,
+          "modeledMarginOfError90": 0.005072,
+          "modeledMarginOfError95": 0.007836,
+          "probabilityKeikoLeads": 1,
+          "probabilitySanchezLeads": 0,
+          "probabilityWithin20000Votes": 1
+        },
+        "histogram": [
+          {
+            "from": -110654.1,
+            "to": -106647.7,
+            "midpoint": -108650.9,
+            "count": 3,
+            "pct": 0.00015,
+            "label": "-111k a -107k"
+          },
+          {
+            "from": -106647.7,
+            "to": -102641.3,
+            "midpoint": -104644.5,
+            "count": 0,
+            "pct": 0,
+            "label": "-107k a -103k"
+          },
+          {
+            "from": -102641.3,
+            "to": -98635,
+            "midpoint": -100638.1,
+            "count": 9,
+            "pct": 0.00045,
+            "label": "-103k a -99k"
+          },
+          {
+            "from": -98635,
+            "to": -94628.6,
+            "midpoint": -96631.8,
+            "count": 21,
+            "pct": 0.00105,
+            "label": "-99k a -95k"
+          },
+          {
+            "from": -94628.6,
+            "to": -90622.2,
+            "midpoint": -92625.4,
+            "count": 28,
+            "pct": 0.0014,
+            "label": "-95k a -91k"
+          },
+          {
+            "from": -90622.2,
+            "to": -86615.9,
+            "midpoint": -88619,
+            "count": 36,
+            "pct": 0.0018,
+            "label": "-91k a -87k"
+          },
+          {
+            "from": -86615.9,
+            "to": -82609.5,
+            "midpoint": -84612.7,
+            "count": 62,
+            "pct": 0.0031,
+            "label": "-87k a -83k"
+          },
+          {
+            "from": -82609.5,
+            "to": -78603.1,
+            "midpoint": -80606.3,
+            "count": 101,
+            "pct": 0.00505,
+            "label": "-83k a -79k"
+          },
+          {
+            "from": -78603.1,
+            "to": -74596.8,
+            "midpoint": -76600,
+            "count": 109,
+            "pct": 0.00545,
+            "label": "-79k a -75k"
+          },
+          {
+            "from": -74596.8,
+            "to": -70590.4,
+            "midpoint": -72593.6,
+            "count": 206,
+            "pct": 0.0103,
+            "label": "-75k a -71k"
+          },
+          {
+            "from": -70590.4,
+            "to": -66584,
+            "midpoint": -68587.2,
+            "count": 265,
+            "pct": 0.01325,
+            "label": "-71k a -67k"
+          },
+          {
+            "from": -66584,
+            "to": -62577.7,
+            "midpoint": -64580.9,
+            "count": 378,
+            "pct": 0.0189,
+            "label": "-67k a -63k"
+          },
+          {
+            "from": -62577.7,
+            "to": -58571.3,
+            "midpoint": -60574.5,
+            "count": 520,
+            "pct": 0.026,
+            "label": "-63k a -59k"
+          },
+          {
+            "from": -58571.3,
+            "to": -54564.9,
+            "midpoint": -56568.1,
+            "count": 659,
+            "pct": 0.03295,
+            "label": "-59k a -55k"
+          },
+          {
+            "from": -54564.9,
+            "to": -50558.6,
+            "midpoint": -52561.8,
+            "count": 801,
+            "pct": 0.04005,
+            "label": "-55k a -51k"
+          },
+          {
+            "from": -50558.6,
+            "to": -46552.2,
+            "midpoint": -48555.4,
+            "count": 957,
+            "pct": 0.04785,
+            "label": "-51k a -47k"
+          },
+          {
+            "from": -46552.2,
+            "to": -42545.8,
+            "midpoint": -44549,
+            "count": 1099,
+            "pct": 0.05495,
+            "label": "-47k a -43k"
+          },
+          {
+            "from": -42545.8,
+            "to": -38539.5,
+            "midpoint": -40542.7,
+            "count": 1209,
+            "pct": 0.06045,
+            "label": "-43k a -39k"
+          },
+          {
+            "from": -38539.5,
+            "to": -34533.1,
+            "midpoint": -36536.3,
+            "count": 1307,
+            "pct": 0.06535,
+            "label": "-39k a -35k"
+          },
+          {
+            "from": -34533.1,
+            "to": -30526.7,
+            "midpoint": -32529.9,
+            "count": 1448,
+            "pct": 0.0724,
+            "label": "-35k a -31k"
+          },
+          {
+            "from": -30526.7,
+            "to": -26520.4,
+            "midpoint": -28523.6,
+            "count": 1385,
+            "pct": 0.06925,
+            "label": "-31k a -27k"
+          },
+          {
+            "from": -26520.4,
+            "to": -22514,
+            "midpoint": -24517.2,
+            "count": 1361,
+            "pct": 0.06805,
+            "label": "-27k a -23k"
+          },
+          {
+            "from": -22514,
+            "to": -18507.7,
+            "midpoint": -20510.8,
+            "count": 1334,
+            "pct": 0.0667,
+            "label": "-23k a -19k"
+          },
+          {
+            "from": -18507.7,
+            "to": -14501.3,
+            "midpoint": -16504.5,
+            "count": 1252,
+            "pct": 0.0626,
+            "label": "-19k a -15k"
+          },
+          {
+            "from": -14501.3,
+            "to": -10494.9,
+            "midpoint": -12498.1,
+            "count": 1096,
+            "pct": 0.0548,
+            "label": "-15k a -10k"
+          },
+          {
+            "from": -10494.9,
+            "to": -6488.6,
+            "midpoint": -8491.7,
+            "count": 1036,
+            "pct": 0.0518,
+            "label": "-10k a -6k"
+          },
+          {
+            "from": -6488.6,
+            "to": -2482.2,
+            "midpoint": -4485.4,
+            "count": 830,
+            "pct": 0.0415,
+            "label": "-6k a -2k"
+          },
+          {
+            "from": -2482.2,
+            "to": 1524.2,
+            "midpoint": -479,
+            "count": 663,
+            "pct": 0.03315,
+            "label": "-2k a 2k"
+          },
+          {
+            "from": 1524.2,
+            "to": 5530.5,
+            "midpoint": 3527.4,
+            "count": 502,
+            "pct": 0.0251,
+            "label": "2k a 6k"
+          },
+          {
+            "from": 5530.5,
+            "to": 9536.9,
+            "midpoint": 7533.7,
+            "count": 398,
+            "pct": 0.0199,
+            "label": "6k a 10k"
+          },
+          {
+            "from": 9536.9,
+            "to": 13543.3,
+            "midpoint": 11540.1,
+            "count": 304,
+            "pct": 0.0152,
+            "label": "10k a 14k"
+          },
+          {
+            "from": 13543.3,
+            "to": 17549.6,
+            "midpoint": 15546.5,
+            "count": 207,
+            "pct": 0.01035,
+            "label": "14k a 18k"
+          },
+          {
+            "from": 17549.6,
+            "to": 21556,
+            "midpoint": 19552.8,
+            "count": 150,
+            "pct": 0.0075,
+            "label": "18k a 22k"
+          },
+          {
+            "from": 21556,
+            "to": 25562.4,
+            "midpoint": 23559.2,
+            "count": 107,
+            "pct": 0.00535,
+            "label": "22k a 26k"
+          },
+          {
+            "from": 25562.4,
+            "to": 29568.7,
+            "midpoint": 27565.6,
+            "count": 57,
+            "pct": 0.00285,
+            "label": "26k a 30k"
+          },
+          {
+            "from": 29568.7,
+            "to": 33575.1,
+            "midpoint": 31571.9,
+            "count": 38,
+            "pct": 0.0019,
+            "label": "30k a 34k"
+          },
+          {
+            "from": 33575.1,
+            "to": 37581.5,
+            "midpoint": 35578.3,
+            "count": 26,
+            "pct": 0.0013,
+            "label": "34k a 38k"
+          },
+          {
+            "from": 37581.5,
+            "to": 41587.8,
+            "midpoint": 39584.7,
+            "count": 19,
+            "pct": 0.00095,
+            "label": "38k a 42k"
+          },
+          {
+            "from": 41587.8,
+            "to": 45594.2,
+            "midpoint": 43591,
+            "count": 10,
+            "pct": 0.0005,
+            "label": "42k a 46k"
+          },
+          {
+            "from": 45594.2,
+            "to": 49600.6,
+            "midpoint": 47597.4,
+            "count": 4,
+            "pct": 0.0002,
+            "label": "46k a 50k"
+          },
+          {
+            "from": 49600.6,
+            "to": 53606.9,
+            "midpoint": 51603.7,
+            "count": 3,
+            "pct": 0.00015,
+            "label": "50k a 54k"
+          }
+        ],
+        "uncertaintyModel": {
+          "pendingPeruShareConcentration": 900,
+          "foreignShareConcentration": 360,
+          "jeeShareConcentration": 520,
+          "jeeLegalResolutionPrior": "Beta(anuladas+1, contabilizadas+1)"
+        }
+      }
+    }
+  },
+  "departmentRows": [
+    {
+      "department": "LIMA",
+      "currentLeader": "Keiko",
+      "currentKeikoVotes": 3943082,
+      "currentSanchezVotes": 2266534,
+      "currentGapKeikoMinusSanchez": 1676548,
+      "actas": {
+        "total": 29247,
+        "counted": 28323,
+        "pendingOperational": 0,
+        "sentToJee": 924,
+        "unresolvedTotal": 924,
+        "unresolvedPct": 0.031593
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 0,
+        "pendingOnlyKeikoVotes": 0,
+        "pendingOnlySanchezVotes": 0,
+        "pendingOnlyGapKeikoMinusSanchez": 0,
+        "jeeValidVotesAtRisk": 203321.6,
+        "jeeKeikoVotesAtRisk": 129846.2,
+        "jeeSanchezVotesAtRisk": 73475.4,
+        "expectedJeeCountedValidVotes": 174008.6,
+        "expectedJeeNotCountedValidVotes": 29313,
+        "expectedJeeCountedKeikoVotes": 111126.2,
+        "expectedJeeCountedSanchezVotes": 62882.4,
+        "expectedJeeCountedGapKeikoMinusSanchez": 48243.8,
+        "expectedJeeAnnulledActas": 133.2,
+        "expectedJeeCountedActas": 790.8
+      },
+      "projection": {
+        "keikoVotes": 4054208.2,
+        "sanchezVotes": 2329416.4,
+        "gapKeikoMinusSanchez": 1724791.8,
+        "leader": "Keiko"
+      }
+    },
+    {
+      "department": "CUSCO",
+      "currentLeader": "Sanchez",
+      "currentKeikoVotes": 156667,
+      "currentSanchezVotes": 549829,
+      "currentGapKeikoMinusSanchez": -393162,
+      "actas": {
+        "total": 3983,
+        "counted": 3636,
+        "pendingOperational": 304,
+        "sentToJee": 43,
+        "unresolvedTotal": 347,
+        "unresolvedPct": 0.08712
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 48269.6,
+        "pendingOnlyKeikoVotes": 7329.4,
+        "pendingOnlySanchezVotes": 40940.1,
+        "pendingOnlyGapKeikoMinusSanchez": -33610.7,
+        "jeeValidVotesAtRisk": 8567.8,
+        "jeeKeikoVotesAtRisk": 2220.3,
+        "jeeSanchezVotesAtRisk": 6347.5,
+        "expectedJeeCountedValidVotes": 7332.6,
+        "expectedJeeNotCountedValidVotes": 1235.2,
+        "expectedJeeCountedKeikoVotes": 1900.2,
+        "expectedJeeCountedSanchezVotes": 5432.4,
+        "expectedJeeCountedGapKeikoMinusSanchez": -3532.2,
+        "expectedJeeAnnulledActas": 6.199336,
+        "expectedJeeCountedActas": 36.800664
+      },
+      "projection": {
+        "keikoVotes": 165896.6,
+        "sanchezVotes": 596201.5,
+        "gapKeikoMinusSanchez": -430304.9,
+        "leader": "Sanchez"
+      }
+    },
+    {
+      "department": "AYACUCHO",
+      "currentLeader": "Sanchez",
+      "currentKeikoVotes": 64421,
+      "currentSanchezVotes": 244520,
+      "currentGapKeikoMinusSanchez": -180099,
+      "actas": {
+        "total": 1900,
+        "counted": 1747,
+        "pendingOperational": 136,
+        "sentToJee": 17,
+        "unresolvedTotal": 153,
+        "unresolvedPct": 0.080526
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 19173.3,
+        "pendingOnlyKeikoVotes": 3376,
+        "pendingOnlySanchezVotes": 15797.1,
+        "pendingOnlyGapKeikoMinusSanchez": -12421.1,
+        "jeeValidVotesAtRisk": 3247.8,
+        "jeeKeikoVotesAtRisk": 769.8,
+        "jeeSanchezVotesAtRisk": 2478,
+        "expectedJeeCountedValidVotes": 2779.6,
+        "expectedJeeNotCountedValidVotes": 468.2,
+        "expectedJeeCountedKeikoVotes": 658.8,
+        "expectedJeeCountedSanchezVotes": 2120.7,
+        "expectedJeeCountedGapKeikoMinusSanchez": -1461.9,
+        "expectedJeeAnnulledActas": 2.4509,
+        "expectedJeeCountedActas": 14.5491
+      },
+      "projection": {
+        "keikoVotes": 68455.8,
+        "sanchezVotes": 262437.8,
+        "gapKeikoMinusSanchez": -193982,
+        "leader": "Sanchez"
+      }
+    },
+    {
+      "department": "AMAZONAS",
+      "currentLeader": "Sanchez",
+      "currentKeikoVotes": 67948,
+      "currentSanchezVotes": 114502,
+      "currentGapKeikoMinusSanchez": -46554,
+      "actas": {
+        "total": 1278,
+        "counted": 1162,
+        "pendingOperational": 103,
+        "sentToJee": 13,
+        "unresolvedTotal": 116,
+        "unresolvedPct": 0.090767
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 12681.3,
+        "pendingOnlyKeikoVotes": 1715.1,
+        "pendingOnlySanchezVotes": 10966.4,
+        "pendingOnlyGapKeikoMinusSanchez": -9251.3,
+        "jeeValidVotesAtRisk": 2105.9,
+        "jeeKeikoVotesAtRisk": 795.5,
+        "jeeSanchezVotesAtRisk": 1310.4,
+        "expectedJeeCountedValidVotes": 1802.3,
+        "expectedJeeNotCountedValidVotes": 303.6,
+        "expectedJeeCountedKeikoVotes": 680.8,
+        "expectedJeeCountedSanchezVotes": 1121.5,
+        "expectedJeeCountedGapKeikoMinusSanchez": -440.7,
+        "expectedJeeAnnulledActas": 1.874218,
+        "expectedJeeCountedActas": 11.125782
+      },
+      "projection": {
+        "keikoVotes": 70343.9,
+        "sanchezVotes": 126589.9,
+        "gapKeikoMinusSanchez": -56246,
+        "leader": "Sanchez"
+      }
+    },
+    {
+      "department": "CALLAO",
+      "currentLeader": "Keiko",
+      "currentKeikoVotes": 394407,
+      "currentSanchezVotes": 206765,
+      "currentGapKeikoMinusSanchez": 187642,
+      "actas": {
+        "total": 2898,
+        "counted": 2829,
+        "pendingOperational": 0,
+        "sentToJee": 69,
+        "unresolvedTotal": 69,
+        "unresolvedPct": 0.02381
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 0,
+        "pendingOnlyKeikoVotes": 0,
+        "pendingOnlySanchezVotes": 0.1,
+        "pendingOnlyGapKeikoMinusSanchez": -0.1,
+        "jeeValidVotesAtRisk": 14649.2,
+        "jeeKeikoVotesAtRisk": 9536.3,
+        "jeeSanchezVotesAtRisk": 5112.9,
+        "expectedJeeCountedValidVotes": 12537.2,
+        "expectedJeeNotCountedValidVotes": 2112,
+        "expectedJeeCountedKeikoVotes": 8161.4,
+        "expectedJeeCountedSanchezVotes": 4375.8,
+        "expectedJeeCountedGapKeikoMinusSanchez": 3785.7,
+        "expectedJeeAnnulledActas": 9.947772,
+        "expectedJeeCountedActas": 59.052228
+      },
+      "projection": {
+        "keikoVotes": 402568.4,
+        "sanchezVotes": 211140.9,
+        "gapKeikoMinusSanchez": 191427.6,
+        "leader": "Keiko"
+      }
+    },
+    {
+      "department": "UCAYALI",
+      "currentLeader": "Keiko",
+      "currentKeikoVotes": 136005,
+      "currentSanchezVotes": 119419,
+      "currentGapKeikoMinusSanchez": 16586,
+      "actas": {
+        "total": 1564,
+        "counted": 1417,
+        "pendingOperational": 115,
+        "sentToJee": 32,
+        "unresolvedTotal": 147,
+        "unresolvedPct": 0.09399
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 16275.7,
+        "pendingOnlyKeikoVotes": 6762.7,
+        "pendingOnlySanchezVotes": 9512.9,
+        "pendingOnlyGapKeikoMinusSanchez": -2750.2,
+        "jeeValidVotesAtRisk": 5577.4,
+        "jeeKeikoVotesAtRisk": 3013,
+        "jeeSanchezVotesAtRisk": 2564.3,
+        "expectedJeeCountedValidVotes": 4773.3,
+        "expectedJeeNotCountedValidVotes": 804.1,
+        "expectedJeeCountedKeikoVotes": 2578.6,
+        "expectedJeeCountedSanchezVotes": 2194.6,
+        "expectedJeeCountedGapKeikoMinusSanchez": 384,
+        "expectedJeeAnnulledActas": 4.613459,
+        "expectedJeeCountedActas": 27.386541
+      },
+      "projection": {
+        "keikoVotes": 145346.3,
+        "sanchezVotes": 131126.5,
+        "gapKeikoMinusSanchez": 14219.8,
+        "leader": "Keiko"
+      }
+    },
+    {
+      "department": "JUNÍN",
+      "currentLeader": "Sanchez",
+      "currentKeikoVotes": 317670,
+      "currentSanchezVotes": 386933,
+      "currentGapKeikoMinusSanchez": -69263,
+      "actas": {
+        "total": 3691,
+        "counted": 3599,
+        "pendingOperational": 60,
+        "sentToJee": 32,
+        "unresolvedTotal": 92,
+        "unresolvedPct": 0.024925
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 7470.2,
+        "pendingOnlyKeikoVotes": 2371.2,
+        "pendingOnlySanchezVotes": 5099,
+        "pendingOnlyGapKeikoMinusSanchez": -2727.8,
+        "jeeValidVotesAtRisk": 6037.3,
+        "jeeKeikoVotesAtRisk": 2818.1,
+        "jeeSanchezVotesAtRisk": 3219.2,
+        "expectedJeeCountedValidVotes": 5166.9,
+        "expectedJeeNotCountedValidVotes": 870.4,
+        "expectedJeeCountedKeikoVotes": 2411.8,
+        "expectedJeeCountedSanchezVotes": 2755.1,
+        "expectedJeeCountedGapKeikoMinusSanchez": -343.3,
+        "expectedJeeAnnulledActas": 4.613459,
+        "expectedJeeCountedActas": 27.386541
+      },
+      "projection": {
+        "keikoVotes": 322453,
+        "sanchezVotes": 394787.1,
+        "gapKeikoMinusSanchez": -72334.1,
+        "leader": "Sanchez"
+      }
+    },
+    {
+      "department": "PUNO",
+      "currentLeader": "Sanchez",
+      "currentKeikoVotes": 95674,
+      "currentSanchezVotes": 608930,
+      "currentGapKeikoMinusSanchez": -513256,
+      "actas": {
+        "total": 3397,
+        "counted": 3373,
+        "pendingOperational": 0,
+        "sentToJee": 24,
+        "unresolvedTotal": 24,
+        "unresolvedPct": 0.007065
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 0,
+        "pendingOnlyKeikoVotes": 0,
+        "pendingOnlySanchezVotes": 0,
+        "pendingOnlyGapKeikoMinusSanchez": 0,
+        "jeeValidVotesAtRisk": 5298.8,
+        "jeeKeikoVotesAtRisk": 894.1,
+        "jeeSanchezVotesAtRisk": 4404.7,
+        "expectedJeeCountedValidVotes": 4534.9,
+        "expectedJeeNotCountedValidVotes": 763.9,
+        "expectedJeeCountedKeikoVotes": 765.2,
+        "expectedJeeCountedSanchezVotes": 3769.7,
+        "expectedJeeCountedGapKeikoMinusSanchez": -3004.5,
+        "expectedJeeAnnulledActas": 3.460094,
+        "expectedJeeCountedActas": 20.539906
+      },
+      "projection": {
+        "keikoVotes": 96439.2,
+        "sanchezVotes": 612699.7,
+        "gapKeikoMinusSanchez": -516260.5,
+        "leader": "Sanchez"
+      }
+    },
+    {
+      "department": "PIURA",
+      "currentLeader": "Keiko",
+      "currentKeikoVotes": 581730,
+      "currentSanchezVotes": 439700,
+      "currentGapKeikoMinusSanchez": 142030,
+      "actas": {
+        "total": 5281,
+        "counted": 5213,
+        "pendingOperational": 0,
+        "sentToJee": 68,
+        "unresolvedTotal": 68,
+        "unresolvedPct": 0.012876
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 0,
+        "pendingOnlyKeikoVotes": 0.2,
+        "pendingOnlySanchezVotes": 0,
+        "pendingOnlyGapKeikoMinusSanchez": 0.2,
+        "jeeValidVotesAtRisk": 13826.8,
+        "jeeKeikoVotesAtRisk": 8406.4,
+        "jeeSanchezVotesAtRisk": 5420.4,
+        "expectedJeeCountedValidVotes": 11833.4,
+        "expectedJeeNotCountedValidVotes": 1993.4,
+        "expectedJeeCountedKeikoVotes": 7194.4,
+        "expectedJeeCountedSanchezVotes": 4638.9,
+        "expectedJeeCountedGapKeikoMinusSanchez": 2555.5,
+        "expectedJeeAnnulledActas": 9.803601,
+        "expectedJeeCountedActas": 58.196399
+      },
+      "projection": {
+        "keikoVotes": 588924.6,
+        "sanchezVotes": 444338.9,
+        "gapKeikoMinusSanchez": 144585.7,
+        "leader": "Keiko"
+      }
+    },
+    {
+      "department": "MADRE DE DIOS",
+      "currentLeader": "Sanchez",
+      "currentKeikoVotes": 28625,
+      "currentSanchezVotes": 63171,
+      "currentGapKeikoMinusSanchez": -34546,
+      "actas": {
+        "total": 507,
+        "counted": 481,
+        "pendingOperational": 22,
+        "sentToJee": 4,
+        "unresolvedTotal": 26,
+        "unresolvedPct": 0.051282
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 3571.3,
+        "pendingOnlyKeikoVotes": 682.4,
+        "pendingOnlySanchezVotes": 2888.8,
+        "pendingOnlyGapKeikoMinusSanchez": -2206.4,
+        "jeeValidVotesAtRisk": 815.5,
+        "jeeKeikoVotesAtRisk": 288.6,
+        "jeeSanchezVotesAtRisk": 526.9,
+        "expectedJeeCountedValidVotes": 697.9,
+        "expectedJeeNotCountedValidVotes": 117.6,
+        "expectedJeeCountedKeikoVotes": 247,
+        "expectedJeeCountedSanchezVotes": 450.9,
+        "expectedJeeCountedGapKeikoMinusSanchez": -203.9,
+        "expectedJeeAnnulledActas": 0.576682,
+        "expectedJeeCountedActas": 3.423318
+      },
+      "projection": {
+        "keikoVotes": 29554.4,
+        "sanchezVotes": 66510.7,
+        "gapKeikoMinusSanchez": -36956.3,
+        "leader": "Sanchez"
+      }
+    },
+    {
+      "department": "HUÁNUCO",
+      "currentLeader": "Sanchez",
+      "currentKeikoVotes": 137640,
+      "currentSanchezVotes": 246103,
+      "currentGapKeikoMinusSanchez": -108463,
+      "actas": {
+        "total": 2341,
+        "counted": 2280,
+        "pendingOperational": 41,
+        "sentToJee": 20,
+        "unresolvedTotal": 61,
+        "unresolvedPct": 0.026057
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 5206.1,
+        "pendingOnlyKeikoVotes": 1868.1,
+        "pendingOnlySanchezVotes": 3338.1,
+        "pendingOnlyGapKeikoMinusSanchez": -1470,
+        "jeeValidVotesAtRisk": 3471.1,
+        "jeeKeikoVotesAtRisk": 1262.5,
+        "jeeSanchezVotesAtRisk": 2208.7,
+        "expectedJeeCountedValidVotes": 2970.7,
+        "expectedJeeNotCountedValidVotes": 500.4,
+        "expectedJeeCountedKeikoVotes": 1080.5,
+        "expectedJeeCountedSanchezVotes": 1890.3,
+        "expectedJeeCountedGapKeikoMinusSanchez": -809.8,
+        "expectedJeeAnnulledActas": 2.883412,
+        "expectedJeeCountedActas": 17.116588
+      },
+      "projection": {
+        "keikoVotes": 140588.6,
+        "sanchezVotes": 251331.4,
+        "gapKeikoMinusSanchez": -110742.8,
+        "leader": "Sanchez"
+      }
+    },
+    {
+      "department": "LA LIBERTAD",
+      "currentLeader": "Keiko",
+      "currentKeikoVotes": 599711,
+      "currentSanchezVotes": 442641,
+      "currentGapKeikoMinusSanchez": 157070,
+      "actas": {
+        "total": 5302,
+        "counted": 5264,
+        "pendingOperational": 0,
+        "sentToJee": 38,
+        "unresolvedTotal": 38,
+        "unresolvedPct": 0.007167
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 0,
+        "pendingOnlyKeikoVotes": 0.1,
+        "pendingOnlySanchezVotes": 0.1,
+        "pendingOnlyGapKeikoMinusSanchez": 0,
+        "jeeValidVotesAtRisk": 7620.2,
+        "jeeKeikoVotesAtRisk": 4722,
+        "jeeSanchezVotesAtRisk": 2898.1,
+        "expectedJeeCountedValidVotes": 6521.6,
+        "expectedJeeNotCountedValidVotes": 1098.6,
+        "expectedJeeCountedKeikoVotes": 4041.2,
+        "expectedJeeCountedSanchezVotes": 2480.3,
+        "expectedJeeCountedGapKeikoMinusSanchez": 1560.9,
+        "expectedJeeAnnulledActas": 5.478483,
+        "expectedJeeCountedActas": 32.521517
+      },
+      "projection": {
+        "keikoVotes": 603752.3,
+        "sanchezVotes": 445121.4,
+        "gapKeikoMinusSanchez": 158630.9,
+        "leader": "Keiko"
+      }
+    },
+    {
+      "department": "LORETO",
+      "currentLeader": "Keiko",
+      "currentKeikoVotes": 180141,
+      "currentSanchezVotes": 147912,
+      "currentGapKeikoMinusSanchez": 32229,
+      "actas": {
+        "total": 2697,
+        "counted": 1937,
+        "pendingOperational": 733,
+        "sentToJee": 27,
+        "unresolvedTotal": 760,
+        "unresolvedPct": 0.281795
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 110822.7,
+        "pendingOnlyKeikoVotes": 55868.2,
+        "pendingOnlySanchezVotes": 54954.2,
+        "pendingOnlyGapKeikoMinusSanchez": 914,
+        "jeeValidVotesAtRisk": 4476.4,
+        "jeeKeikoVotesAtRisk": 2537.4,
+        "jeeSanchezVotesAtRisk": 1938.9,
+        "expectedJeeCountedValidVotes": 3831,
+        "expectedJeeNotCountedValidVotes": 645.4,
+        "expectedJeeCountedKeikoVotes": 2171.6,
+        "expectedJeeCountedSanchezVotes": 1659.4,
+        "expectedJeeCountedGapKeikoMinusSanchez": 512.2,
+        "expectedJeeAnnulledActas": 3.892606,
+        "expectedJeeCountedActas": 23.107394
+      },
+      "projection": {
+        "keikoVotes": 238180.8,
+        "sanchezVotes": 204525.6,
+        "gapKeikoMinusSanchez": 33655.2,
+        "leader": "Keiko"
+      }
+    },
+    {
+      "department": "CAJAMARCA",
+      "currentLeader": "Sanchez",
+      "currentKeikoVotes": 244352,
+      "currentSanchezVotes": 490702,
+      "currentGapKeikoMinusSanchez": -246350,
+      "actas": {
+        "total": 4240,
+        "counted": 4210,
+        "pendingOperational": 0,
+        "sentToJee": 30,
+        "unresolvedTotal": 30,
+        "unresolvedPct": 0.007075
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 0,
+        "pendingOnlyKeikoVotes": 0.1,
+        "pendingOnlySanchezVotes": 0.3,
+        "pendingOnlyGapKeikoMinusSanchez": -0.2,
+        "jeeValidVotesAtRisk": 5130,
+        "jeeKeikoVotesAtRisk": 1761.7,
+        "jeeSanchezVotesAtRisk": 3368.2,
+        "expectedJeeCountedValidVotes": 4390.4,
+        "expectedJeeNotCountedValidVotes": 739.6,
+        "expectedJeeCountedKeikoVotes": 1507.7,
+        "expectedJeeCountedSanchezVotes": 2882.6,
+        "expectedJeeCountedGapKeikoMinusSanchez": -1374.9,
+        "expectedJeeAnnulledActas": 4.325118,
+        "expectedJeeCountedActas": 25.674882
+      },
+      "projection": {
+        "keikoVotes": 245859.8,
+        "sanchezVotes": 493584.9,
+        "gapKeikoMinusSanchez": -247725.1,
+        "leader": "Sanchez"
+      }
+    },
+    {
+      "department": "AREQUIPA",
+      "currentLeader": "Sanchez",
+      "currentKeikoVotes": 332307,
+      "currentSanchezVotes": 580500,
+      "currentGapKeikoMinusSanchez": -248193,
+      "actas": {
+        "total": 4215,
+        "counted": 4189,
+        "pendingOperational": 1,
+        "sentToJee": 25,
+        "unresolvedTotal": 26,
+        "unresolvedPct": 0.006168
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 67.3,
+        "pendingOnlyKeikoVotes": 20,
+        "pendingOnlySanchezVotes": 47.3,
+        "pendingOnlyGapKeikoMinusSanchez": -27.3,
+        "jeeValidVotesAtRisk": 5330.7,
+        "jeeKeikoVotesAtRisk": 1897.4,
+        "jeeSanchezVotesAtRisk": 3433.3,
+        "expectedJeeCountedValidVotes": 4562.2,
+        "expectedJeeNotCountedValidVotes": 768.5,
+        "expectedJeeCountedKeikoVotes": 1623.9,
+        "expectedJeeCountedSanchezVotes": 2938.3,
+        "expectedJeeCountedGapKeikoMinusSanchez": -1314.5,
+        "expectedJeeAnnulledActas": 3.604265,
+        "expectedJeeCountedActas": 21.395735
+      },
+      "projection": {
+        "keikoVotes": 333950.9,
+        "sanchezVotes": 583485.6,
+        "gapKeikoMinusSanchez": -249534.8,
+        "leader": "Sanchez"
+      }
+    },
+    {
+      "department": "ÁNCASH",
+      "currentLeader": "Sanchez",
+      "currentKeikoVotes": 267408,
+      "currentSanchezVotes": 348735,
+      "currentGapKeikoMinusSanchez": -81327,
+      "actas": {
+        "total": 3472,
+        "counted": 3425,
+        "pendingOperational": 0,
+        "sentToJee": 47,
+        "unresolvedTotal": 47,
+        "unresolvedPct": 0.013537
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 0,
+        "pendingOnlyKeikoVotes": 0.1,
+        "pendingOnlySanchezVotes": 0,
+        "pendingOnlyGapKeikoMinusSanchez": 0.1,
+        "jeeValidVotesAtRisk": 8435.7,
+        "jeeKeikoVotesAtRisk": 3561.7,
+        "jeeSanchezVotesAtRisk": 4874,
+        "expectedJeeCountedValidVotes": 7219.5,
+        "expectedJeeNotCountedValidVotes": 1216.2,
+        "expectedJeeCountedKeikoVotes": 3048.2,
+        "expectedJeeCountedSanchezVotes": 4171.3,
+        "expectedJeeCountedGapKeikoMinusSanchez": -1123.1,
+        "expectedJeeAnnulledActas": 6.776018,
+        "expectedJeeCountedActas": 40.223982
+      },
+      "projection": {
+        "keikoVotes": 270456.3,
+        "sanchezVotes": 352906.3,
+        "gapKeikoMinusSanchez": -82450,
+        "leader": "Sanchez"
+      }
+    },
+    {
+      "department": "TACNA",
+      "currentLeader": "Sanchez",
+      "currentKeikoVotes": 65388,
+      "currentSanchezVotes": 162820,
+      "currentGapKeikoMinusSanchez": -97432,
+      "actas": {
+        "total": 1041,
+        "counted": 1027,
+        "pendingOperational": 0,
+        "sentToJee": 14,
+        "unresolvedTotal": 14,
+        "unresolvedPct": 0.013449
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 0.1,
+        "pendingOnlyKeikoVotes": 0,
+        "pendingOnlySanchezVotes": 0,
+        "pendingOnlyGapKeikoMinusSanchez": 0,
+        "jeeValidVotesAtRisk": 3181.3,
+        "jeeKeikoVotesAtRisk": 978.2,
+        "jeeSanchezVotesAtRisk": 2203.1,
+        "expectedJeeCountedValidVotes": 2722.7,
+        "expectedJeeNotCountedValidVotes": 458.6,
+        "expectedJeeCountedKeikoVotes": 837.2,
+        "expectedJeeCountedSanchezVotes": 1885.5,
+        "expectedJeeCountedGapKeikoMinusSanchez": -1048.3,
+        "expectedJeeAnnulledActas": 2.018388,
+        "expectedJeeCountedActas": 11.981612
+      },
+      "projection": {
+        "keikoVotes": 66225.2,
+        "sanchezVotes": 164705.5,
+        "gapKeikoMinusSanchez": -98480.3,
+        "leader": "Sanchez"
+      }
+    },
+    {
+      "department": "APURÍMAC",
+      "currentLeader": "Sanchez",
+      "currentKeikoVotes": 43132,
+      "currentSanchezVotes": 185825,
+      "currentGapKeikoMinusSanchez": -142693,
+      "actas": {
+        "total": 1317,
+        "counted": 1307,
+        "pendingOperational": 0,
+        "sentToJee": 10,
+        "unresolvedTotal": 10,
+        "unresolvedPct": 0.007593
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 0,
+        "pendingOnlyKeikoVotes": 0,
+        "pendingOnlySanchezVotes": 0,
+        "pendingOnlyGapKeikoMinusSanchez": 0,
+        "jeeValidVotesAtRisk": 1773.4,
+        "jeeKeikoVotesAtRisk": 314.3,
+        "jeeSanchezVotesAtRisk": 1459.1,
+        "expectedJeeCountedValidVotes": 1517.7,
+        "expectedJeeNotCountedValidVotes": 255.7,
+        "expectedJeeCountedKeikoVotes": 269,
+        "expectedJeeCountedSanchezVotes": 1248.7,
+        "expectedJeeCountedGapKeikoMinusSanchez": -979.8,
+        "expectedJeeAnnulledActas": 1.441706,
+        "expectedJeeCountedActas": 8.558294
+      },
+      "projection": {
+        "keikoVotes": 43401,
+        "sanchezVotes": 187073.7,
+        "gapKeikoMinusSanchez": -143672.8,
+        "leader": "Sanchez"
+      }
+    },
+    {
+      "department": "HUANCAVELICA",
+      "currentLeader": "Sanchez",
+      "currentKeikoVotes": 36707,
+      "currentSanchezVotes": 160659,
+      "currentGapKeikoMinusSanchez": -123952,
+      "actas": {
+        "total": 1273,
+        "counted": 1262,
+        "pendingOperational": 0,
+        "sentToJee": 11,
+        "unresolvedTotal": 11,
+        "unresolvedPct": 0.008641
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 0,
+        "pendingOnlyKeikoVotes": 0,
+        "pendingOnlySanchezVotes": 0.1,
+        "pendingOnlyGapKeikoMinusSanchez": -0.1,
+        "jeeValidVotesAtRisk": 1730.6,
+        "jeeKeikoVotesAtRisk": 297.3,
+        "jeeSanchezVotesAtRisk": 1433.3,
+        "expectedJeeCountedValidVotes": 1481.1,
+        "expectedJeeNotCountedValidVotes": 249.5,
+        "expectedJeeCountedKeikoVotes": 254.4,
+        "expectedJeeCountedSanchezVotes": 1226.7,
+        "expectedJeeCountedGapKeikoMinusSanchez": -972.2,
+        "expectedJeeAnnulledActas": 1.585877,
+        "expectedJeeCountedActas": 9.414123
+      },
+      "projection": {
+        "keikoVotes": 36961.4,
+        "sanchezVotes": 161885.8,
+        "gapKeikoMinusSanchez": -124924.3,
+        "leader": "Sanchez"
+      }
+    },
+    {
+      "department": "LAMBAYEQUE",
+      "currentLeader": "Keiko",
+      "currentKeikoVotes": 435552,
+      "currentSanchezVotes": 304561,
+      "currentGapKeikoMinusSanchez": 130991,
+      "actas": {
+        "total": 3590,
+        "counted": 3575,
+        "pendingOperational": 0,
+        "sentToJee": 15,
+        "unresolvedTotal": 15,
+        "unresolvedPct": 0.004178
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 0,
+        "pendingOnlyKeikoVotes": 0,
+        "pendingOnlySanchezVotes": 0,
+        "pendingOnlyGapKeikoMinusSanchez": 0,
+        "jeeValidVotesAtRisk": 3089.3,
+        "jeeKeikoVotesAtRisk": 1824.6,
+        "jeeSanchezVotesAtRisk": 1264.7,
+        "expectedJeeCountedValidVotes": 2643.9,
+        "expectedJeeNotCountedValidVotes": 445.4,
+        "expectedJeeCountedKeikoVotes": 1561.5,
+        "expectedJeeCountedSanchezVotes": 1082.4,
+        "expectedJeeCountedGapKeikoMinusSanchez": 479.2,
+        "expectedJeeAnnulledActas": 2.162559,
+        "expectedJeeCountedActas": 12.837441
+      },
+      "projection": {
+        "keikoVotes": 437113.5,
+        "sanchezVotes": 305643.4,
+        "gapKeikoMinusSanchez": 131470.2,
+        "leader": "Keiko"
+      }
+    },
+    {
+      "department": "ICA",
+      "currentLeader": "Keiko",
+      "currentKeikoVotes": 279728,
+      "currentSanchezVotes": 259131,
+      "currentGapKeikoMinusSanchez": 20597,
+      "actas": {
+        "total": 2443,
+        "counted": 2421,
+        "pendingOperational": 0,
+        "sentToJee": 22,
+        "unresolvedTotal": 22,
+        "unresolvedPct": 0.009005
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 0,
+        "pendingOnlyKeikoVotes": 0,
+        "pendingOnlySanchezVotes": 0,
+        "pendingOnlyGapKeikoMinusSanchez": 0,
+        "jeeValidVotesAtRisk": 4932.6,
+        "jeeKeikoVotesAtRisk": 2697.9,
+        "jeeSanchezVotesAtRisk": 2234.7,
+        "expectedJeeCountedValidVotes": 4221.5,
+        "expectedJeeNotCountedValidVotes": 711.1,
+        "expectedJeeCountedKeikoVotes": 2308.9,
+        "expectedJeeCountedSanchezVotes": 1912.5,
+        "expectedJeeCountedGapKeikoMinusSanchez": 396.4,
+        "expectedJeeAnnulledActas": 3.171753,
+        "expectedJeeCountedActas": 18.828247
+      },
+      "projection": {
+        "keikoVotes": 282036.9,
+        "sanchezVotes": 261043.5,
+        "gapKeikoMinusSanchez": 20993.4,
+        "leader": "Keiko"
+      }
+    },
+    {
+      "department": "PASCO",
+      "currentLeader": "Sanchez",
+      "currentKeikoVotes": 50699,
+      "currentSanchezVotes": 78518,
+      "currentGapKeikoMinusSanchez": -27819,
+      "actas": {
+        "total": 802,
+        "counted": 788,
+        "pendingOperational": 0,
+        "sentToJee": 14,
+        "unresolvedTotal": 14,
+        "unresolvedPct": 0.017456
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 0,
+        "pendingOnlyKeikoVotes": 0,
+        "pendingOnlySanchezVotes": 0,
+        "pendingOnlyGapKeikoMinusSanchez": 0,
+        "jeeValidVotesAtRisk": 2389.5,
+        "jeeKeikoVotesAtRisk": 982.4,
+        "jeeSanchezVotesAtRisk": 1407.1,
+        "expectedJeeCountedValidVotes": 2045,
+        "expectedJeeNotCountedValidVotes": 344.5,
+        "expectedJeeCountedKeikoVotes": 840.8,
+        "expectedJeeCountedSanchezVotes": 1204.2,
+        "expectedJeeCountedGapKeikoMinusSanchez": -363.5,
+        "expectedJeeAnnulledActas": 2.018388,
+        "expectedJeeCountedActas": 11.981612
+      },
+      "projection": {
+        "keikoVotes": 51539.8,
+        "sanchezVotes": 79722.2,
+        "gapKeikoMinusSanchez": -28182.5,
+        "leader": "Sanchez"
+      }
+    },
+    {
+      "department": "SAN MARTÍN",
+      "currentLeader": "Sanchez",
+      "currentKeikoVotes": 217956,
+      "currentSanchezVotes": 262206,
+      "currentGapKeikoMinusSanchez": -44250,
+      "actas": {
+        "total": 2534,
+        "counted": 2516,
+        "pendingOperational": 5,
+        "sentToJee": 13,
+        "unresolvedTotal": 18,
+        "unresolvedPct": 0.007103
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 660.2,
+        "pendingOnlyKeikoVotes": 285.8,
+        "pendingOnlySanchezVotes": 374.3,
+        "pendingOnlyGapKeikoMinusSanchez": -88.5,
+        "jeeValidVotesAtRisk": 2495.6,
+        "jeeKeikoVotesAtRisk": 1113.8,
+        "jeeSanchezVotesAtRisk": 1381.8,
+        "expectedJeeCountedValidVotes": 2135.8,
+        "expectedJeeNotCountedValidVotes": 359.8,
+        "expectedJeeCountedKeikoVotes": 953.2,
+        "expectedJeeCountedSanchezVotes": 1182.6,
+        "expectedJeeCountedGapKeikoMinusSanchez": -229.4,
+        "expectedJeeAnnulledActas": 1.874218,
+        "expectedJeeCountedActas": 11.125782
+      },
+      "projection": {
+        "keikoVotes": 219195,
+        "sanchezVotes": 263762.9,
+        "gapKeikoMinusSanchez": -44567.9,
+        "leader": "Sanchez"
+      }
+    },
+    {
+      "department": "TUMBES",
+      "currentLeader": "Keiko",
+      "currentKeikoVotes": 81960,
+      "currentSanchezVotes": 45427,
+      "currentGapKeikoMinusSanchez": 36533,
+      "actas": {
+        "total": 632,
+        "counted": 630,
+        "pendingOperational": 0,
+        "sentToJee": 2,
+        "unresolvedTotal": 2,
+        "unresolvedPct": 0.003165
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 0,
+        "pendingOnlyKeikoVotes": 0,
+        "pendingOnlySanchezVotes": 0.1,
+        "pendingOnlyGapKeikoMinusSanchez": -0.1,
+        "jeeValidVotesAtRisk": 399.2,
+        "jeeKeikoVotesAtRisk": 300.1,
+        "jeeSanchezVotesAtRisk": 99.1,
+        "expectedJeeCountedValidVotes": 341.6,
+        "expectedJeeNotCountedValidVotes": 57.552905,
+        "expectedJeeCountedKeikoVotes": 256.8,
+        "expectedJeeCountedSanchezVotes": 84.812693,
+        "expectedJeeCountedGapKeikoMinusSanchez": 172,
+        "expectedJeeAnnulledActas": 0.288341,
+        "expectedJeeCountedActas": 1.711659
+      },
+      "projection": {
+        "keikoVotes": 82216.8,
+        "sanchezVotes": 45511.9,
+        "gapKeikoMinusSanchez": 36704.9,
+        "leader": "Keiko"
+      }
+    },
+    {
+      "department": "MOQUEGUA",
+      "currentLeader": "Sanchez",
+      "currentKeikoVotes": 33353,
+      "currentSanchezVotes": 88235,
+      "currentGapKeikoMinusSanchez": -54882,
+      "actas": {
+        "total": 578,
+        "counted": 576,
+        "pendingOperational": 0,
+        "sentToJee": 2,
+        "unresolvedTotal": 2,
+        "unresolvedPct": 0.00346
+      },
+      "estimates": {
+        "pendingOnlyValidVotes": 0,
+        "pendingOnlyKeikoVotes": 0,
+        "pendingOnlySanchezVotes": 0,
+        "pendingOnlyGapKeikoMinusSanchez": 0,
+        "jeeValidVotesAtRisk": 432.3,
+        "jeeKeikoVotesAtRisk": 132.9,
+        "jeeSanchezVotesAtRisk": 299.5,
+        "expectedJeeCountedValidVotes": 370,
+        "expectedJeeNotCountedValidVotes": 62.324952,
+        "expectedJeeCountedKeikoVotes": 113.7,
+        "expectedJeeCountedSanchezVotes": 256.3,
+        "expectedJeeCountedGapKeikoMinusSanchez": -142.6,
+        "expectedJeeAnnulledActas": 0.288341,
+        "expectedJeeCountedActas": 1.711659
+      },
+      "projection": {
+        "keikoVotes": 33466.7,
+        "sanchezVotes": 88491.3,
+        "gapKeikoMinusSanchez": -55024.6,
+        "leader": "Sanchez"
+      }
+    }
+  ],
+  "sources": [
+    {
+      "id": "onpe-current-2026",
+      "label": "ONPE resultados oficiales 2026",
+      "url": "https://resultadosegundavuelta.onpe.gob.pe/main/resumen",
+      "kind": "official-live",
+      "note": "Fuente de actas contabilizadas, pendientes y enviadas al JEE en el corte auditado."
+    },
+    {
+      "id": "jne-dnef-perfil-2021",
+      "label": "JNE/DNEF Perfil Electoral EG 2021 - segunda vuelta",
+      "url": "https://dne.jne.gob.pe/DnefDocumentos/documentos/investigacion/perfil-electoral/Perfil%20Electoral%2013%20-%20EG2021_An%C3%A1lisis%20de%20resultados_Segunda%20vuelta.pdf",
+      "kind": "official-historical",
+      "note": "Tablas historicas de actas observadas y anuladas para segundas vueltas 2011, 2016 y 2021 con resultados ONPE al 100%."
+    },
+    {
+      "id": "onpe-poe-2021",
+      "label": "ONPE Informe de Evaluacion POE EG/SEP 2021",
+      "url": "https://www.onpe.gob.pe/modTransparencia/downloads/2022/EVA-POE-EG-SEP-2021.pdf",
+      "kind": "official-reconciliation",
+      "note": "Reconciliacion 2021: ONPE reporta 214 actas anuladas y 6 mesas no instaladas al cierre operativo."
+    },
+    {
+      "id": "onpe-actas-observadas-2016",
+      "label": "ONPE: actas observadas remitidas a JEE",
+      "url": "https://www.gob.pe/institucion/onpe/noticias/537566-oficinas-descentralizadas-de-la-onpe-en-todo-el-pais-envian-actas-observadas-a-los-jurados-electorales-especiales",
+      "kind": "official-methodology",
+      "note": "Describe que las actas observadas pasan al JEE por error material, ilegibilidad, votos impugnados, falta de firmas u otras observaciones."
+    },
+    {
+      "id": "onpe-reglamento-actas",
+      "label": "ONPE reglamento para tratamiento de actas electorales",
+      "url": "https://www.gob.pe/institucion/onpe/noticias/538890-onpe-aprueba-reglamento-para-el-tratamiento-de-las-actas-electorales",
+      "kind": "official-methodology",
+      "note": "Define acta observada como acta que no puede ser contabilizada en el centro de computo por errores o informacion incompleta/ilegible."
+    }
+  ],
+  "methodologyNotes": [
+    "El resultado oficial actual se mantiene fijo y se separa de tres componentes aun no cerrados: pendientes Peru, exterior agregado y actas JEE.",
+    "Las actas JEE se tratan como votos legalmente en riesgo: no son votos garantizados ni anulados de antemano.",
+    "El prior historico usa segundas vueltas 2011, 2016 y 2021: anuladas / observadas = probabilidad base de que un acta observada no termine contando.",
+    "Por departamento, los votos dentro de actas JEE se estiman por patron territorial/distrital; no son los votos reales de esas actas observadas.",
+    "El exterior se mantiene solo como agregado total; este dataset publico no expone paises ni ciudades del voto extranjero.",
+    "La simulacion Monte Carlo mide incertidumbre estadistica del modelo; no es proclamacion oficial ni reemplaza resoluciones JEE/JNE."
+  ],
+  "privacyNote": "El voto extranjero se publica solo como total agregado en este modelo; no se incluyen paises ni ciudades."
+}

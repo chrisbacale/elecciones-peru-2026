@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:models": "node scripts/build-2026-models.mjs",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
