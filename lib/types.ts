@@ -168,5 +168,53 @@ export type FlashElectoral2026 = {
     ipsos: Record<string, { a: number; b: number; leader: string }>;
     datum?: Record<string, { a: number; b: number; leader: string }>;
   };
+  exterior?: {
+    officialRosterElectionDay: {
+      eligibleVoters: number;
+      mesas: number;
+      locals: number;
+      cities: number;
+      source: string;
+      sourceUrl: string;
+      sourceQuality: "official" | "primary" | "secondary";
+    };
+    officialRosterPreDeployment?: {
+      eligibleVoters: number;
+      mesas: number;
+      locals: number;
+      cities: number;
+      source: string;
+      sourceUrl: string;
+      sourceQuality: "official" | "primary" | "secondary";
+    };
+    datumExitPoll?: CandidatePair & {
+      instrument: string;
+      authority: boolean;
+      source: string;
+      sourceUrl: string;
+      sourceQuality: "primary" | "secondary";
+    };
+    datumQuickCount: CandidatePair & {
+      instrument: string;
+      authority: boolean;
+      source: string;
+      sourceUrl: string;
+      sourceQuality: "primary" | "secondary";
+    };
+    officialOnpeExteriorResults: {
+      status: "not_verified" | "live" | "snapshot";
+      actasTotal: number | null;
+      actasContabilizadas: number | null;
+      votesA: number | null;
+      votesB: number | null;
+      source: string;
+      note: string;
+    };
+    assumptions: {
+      turnoutPct: number;
+      validVotePct: number;
+      note: string;
+    };
+  };
   movement: Array<{ stage: string; marginPp: number; leader: string }>;
 };

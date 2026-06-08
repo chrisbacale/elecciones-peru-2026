@@ -49,9 +49,9 @@ describe("buildPredictionSnapshot", () => {
   it("incluye simulación determinística con intervalos y frecuencias", () => {
     const snapshot = buildPredictionSnapshot();
 
-    expect(snapshot.projection.modelVersion).toBe("prediction-v2.3");
+    expect(snapshot.projection.modelVersion).toBe("prediction-v2.4");
     expect(snapshot.projection.simulations).toBe(20000);
-    expect(snapshot.projection.countedWeightPct).toBeCloseTo(93.502, 2);
+    expect(snapshot.projection.countedWeightPct).toBeCloseTo(93.617, 2);
     expect(snapshot.projection.weightingNote).toContain("proxy");
     expect(snapshot.projection.probabilityNote).toContain("No debe leerse como certeza legal");
     expect(snapshot.projection.sanchezCi80[0]).toBeLessThan(
@@ -80,30 +80,37 @@ describe("buildPredictionSnapshot", () => {
       "foreign-adjustment",
       "modeled-margin",
     ]);
+    expect(snapshot.exterior.officialResultsStatus).toBe("not_verified");
+    expect(snapshot.exterior.actasTotal).toBeNull();
+    expect(snapshot.exterior.pendingPct).toBeNull();
     expect(snapshot.exterior.validVoteEstimate).toBeGreaterThan(350000);
     expect(snapshot.exterior.adjustedPendingSanchezPct).not.toBeNull();
+    expect(snapshot.criticalDrivers.find((driver) => driver.id === "foreign")?.source).toBe(
+      "Padrón ONPE + sensibilidad Datum CR exterior",
+    );
+    expect(snapshot.criticalDrivers.find((driver) => driver.id === "jee")?.impactPp).toBeNull();
   });
 
   it("mantiene la semilla estable si solo cambia el timestamp", () => {
     const base = buildPredictionSnapshot();
     const onpe: OnpeResumen = {
       status: "live",
-      timestamp: "2026-06-08T10:56:00.301-05:00",
-      advancePct: 93.502,
-      actasProcesadas: 86738,
+      timestamp: "2026-06-08T11:22:00.151-05:00",
+      advancePct: 93.617,
+      actasProcesadas: 86845,
       actasTotal: 92766,
-      actasEnviadasJee: 1513,
-      actasPendientesJee: 4515,
-      actasEnviadasJeePct: 1.631,
-      actasPendientesJeePct: 4.867,
+      actasEnviadasJee: 1514,
+      actasPendientesJee: 4407,
+      actasEnviadasJeePct: 1.632,
+      actasPendientesJeePct: 4.751,
       candidates: {
-        keiko: { votes: 8769857, pct: 50.031 },
-        sanchez: { votes: 8758903, pct: 49.969 },
+        keiko: { votes: 8774506, pct: 50.017 },
+        sanchez: { votes: 8768500, pct: 49.983 },
       },
-      validVotes: 17528760,
+      validVotes: 17543006,
       blankVotes: null,
       nullVotes: null,
-      marginPp: 0.06,
+      marginPp: 0.03,
       marginLeader: "Keiko Fujimori",
       source: "test",
     };

@@ -72,7 +72,7 @@ export type CriticalDriverRow = {
   pendingActas?: number | null;
   estimatedVotes?: number | null;
   sanchezPct: number;
-  impactPp: number;
+  impactPp: number | null;
   note: string;
 };
 
@@ -142,9 +142,10 @@ export type PredictionSnapshot = {
     mesas: number;
     locals: number;
     cities: number;
-    actasTotal: number;
-    actasContabilizadas: number;
-    pendingPct: number;
+    officialResultsStatus: "not_verified" | "live" | "snapshot";
+    actasTotal: number | null;
+    actasContabilizadas: number | null;
+    pendingPct: number | null;
     turnoutAssumptionPct: number;
     validVoteAssumptionPct: number;
     validVoteEstimate: number;
@@ -171,20 +172,16 @@ const HISTORICAL_CUTS: CompletionCut[] = [
 ];
 
 const SIMULATION_COUNT = 20_000;
-const MODEL_VERSION = "prediction-v2.3";
+const MODEL_VERSION = "prediction-v2.4";
 const PRACTICAL_TIE_EPSILON_PP = 0.1;
-const EXTERIOR_ELIGIBLE_VOTERS = 1_194_172;
-const EXTERIOR_MESAS = 2_506;
-const EXTERIOR_LOCALS = 219;
-const EXTERIOR_CITIES = 206;
-const EXTERIOR_ACTAS_TOTAL = 2_543;
-const EXTERIOR_TURNOUT_ASSUMPTION_PCT = 34;
-const EXTERIOR_VALID_VOTE_ASSUMPTION_PCT = 94;
-const EXTERIOR_VALID_VOTE_ESTIMATE = Math.round(
-  EXTERIOR_ELIGIBLE_VOTERS *
-    (EXTERIOR_TURNOUT_ASSUMPTION_PCT / 100) *
-    (EXTERIOR_VALID_VOTE_ASSUMPTION_PCT / 100),
-);
+const FALLBACK_EXTERIOR_ROSTER = {
+  eligibleVoters: 1_194_172,
+  mesas: 2_506,
+  locals: 219,
+  cities: 206,
+};
+const FALLBACK_EXTERIOR_TURNOUT_ASSUMPTION_PCT = 34;
+const FALLBACK_EXTERIOR_VALID_VOTE_ASSUMPTION_PCT = 94;
 
 function round(value: number, decimals = 2): number {
   const factor = 10 ** decimals;
@@ -557,24 +554,67 @@ function estimatePendingValidVotes(onpe: OnpeResumen): number | null {
   return Math.max(0, Math.round(estimatedFinalValid - observedValid));
 }
 
+function getExteriorRoster() {
+  return flashElectoral.exterior?.officialRosterElectionDay ?? FALLBACK_EXTERIOR_ROSTER;
+}
+
+function getExteriorOfficialResults() {
+  return flashElectoral.exterior?.officialOnpeExteriorResults ?? null;
+}
+
+function getExteriorTurnoutAssumptionPct(): number {
+  return (
+    flashElectoral.exterior?.assumptions.turnoutPct ??
+    FALLBACK_EXTERIOR_TURNOUT_ASSUMPTION_PCT
+  );
+}
+
+function getExteriorValidVoteAssumptionPct(): number {
+  return (
+    flashElectoral.exterior?.assumptions.validVotePct ??
+    FALLBACK_EXTERIOR_VALID_VOTE_ASSUMPTION_PCT
+  );
+}
+
+function estimateExteriorValidVotes(): number {
+  const roster = getExteriorRoster();
+  return Math.round(
+    roster.eligibleVoters *
+      (getExteriorTurnoutAssumptionPct() / 100) *
+      (getExteriorValidVoteAssumptionPct() / 100),
+  );
+}
+
 function getExteriorDatumSanchezPct(): number {
-  return flashElectoral.territorial.datum?.extranjero?.b ?? 37.33;
+  return (
+    flashElectoral.exterior?.datumQuickCount.b ??
+    flashElectoral.territorial.datum?.extranjero?.b ??
+    37.33
+  );
 }
 
 function getExteriorDatumKeikoPct(): number {
-  return flashElectoral.territorial.datum?.extranjero?.a ?? 62.67;
+  return (
+    flashElectoral.exterior?.datumQuickCount.a ??
+    flashElectoral.territorial.datum?.extranjero?.a ??
+    62.67
+  );
+}
+
+function getExteriorPreferenceLabel(): string {
+  return flashElectoral.exterior?.datumQuickCount.instrument ?? "Conteo rápido exterior Datum";
 }
 
 function estimateExteriorShareOfPending(onpe: OnpeResumen): number | null {
   const pendingValidVotes = estimatePendingValidVotes(onpe);
   if (pendingValidVotes == null || pendingValidVotes <= 0) return null;
-  return clamp(EXTERIOR_VALID_VOTE_ESTIMATE / pendingValidVotes, 0, 0.6);
+  return clamp(estimateExteriorValidVotes() / pendingValidVotes, 0, 0.6);
 }
 
 function buildExteriorAdjustedPendingSanchezPct(onpe: OnpeResumen): number | null {
   const pendingValidVotes = estimatePendingValidVotes(onpe);
   if (pendingValidVotes == null || pendingValidVotes <= 0) return null;
-  const exteriorVotes = Math.min(EXTERIOR_VALID_VOTE_ESTIMATE, pendingValidVotes);
+  const exteriorVotes = Math.min(estimateExteriorValidVotes(), pendingValidVotes);
   const domesticVotes = Math.max(0, pendingValidVotes - exteriorVotes);
   const totalVotes = domesticVotes + exteriorVotes;
   if (totalVotes <= 0) return null;
@@ -854,6 +894,7 @@ function buildCriticalDrivers(onpe: OnpeResumen): CriticalDriverRow[] {
   const domesticMean = getLateDomesticMean();
   const lateDelta = getLateOnpeDelta(onpe);
   const exteriorShare = estimateExteriorShareOfPending(onpe);
+  const exteriorPreferenceLabel = getExteriorPreferenceLabel();
 
   return [
     {
@@ -872,7 +913,7 @@ function buildCriticalDrivers(onpe: OnpeResumen): CriticalDriverRow[] {
       source: "Ipsos territorial + ONPE pendientes",
       pendingActas: actasNoContabilizadas,
       estimatedVotes:
-        pendingValidVotes != null ? Math.max(0, pendingValidVotes - EXTERIOR_VALID_VOTE_ESTIMATE) : null,
+        pendingValidVotes != null ? Math.max(0, pendingValidVotes - estimateExteriorValidVotes()) : null,
       sanchezPct: round(domesticMean, 2),
       impactPp: estimateMarginShiftFromPending(onpe, domesticMean),
       note: "En esta sensibilidad, si el pendiente doméstico se parece al interior/regiones, favorece a Sánchez. No resta actas exteriores porque falta desglose ONPE exterior verificado.",
@@ -880,12 +921,12 @@ function buildCriticalDrivers(onpe: OnpeResumen): CriticalDriverRow[] {
     {
       id: "foreign",
       label: "Exterior pendiente",
-      source: "ONPE exterior + Datum exterior",
-      pendingActas: EXTERIOR_ACTAS_TOTAL,
-      estimatedVotes: EXTERIOR_VALID_VOTE_ESTIMATE,
+      source: "Padrón ONPE + sensibilidad Datum CR exterior",
+      pendingActas: getExteriorOfficialResults()?.actasTotal ?? null,
+      estimatedVotes: estimateExteriorValidVotes(),
       sanchezPct: exteriorMean,
       impactPp: estimateMarginShiftFromPending(onpe, exteriorMean),
-      note: `Sin desglose ONPE exterior verificado en la app. El conteo rápido Datum ubica el exterior más favorable a Keiko; el modelo lo pondera como ${exteriorShare == null ? "peso no estimable" : `${round(exteriorShare * 100, 1)}%`} del voto válido pendiente estimado, no como padrón completo.`,
+      note: `Sin desglose ONPE exterior verificado en la app. El ${exteriorPreferenceLabel} ubica el exterior más favorable a Keiko; el modelo lo pondera como ${exteriorShare == null ? "peso no estimable" : `${round(exteriorShare * 100, 1)}%`} del voto válido pendiente estimado, no como padrón completo.`,
     },
     {
       id: "jee",
@@ -894,8 +935,8 @@ function buildCriticalDrivers(onpe: OnpeResumen): CriticalDriverRow[] {
       pendingActas: onpe.actasEnviadasJee ?? null,
       estimatedVotes: null,
       sanchezPct: onpe.candidates.sanchez.pct,
-      impactPp: round((onpe.actasEnviadasJeePct ?? 0) / 2, 2),
-      note: "Bloque legal-operativo con capacidad de mover un margen estrecho después del conteo operativo.",
+      impactPp: null,
+      note: "Bloque legal-operativo con capacidad de mover un margen estrecho después del conteo operativo. Sin microdatos de actas JEE, la app no publica impacto puntual.",
     },
   ];
 }
@@ -1063,6 +1104,8 @@ export function buildPredictionSnapshot(onpeInput?: OnpeResumen): PredictionSnap
   const eta = estimateCompletionEta([...HISTORICAL_CUTS, latestCut]);
   const exteriorShare = estimateExteriorShareOfPending(onpe);
   const exteriorAdjustedPending = buildExteriorAdjustedPendingSanchezPct(onpe);
+  const exteriorRoster = getExteriorRoster();
+  const exteriorOfficialResults = getExteriorOfficialResults();
   const actasNoContabilizadas =
     onpe.actasTotal != null && onpe.actasProcesadas != null
       ? onpe.actasTotal - onpe.actasProcesadas
@@ -1100,16 +1143,28 @@ export function buildPredictionSnapshot(onpeInput?: OnpeResumen): PredictionSnap
     scenarios,
     eta,
     exterior: {
-      eligibleVoters: EXTERIOR_ELIGIBLE_VOTERS,
-      mesas: EXTERIOR_MESAS,
-      locals: EXTERIOR_LOCALS,
-      cities: EXTERIOR_CITIES,
-      actasTotal: EXTERIOR_ACTAS_TOTAL,
-      actasContabilizadas: 0,
-      pendingPct: 100,
-      turnoutAssumptionPct: EXTERIOR_TURNOUT_ASSUMPTION_PCT,
-      validVoteAssumptionPct: EXTERIOR_VALID_VOTE_ASSUMPTION_PCT,
-      validVoteEstimate: EXTERIOR_VALID_VOTE_ESTIMATE,
+      eligibleVoters: exteriorRoster.eligibleVoters,
+      mesas: exteriorRoster.mesas,
+      locals: exteriorRoster.locals,
+      cities: exteriorRoster.cities,
+      officialResultsStatus: exteriorOfficialResults?.status ?? "not_verified",
+      actasTotal: exteriorOfficialResults?.actasTotal ?? null,
+      actasContabilizadas: exteriorOfficialResults?.actasContabilizadas ?? null,
+      pendingPct:
+        exteriorOfficialResults?.actasTotal != null &&
+        exteriorOfficialResults.actasTotal > 0 &&
+        exteriorOfficialResults.actasContabilizadas != null
+          ? round(
+              ((exteriorOfficialResults.actasTotal -
+                exteriorOfficialResults.actasContabilizadas) /
+                exteriorOfficialResults.actasTotal) *
+                100,
+              2,
+            )
+          : null,
+      turnoutAssumptionPct: getExteriorTurnoutAssumptionPct(),
+      validVoteAssumptionPct: getExteriorValidVoteAssumptionPct(),
+      validVoteEstimate: estimateExteriorValidVotes(),
       shareOfPendingValidEstimatePct:
         exteriorShare == null ? null : round(exteriorShare * 100, 2),
       adjustedPendingSanchezPct: exteriorAdjustedPending,
@@ -1138,8 +1193,14 @@ export function buildPredictionSnapshot(onpeInput?: OnpeResumen): PredictionSnap
         url: getSource("datum-cr").url ?? "",
       },
       {
-        label: "ONPE/gob.pe — padrón y voto exterior",
-        url: "https://www.gob.pe/institucion/onpe/noticias/1402698-onpe-mas-de-27-millones-de-peruanos-estan-llamados-a-participar-en-la-segunda-eleccion-presidencial",
+        label: "ONPE/Andina — padrón y logística exterior",
+        url:
+          flashElectoral.exterior?.officialRosterElectionDay.sourceUrl ??
+          "https://www.gob.pe/institucion/onpe/noticias/1402698-onpe-mas-de-27-millones-de-peruanos-estan-llamados-a-participar-en-la-segunda-eleccion-presidencial",
+      },
+      {
+        label: "Datum — sensibilidad exterior CR",
+        url: flashElectoral.exterior?.datumQuickCount.sourceUrl ?? "",
       },
     ],
   };

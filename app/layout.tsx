@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
-import { FollowXRibbon } from "@/components/layout/FollowX";
 import { Navbar } from "@/components/layout/Navbar";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
@@ -80,7 +79,6 @@ export default function RootLayout({
           <QueryProvider>
             <Navbar />
             <main className="flex-1 pb-16 sm:pb-20">{children}</main>
-            <FollowXRibbon />
             <footer className="border-t border-card-border py-6 text-center text-xs text-muted">
               <p>
                 Datos de encuestadoras (Ipsos, Datum) no son autoridad electoral.

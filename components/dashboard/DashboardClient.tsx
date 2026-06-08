@@ -64,10 +64,43 @@ export function DashboardClient() {
   const onpeMargin = onpe?.marginPp ?? onpeSnapshot?.data.marginPp ?? 4.312;
   const timestamp = onpe?.timestamp ?? onpeSnapshot?.publishedAt ?? "2026-06-08T00:31:00-05:00";
   const onpeStatus = onpe?.status ?? "snapshot";
+  const liveSources = useMemo(
+    () =>
+      flashElectoral.sources.map((source) => {
+        if (source.id !== "onpe-parcial" || !onpe) return source;
+        const marginLeader = onpe.marginLeader.toLowerCase().includes("sánchez") ? "b" : "a";
+        return {
+          ...source,
+          publishedAt: onpe.timestamp,
+          data: {
+            ...source.data,
+            a: onpe.candidates.keiko.pct,
+            b: onpe.candidates.sanchez.pct,
+            marginPp: onpe.marginPp,
+            marginLeader,
+            votesA: onpe.candidates.keiko.votes ?? source.data.votesA,
+            votesB: onpe.candidates.sanchez.votes ?? source.data.votesB,
+            advancePct: onpe.advancePct,
+            actasProcesadas: onpe.actasProcesadas ?? source.data.actasProcesadas,
+            actasTotal: onpe.actasTotal ?? source.data.actasTotal,
+            actasPendientes: onpe.actasPendientesJee ?? source.data.actasPendientes,
+            actasJee: onpe.actasEnviadasJee ?? source.data.actasJee,
+            actasPendientesPct:
+              onpe.actasPendientesJeePct ?? source.data.actasPendientesPct,
+            actasJeePct: onpe.actasEnviadasJeePct ?? source.data.actasJeePct,
+          },
+          notes:
+            onpe.status === "live"
+              ? "Corte ONPE vivo desde /api/onpe/resumen; sin margen de error estadístico porque es escrutinio oficial parcial."
+              : source.notes,
+        };
+      }),
+    [onpe]
+  );
 
   const readings = useMemo(() => {
     const map = new Map<string, ReturnType<typeof getSourceReading>>();
-    for (const source of flashElectoral.sources) {
+    for (const source of liveSources) {
       if (!SOURCE_IDS.includes(source.id as (typeof SOURCE_IDS)[number])) continue;
       const historicalMax =
         source.type === "encuesta"
@@ -89,11 +122,11 @@ export function DashboardClient() {
       );
     }
     return map;
-  }, [metrics]);
+  }, [liveSources, metrics]);
 
   const comparisonRows = useMemo(
-    () => buildComparisonRows(flashElectoral.sources, readings),
-    [readings]
+    () => buildComparisonRows(liveSources, readings),
+    [liveSources, readings]
   );
 
   const crAverage = useMemo(() => {
@@ -113,7 +146,7 @@ export function DashboardClient() {
   );
 
   const displaySources = SOURCE_IDS.map((id) =>
-    flashElectoral.sources.find((s) => s.id === id)!
+    liveSources.find((s) => s.id === id)!
   );
 
   const ariaMessage = onpe
@@ -237,11 +270,8 @@ export function DashboardClient() {
           </CardHeader>
           <CardContent>
             <MarginGauge
-              marginPp={
-                flashElectoral.sources.find((s) => s.id === "onpe-parcial")!.data
-                  .marginPp ?? 4.312
-              }
-              leader="Keiko"
+              marginPp={onpeMargin}
+              leader={onpe?.marginLeader ?? "Keiko"}
               bands={[
                 {
                   label: "CR histórico",
