@@ -13,7 +13,16 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { Activity, AlertTriangle, Clock3, Globe2, RefreshCw } from "lucide-react";
+import {
+  Activity,
+  AlertTriangle,
+  Clock3,
+  ExternalLink,
+  Globe2,
+  RefreshCw,
+  ShieldCheck,
+  Sigma,
+} from "lucide-react";
 import { ChartTooltip } from "@/components/charts/ChartTooltip";
 import { ONPE_POLL_INTERVAL_MS } from "@/components/providers/query-provider";
 import { Badge } from "@/components/ui/badge";
@@ -26,7 +35,13 @@ import {
 } from "@/components/ui/card";
 import { ResponsiveTable, type ResponsiveColumn } from "@/components/ui/responsive-table";
 import { formatDateTime, formatPct, formatPp, formatVotes } from "@/lib/format";
-import type { PredictionSnapshot, RequirementRow, ScenarioRow } from "@/lib/prediction";
+import type {
+  CriticalDriverRow,
+  ErrorBudgetRow,
+  PredictionSnapshot,
+  RequirementRow,
+  ScenarioRow,
+} from "@/lib/prediction";
 import { cn } from "@/lib/utils";
 
 type PredictionResponse = PredictionSnapshot & {
@@ -51,13 +66,23 @@ function maybePct(value: number | null | undefined, decimals = 2) {
   return value == null ? "No disponible" : formatPct(value, decimals);
 }
 
+function formatProbability(value: number) {
+  return `${value.toFixed(2)}%`;
+}
+
 function toneClass(tone: ScenarioRow["tone"]) {
   if (tone === "keiko") return "text-keiko";
   if (tone === "sanchez") return "text-sanchez";
   return "text-muted";
 }
 
-function StatusPanel({ prediction }: { prediction: PredictionResponse }) {
+function StatusPanel({
+  prediction,
+  isFetching,
+}: {
+  prediction: PredictionResponse;
+  isFetching: boolean;
+}) {
   const tieRequirement = prediction.requirements.find((row) => row.id === "tie");
   const ipsosRequirement = prediction.requirements.find((row) => row.id === "ipsos-cr");
 
@@ -71,6 +96,9 @@ function StatusPanel({ prediction }: { prediction: PredictionResponse }) {
             </Badge>
             <Badge variant={prediction.onpe.status === "live" ? "live" : "snapshot"}>
               ONPE {prediction.onpe.status}
+            </Badge>
+            <Badge variant={isFetching ? "warning" : "snapshot"}>
+              {isFetching ? "Actualizando..." : "Actualizado"}
             </Badge>
             {prediction.meta?.resolvedElectionId && (
               <Badge variant="onpe">idEleccion {prediction.meta.resolvedElectionId}</Badge>
@@ -165,7 +193,7 @@ function KpiGrid({ prediction, isFetching }: { prediction: PredictionResponse; i
   ];
 
   return (
-    <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+    <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
       {items.map((item) => {
         const Icon = item.icon;
         return (
@@ -288,6 +316,290 @@ function OnpeVsQuickCounts({ prediction }: { prediction: PredictionResponse }) {
         </CardContent>
       </Card>
     </section>
+  );
+}
+
+function ProjectionPanel({ prediction }: { prediction: PredictionResponse }) {
+  const projection = prediction.projection;
+  const leaderLabel =
+    projection.leader === "Sanchez"
+      ? "Sánchez"
+      : projection.leader === "Empate"
+        ? "Empate técnico"
+        : "Keiko";
+  const leaderTone =
+    projection.leader === "Sanchez"
+      ? "text-sanchez"
+      : projection.leader === "Keiko"
+        ? "text-keiko"
+        : "text-muted";
+
+  return (
+    <section className="grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
+      <Card className="border-onpe/30">
+        <CardHeader>
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <CardTitle>Proyección probabilística</CardTitle>
+              <CardDescription>
+                {projection.modelName} · {projection.modelVersion} ·{" "}
+                {formatVotes(projection.simulations)} simulaciones
+              </CardDescription>
+            </div>
+            <Sigma className="h-5 w-5 text-onpe" aria-hidden="true" />
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-lg border border-card-border bg-accent/35 p-4">
+              <p className="text-xs text-muted">Mediana del modelo</p>
+              <p className={cn("mt-1 font-mono text-2xl font-semibold tabular-nums", leaderTone)}>
+                {leaderLabel}
+              </p>
+              <p className="mt-2 text-xs text-muted">
+                Keiko {formatPct(projection.keikoMedianPct, 3)} / Sánchez{" "}
+                {formatPct(projection.sanchezMedianPct, 3)}
+              </p>
+            </div>
+            <div className="rounded-lg border border-card-border bg-accent/35 p-4">
+              <p className="text-xs text-muted">Riesgo de reversión</p>
+              <p className="mt-1 font-mono text-2xl font-semibold text-alerta tabular-nums">
+                {formatProbability(projection.currentLeaderReversalRisk)}
+              </p>
+              <p className="mt-2 text-xs text-muted">
+                Prob. Sánchez {formatProbability(projection.probabilitySanchezLead)} ·
+                Keiko {formatProbability(projection.probabilityKeikoLead)} ·
+                empate práctico {formatProbability(projection.probabilityPracticalTie)}
+              </p>
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-card-border bg-card p-4 text-sm leading-relaxed">
+            <p className="font-medium text-foreground">Intervalos de incertidumbre</p>
+            <p className="mt-2 text-muted">
+              Sánchez IC 80%:{" "}
+              <span className="font-mono text-foreground">
+                {formatPct(projection.sanchezCi80[0], 3)} a{" "}
+                {formatPct(projection.sanchezCi80[1], 3)}
+              </span>
+            </p>
+            <p className="text-muted">
+              Sánchez IC 95%:{" "}
+              <span className="font-mono text-foreground">
+                {formatPct(projection.sanchezCi95[0], 3)} a{" "}
+                {formatPct(projection.sanchezCi95[1], 3)}
+              </span>
+            </p>
+            <p className="mt-2 text-muted">{projection.noCallReason}</p>
+          </div>
+
+          <p className="text-xs leading-relaxed text-muted">
+            {projection.methodNote} Seed reproducible:{" "}
+            <span className="font-mono text-foreground">{projection.seed}</span>.
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Distribución del margen simulado</CardTitle>
+          <CardDescription>
+            Margen firmado: valores positivos favorecen a Keiko; negativos favorecen a Sánchez.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="h-80 w-full">
+            <ResponsiveContainer
+              width="100%"
+              height="100%"
+              minHeight={320}
+              initialDimension={{ width: 780, height: 320 }}
+            >
+              <BarChart
+                data={projection.histogram}
+                margin={{ top: 8, right: 8, left: 0, bottom: 56 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
+                <XAxis
+                  dataKey="bucket"
+                  stroke="var(--chart-axis)"
+                  fontSize={11}
+                  angle={-22}
+                  textAnchor="end"
+                  height={72}
+                />
+                <YAxis
+                  stroke="var(--chart-axis)"
+                  fontSize={12}
+                  tickFormatter={(value) => `${value}%`}
+                />
+                <Tooltip
+                  cursor={{ fill: "var(--accent)" }}
+                  content={
+                    <ChartTooltip
+                      nameFormatter={() => "Simulaciones"}
+                      valueFormatter={(value) =>
+                        typeof value === "number" ? formatPct(value, 2) : "—"
+                      }
+                    />
+                  }
+                />
+                <Bar dataKey="pct" radius={[6, 6, 0, 0]}>
+                  {projection.histogram.map((entry) => (
+                    <Cell
+                      key={entry.bucket}
+                      fill={
+                        entry.bucket.startsWith("Keiko")
+                          ? "var(--keiko)"
+                          : "var(--sanchez)"
+                      }
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
+    </section>
+  );
+}
+
+function ErrorBudgetPanel({ rows }: { rows: ErrorBudgetRow[] }) {
+  const columns: ResponsiveColumn<ErrorBudgetRow>[] = [
+    {
+      key: "component",
+      header: "Componente",
+      render: (row) => (
+        <div>
+          <p className="font-medium text-foreground">{row.label}</p>
+          <p className="text-xs text-muted">{row.note}</p>
+        </div>
+      ),
+    },
+    {
+      key: "pp80",
+      header: "Aporte 80%",
+      className: "text-right",
+      render: (row) => (
+        <span className="font-mono tabular-nums text-foreground">
+          ±{row.pp80.toFixed(2)} pp
+        </span>
+      ),
+    },
+    {
+      key: "pp95",
+      header: "Aporte 95%",
+      className: "text-right",
+      render: (row) => (
+        <span className="font-mono tabular-nums text-alerta">
+          ±{row.pp95.toFixed(2)} pp
+        </span>
+      ),
+    },
+  ];
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <CardTitle>Presupuesto de error real</CardTitle>
+            <CardDescription>
+              Separado por fuente de incertidumbre; no es un único MOE simple.
+            </CardDescription>
+          </div>
+          <ShieldCheck className="h-5 w-5 text-alerta" aria-hidden="true" />
+        </div>
+      </CardHeader>
+      <CardContent>
+        <ResponsiveTable
+          data={rows}
+          columns={columns}
+          keyExtractor={(row) => row.id}
+          caption="Presupuesto de error de la predicción"
+        />
+      </CardContent>
+    </Card>
+  );
+}
+
+function CriticalDriversPanel({ rows }: { rows: CriticalDriverRow[] }) {
+  const columns: ResponsiveColumn<CriticalDriverRow>[] = [
+    {
+      key: "driver",
+      header: "Driver",
+      render: (row) => (
+        <div>
+          <p className="font-medium text-foreground">{row.label}</p>
+          <p className="text-xs text-muted">{row.source}</p>
+        </div>
+      ),
+    },
+    {
+      key: "actas",
+      header: "Actas/votos",
+      className: "text-right",
+      render: (row) => (
+        <span className="font-mono text-xs tabular-nums text-muted">
+          {row.pendingActas == null ? "Actas n/d" : `${formatVotes(row.pendingActas)} actas`}
+          <br />
+          {row.estimatedVotes == null ? "Votos n/d" : `${formatVotes(row.estimatedVotes)} votos est.`}
+        </span>
+      ),
+    },
+    {
+      key: "lean",
+      header: "Perfil Sánchez",
+      className: "text-right",
+      render: (row) => (
+        <span className="font-mono tabular-nums text-sanchez">
+          {formatPct(row.sanchezPct, 2)}
+        </span>
+      ),
+    },
+    {
+      key: "impact",
+      header: "Impacto",
+      className: "text-right",
+      render: (row) => (
+        <span
+          className={cn(
+            "font-mono tabular-nums",
+            row.impactPp >= 0 ? "text-sanchez" : "text-keiko",
+          )}
+        >
+          {formatPp(row.impactPp, 2)}
+        </span>
+      ),
+    },
+  ];
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Drivers críticos del cierre</CardTitle>
+        <CardDescription>
+          Qué bloques pueden mover el resultado si el margen sigue estrecho.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ResponsiveTable
+          data={rows}
+          columns={columns}
+          keyExtractor={(row) => row.id}
+          caption="Drivers críticos de cierre electoral"
+        />
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          {rows.map((row) => (
+            <div key={row.id} className="rounded-lg border border-card-border bg-card p-3">
+              <p className="text-sm font-medium text-foreground">{row.label}</p>
+              <p className="mt-1 text-xs leading-relaxed text-muted">{row.note}</p>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -438,14 +750,15 @@ function ScenarioChart({ scenarios }: { scenarios: ScenarioRow[] }) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-80 w-full">
-          <ResponsiveContainer
-            width="100%"
-            height="100%"
-            minHeight={320}
-            initialDimension={{ width: 920, height: 320 }}
-          >
-            <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 64 }}>
+        <div className="overflow-x-auto pb-2">
+          <div className="h-80 min-w-[760px]">
+            <ResponsiveContainer
+              width="100%"
+              height="100%"
+              minHeight={320}
+              initialDimension={{ width: 920, height: 320 }}
+            >
+              <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 64 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
               <ReferenceLine y={50} stroke="var(--chart-axis)" strokeDasharray="4 4" />
               <XAxis
@@ -475,8 +788,9 @@ function ScenarioChart({ scenarios }: { scenarios: ScenarioRow[] }) {
               />
               <Bar dataKey="keiko" name="keiko" fill="var(--keiko)" radius={[4, 4, 0, 0]} />
               <Bar dataKey="sanchez" name="sanchez" fill="var(--sanchez)" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -622,7 +936,7 @@ function SourceLinks({ prediction }: { prediction: PredictionResponse }) {
               key={source.url}
               href={source.url}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="rounded-lg border border-card-border bg-accent/35 px-4 py-3 text-sm text-foreground transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {source.label}
@@ -631,6 +945,37 @@ function SourceLinks({ prediction }: { prediction: PredictionResponse }) {
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+function FollowCta() {
+  return (
+    <section className="rounded-2xl border border-onpe/30 bg-card p-6 sm:p-8">
+      <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+        <div className="max-w-3xl">
+          <Badge variant="onpe" className="uppercase tracking-widest">
+            CIM
+          </Badge>
+          <h2 className="mt-3 text-xl font-semibold tracking-tight text-foreground">
+            Para mejores decisiones, sigue las actualizaciones del análisis.
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-muted">
+            Publicaré lecturas, cambios de modelo y señales relevantes conforme
+            avance ONPE/JNE. La página evita proclamar ganador antes de que la
+            evidencia estadística sea suficientemente robusta.
+          </p>
+        </div>
+        <a
+          href="https://x.com/CMMB1204"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg border border-card-border bg-accent px-4 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-onpe-muted hover:text-onpe focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          Seguir @CMMB1204
+          <ExternalLink className="h-4 w-4" aria-hidden="true" />
+        </a>
+      </div>
+    </section>
   );
 }
 
@@ -647,7 +992,7 @@ export function PredictionClient({ initialPrediction }: { initialPrediction: Pre
 
   return (
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6 lg:px-8">
-      <StatusPanel prediction={data} />
+      <StatusPanel prediction={data} isFetching={isFetching} />
 
       {isError && (
         <Card className="border-alerta/35 bg-alerta-muted">
@@ -658,6 +1003,7 @@ export function PredictionClient({ initialPrediction }: { initialPrediction: Pre
       )}
 
       <KpiGrid prediction={data} isFetching={isFetching} />
+      <ProjectionPanel prediction={data} />
       <OnpeVsQuickCounts prediction={data} />
 
       <section className="grid gap-4 xl:grid-cols-2">
@@ -667,8 +1013,13 @@ export function PredictionClient({ initialPrediction }: { initialPrediction: Pre
 
       <ScenarioChart scenarios={data.scenarios} />
       <ScenarioTable rows={scenariosForTable} />
+      <section className="grid gap-4 xl:grid-cols-2">
+        <ErrorBudgetPanel rows={data.errorBudget} />
+        <CriticalDriversPanel rows={data.criticalDrivers} />
+      </section>
       <ExteriorAndCaveats prediction={data} />
       <SourceLinks prediction={data} />
+      <FollowCta />
     </div>
   );
 }

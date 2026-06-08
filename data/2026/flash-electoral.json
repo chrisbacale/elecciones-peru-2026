@@ -12,26 +12,26 @@
       "type": "oficial",
       "instrument": "Escrutinio parcial",
       "url": "https://resultadosegundavuelta.onpe.gob.pe/main/resumen",
-      "publishedAt": "2026-06-08T02:06:01-05:00",
+      "publishedAt": "2026-06-08T03:26:01-05:00",
       "data": {
-        "a": 51.081,
-        "b": 48.919,
+        "a": 50.608,
+        "b": 49.392,
         "labelA": "Keiko",
         "labelB": "Sánchez",
-        "marginPp": 2.162,
+        "marginPp": 1.216,
         "marginLeader": "a",
-        "votesA": 8353346,
-        "votesB": 7999800,
-        "advancePct": 85.484,
-        "actasProcesadas": 79300,
+        "votesA": 8580566,
+        "votesB": 8374457,
+        "advancePct": 89.344,
+        "actasProcesadas": 82881,
         "actasTotal": 92766,
-        "actasPendientes": 12016,
-        "actasJee": 1450,
-        "actasPendientesPct": 12.953,
-        "actasJeePct": 1.563,
+        "actasPendientes": 8408,
+        "actasJee": 1477,
+        "actasPendientesPct": 9.064,
+        "actasJeePct": 1.592,
         "actasNote": "Corte primario ONPE verificado por endpoints XHR: resumen-general/totales y participantes con idEleccion=10."
       },
-      "notes": "Corte ONPE al 85.484% verificado el 08/06/2026 02:06 PET: Keiko 51.081% y Sánchez 48.919%. No es muestra aleatoria; sin margen de error estadístico. El bloque no contabilizado incluye actas pendientes y enviadas al JEE."
+      "notes": "Corte ONPE al 89.344% verificado el 08/06/2026 03:26 PET: Keiko 50.608% y Sánchez 49.392%. No es muestra aleatoria; sin margen de error estadístico. El bloque no contabilizado incluye actas pendientes y enviadas al JEE."
     },
     {
       "id": "onpe-parcial-prev",
@@ -245,6 +245,7 @@
     { "stage": "CR Datum", "marginPp": 0.28, "leader": "Sánchez" },
     { "stage": "ONPE 80.988%", "marginPp": 3.344, "leader": "Keiko" },
     { "stage": "ONPE 81.865%", "marginPp": 3.142, "leader": "Keiko" },
-    { "stage": "ONPE 85.484%", "marginPp": 2.162, "leader": "Keiko" }
+    { "stage": "ONPE 85.484%", "marginPp": 2.162, "leader": "Keiko" },
+    { "stage": "ONPE 89.344%", "marginPp": 1.216, "leader": "Keiko" }
   ]
 }

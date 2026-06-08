@@ -44,4 +44,29 @@ describe("buildPredictionSnapshot", () => {
     expect(snapshot.scenarios.some((row) => row.leader === "Keiko")).toBe(true);
     expect(snapshot.scenarios.some((row) => row.leader === "Sanchez")).toBe(true);
   });
+
+  it("incluye simulación determinística con intervalos y probabilidades", () => {
+    const snapshot = buildPredictionSnapshot();
+
+    expect(snapshot.projection.simulations).toBe(20000);
+    expect(snapshot.projection.sanchezCi80[0]).toBeLessThan(
+      snapshot.projection.sanchezCi80[1],
+    );
+    expect(snapshot.projection.signedMarginCi95Pp[0]).toBeLessThan(
+      snapshot.projection.signedMarginCi95Pp[1],
+    );
+    expect(
+      snapshot.projection.probabilityKeikoLead +
+        snapshot.projection.probabilitySanchezLead +
+        snapshot.projection.probabilityPracticalTie,
+    ).toBeCloseTo(100, 0);
+    expect(snapshot.projection.histogram).toHaveLength(8);
+  });
+
+  it("publica drivers críticos y presupuesto de error", () => {
+    const snapshot = buildPredictionSnapshot();
+
+    expect(snapshot.errorBudget.length).toBeGreaterThanOrEqual(5);
+    expect(snapshot.criticalDrivers.map((driver) => driver.id)).toContain("foreign");
+  });
 });
