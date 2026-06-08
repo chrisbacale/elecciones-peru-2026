@@ -167,6 +167,81 @@ export type OnpeTerritorial = {
   message?: string;
 };
 
+export type CityForecastScenario = {
+  final_keiko: number;
+  final_roberto: number;
+  margin_keiko_minus_roberto: number;
+  keiko_pct: number;
+  roberto_pct: number;
+};
+
+export type CityForecastAggregate = {
+  scope_label: string;
+  pending_actas: number;
+  jee_actas: number;
+  foreign_actas: number;
+  estimated_valid_votes: number;
+  keiko_votes: number;
+  roberto_votes: number;
+  margin_keiko_minus_roberto: number;
+};
+
+export type CityForecastPlaceRow = CityForecastAggregate & {
+  department_or_continent: string;
+  province_or_country?: string;
+};
+
+export type CityForecastDistrictRow = CityForecastPlaceRow & {
+  scope: number;
+  district_or_city: string;
+  dep_ubigeo: string;
+  prov_ubigeo: string;
+  dist_ubigeo: string;
+  total_actas: number;
+  contabilizadas: number;
+  unresolved_actas: number;
+  valid_counted: number;
+  valid_per_acta_used: number;
+  current_keiko_votes_in_city: number;
+  current_roberto_votes_in_city: number;
+  current_candidate_sum_in_city: number;
+  observed_roberto_share: number | null;
+  city_roberto_share_used: number;
+  city_keiko_share_used: number;
+  share_source: string;
+  city_weighted_keiko_votes: number;
+  city_weighted_roberto_votes: number;
+  city_weighted_margin_keiko_minus_roberto: number;
+};
+
+export type OnpeCityForecast = {
+  status: OnpeStatus;
+  source: string;
+  cutPeru: string;
+  cutUtc: string;
+  unresolvedLeafCount: number;
+  officialCurrent: {
+    keiko: number;
+    roberto: number;
+    margin_keiko_minus_roberto: number;
+  };
+  scenarios: {
+    city_weighted_current: CityForecastScenario;
+    foreign_keiko_plus30_net_city_weighted_domestic: CityForecastScenario;
+    foreign_50_50_city_weighted_domestic: CityForecastScenario;
+  };
+  aggregates: {
+    peru: CityForecastAggregate;
+    exteriorTotalOnly: CityForecastAggregate;
+  };
+  topDepartmentsPeru: CityForecastPlaceRow[];
+  topProvincesPeru: CityForecastPlaceRow[];
+  topDistrictsPeru: CityForecastDistrictRow[];
+  method: string[];
+  privacyNote: string;
+  message?: string;
+};
+
 export type FlashElectoral2026 = {
   candidates: { a: string; b: string; partyA: string; partyB: string };
   sources: Array<{

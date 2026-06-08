@@ -4,6 +4,7 @@ import { useOnpeTerritorial } from "@/hooks/useOnpeTerritorial";
 import { formatRelativeTime } from "@/lib/format";
 import type { FlashElectoral2026 } from "@/lib/types";
 import { DepartmentTable } from "./DepartmentTable";
+import { CityForecastPanel } from "./CityForecastPanel";
 import { LimaFirstNote } from "./LimaFirstNote";
 import { PeruMap } from "./PeruMap";
 import { RegionBreakdown } from "./RegionBreakdown";
@@ -25,6 +26,7 @@ export function TerritorialView({ ipsos }: TerritorialViewProps) {
       </div>
 
       <DepartmentTable territorial={data} isLoading={isLoading} />
+      <CityForecastPanel />
 
       {(data?.timestamp || isFetching) && (
         <p className="text-center text-xs text-muted">
