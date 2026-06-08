@@ -385,6 +385,34 @@ function getActasTimestamp(actas: ActasData | null | undefined): string {
     : new Date().toISOString();
 }
 
+function estimatePendingVotesByActa(
+  validVotes: number,
+  actasContabilizadas: number | null,
+  actasPendientes: number | null,
+): {
+  validVotesPerActa: number | null;
+  estimatedPendingValidVotes: number | null;
+} {
+  if (
+    actasContabilizadas == null ||
+    actasPendientes == null ||
+    actasContabilizadas <= 0 ||
+    actasPendientes <= 0 ||
+    validVotes <= 0
+  ) {
+    return {
+      validVotesPerActa: null,
+      estimatedPendingValidVotes: actasPendientes === 0 ? 0 : null,
+    };
+  }
+
+  const validVotesPerActa = validVotes / actasContabilizadas;
+  return {
+    validVotesPerActa: Math.round(validVotesPerActa * 10) / 10,
+    estimatedPendingValidVotes: Math.round(validVotesPerActa * actasPendientes),
+  };
+}
+
 export async function fetchOnpeResumen(
   snapshot: Partial<OnpeResumen> = getKnownOnpeSnapshot()
 ): Promise<OnpeResumen> {
@@ -556,6 +584,16 @@ export async function fetchOnpeTerritorial(): Promise<OnpeTerritorial> {
           keiko.pct || (total > 0 ? (keiko.votes / total) * 100 : 0);
         const sanchezPct =
           sanchez.pct || (total > 0 ? (sanchez.votes / total) * 100 : 0);
+        const { validVotesPerActa, estimatedPendingValidVotes } =
+          estimatePendingVotesByActa(total, actasContabilizadas, actasPendientes);
+        const projectedPendingKeikoVotes =
+          estimatedPendingValidVotes == null
+            ? null
+            : Math.round(estimatedPendingValidVotes * (keikoPct / 100));
+        const projectedPendingSanchezVotes =
+          estimatedPendingValidVotes == null
+            ? null
+            : Math.round(estimatedPendingValidVotes * (sanchezPct / 100));
 
         const existing = departments.find((d) => d.code === code);
         if (!existing) {
@@ -565,6 +603,9 @@ export async function fetchOnpeTerritorial(): Promise<OnpeTerritorial> {
             keikoPct: Math.round(keikoPct * 10) / 10,
             sanchezPct: Math.round(sanchezPct * 10) / 10,
             leader: keikoPct >= sanchezPct ? "Keiko" : "Sánchez",
+            votesKeiko: keiko.votes,
+            votesSanchez: sanchez.votes,
+            validVotes: total,
             advancePct: getActasAdvance(actasData),
             actasContabilizadas,
             actasTotal,
@@ -573,6 +614,17 @@ export async function fetchOnpeTerritorial(): Promise<OnpeTerritorial> {
               actasTotal != null && actasTotal > 0 && actasPendientes != null
                 ? Math.round((actasPendientes / actasTotal) * 1000) / 10
                 : null,
+            validVotesPerActa,
+            estimatedPendingValidVotes,
+            projectedPendingKeikoVotes,
+            projectedPendingSanchezVotes,
+            projectedPendingNetKeikoVotes:
+              projectedPendingKeikoVotes == null ||
+              projectedPendingSanchezVotes == null
+                ? null
+                : projectedPendingKeikoVotes - projectedPendingSanchezVotes,
+            projectionMethod:
+              "votos válidos por acta contabilizada * actas pendientes * porcentaje local observado",
           });
         }
         break;

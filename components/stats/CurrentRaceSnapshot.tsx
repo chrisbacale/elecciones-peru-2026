@@ -29,6 +29,9 @@ function getLeader(source: Source) {
 
 function getMoe(source: Source) {
   if (source.type === "oficial") return "Sin MOE muestral";
+  if (source.id === "ipsos-cr" && source.data.marginOfError !== undefined) {
+    return `±${source.data.marginOfError.toFixed(1)} pp nac.`;
+  }
   if (source.data.marginOfError !== undefined) return `±${source.data.marginOfError.toFixed(1)} pp`;
   return source.data.marginOfErrorNote ? "No publicado" : "—";
 }
@@ -75,9 +78,10 @@ export function CurrentRaceSnapshot() {
           <div>
             <CardTitle>Estado actual 2026: encuestas, conteos y ONPE</CardTitle>
             <CardDescription className="mt-2 max-w-3xl">
-              Comparación estadística entre boca de urna, conteo rápido y avance
+              Snapshot auditado entre boca de urna, conteo rápido y avance
               oficial. Las barras positivas son ventaja de Keiko; las negativas,
-              ventaja de Sánchez. ONPE parcial no tiene margen de error muestral.
+              ventaja de Sánchez. ONPE parcial no tiene margen de error muestral
+              y se actualiza en vivo solo en las rutas ONPE/predicción.
             </CardDescription>
           </div>
           <p className="rounded-lg border border-alerta/25 bg-alerta-muted px-3 py-2 text-xs font-medium text-foreground">

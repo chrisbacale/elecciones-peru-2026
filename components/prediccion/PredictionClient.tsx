@@ -67,6 +67,84 @@ function formatVotesRange(value: [number, number]) {
   return `${formatVotes(value[0])} a ${formatVotes(value[1])}`;
 }
 
+function formatSignedVotes(value: number | null | undefined) {
+  if (value == null) return "No disponible";
+  const sign = value > 0 ? "+" : value < 0 ? "-" : "";
+  return `${sign}${formatVotes(Math.abs(value))}`;
+}
+
+type TerritorialRow = OnpeTerritorial["departments"][number];
+
+type InteriorProjection = {
+  rowsUsed: number;
+  currentKeikoVotes: number;
+  currentSanchezVotes: number;
+  countedActas: number;
+  totalActas: number;
+  pendingActas: number;
+  estimatedPendingValidVotes: number;
+  projectedPendingKeikoVotes: number;
+  projectedPendingSanchezVotes: number;
+  projectedKeikoVotes: number;
+  projectedSanchezVotes: number;
+  projectedNetKeikoVotes: number;
+};
+
+function sumKnown(rows: TerritorialRow[], selector: (row: TerritorialRow) => number | null | undefined) {
+  return rows.reduce((sum, row) => sum + (selector(row) ?? 0), 0);
+}
+
+function buildInteriorProjection(rows: TerritorialRow[] | undefined): InteriorProjection | null {
+  const usable = (rows ?? []).filter(
+    (row) =>
+      row.votesKeiko != null &&
+      row.votesSanchez != null &&
+      row.actasContabilizadas != null &&
+      row.actasPendientes != null,
+  );
+  if (usable.length === 0) return null;
+
+  const currentKeikoVotes = sumKnown(usable, (row) => row.votesKeiko);
+  const currentSanchezVotes = sumKnown(usable, (row) => row.votesSanchez);
+  const estimatedPendingValidVotes = sumKnown(
+    usable,
+    (row) => row.estimatedPendingValidVotes,
+  );
+  const projectedPendingKeikoVotes = sumKnown(
+    usable,
+    (row) => row.projectedPendingKeikoVotes,
+  );
+  const projectedPendingSanchezVotes = sumKnown(
+    usable,
+    (row) => row.projectedPendingSanchezVotes,
+  );
+
+  return {
+    rowsUsed: usable.length,
+    currentKeikoVotes,
+    currentSanchezVotes,
+    countedActas: sumKnown(usable, (row) => row.actasContabilizadas),
+    totalActas: sumKnown(usable, (row) => row.actasTotal),
+    pendingActas: sumKnown(usable, (row) => row.actasPendientes),
+    estimatedPendingValidVotes,
+    projectedPendingKeikoVotes,
+    projectedPendingSanchezVotes,
+    projectedKeikoVotes: currentKeikoVotes + projectedPendingKeikoVotes,
+    projectedSanchezVotes: currentSanchezVotes + projectedPendingSanchezVotes,
+    projectedNetKeikoVotes:
+      currentKeikoVotes +
+      projectedPendingKeikoVotes -
+      currentSanchezVotes -
+      projectedPendingSanchezVotes,
+  };
+}
+
+function formatLeaderGapFromVotes(keikoVotes: number, sanchezVotes: number) {
+  const gap = keikoVotes - sanchezVotes;
+  const leader = gap > 0 ? "Keiko" : gap < 0 ? "Sánchez" : "Empate";
+  return leader === "Empate" ? "Empate" : `${leader} +${formatVotes(Math.abs(gap))}`;
+}
+
 function formatActasProgress(
   counted: number | null | undefined,
   total: number | null | undefined,
@@ -356,7 +434,7 @@ function PendingTerritoryPanel({
           <div>
             <CardTitle>Actas pendientes por territorio</CardTitle>
             <CardDescription>
-              ONPE vivo por departamento, exterior agregado y actas en JEE.
+              ONPE vivo por departamento, exterior agregado y actas observadas/JEE.
             </CardDescription>
           </div>
           <Badge variant={territorial?.status === "live" ? "live" : "snapshot"}>
@@ -384,14 +462,15 @@ function PendingTerritoryPanel({
           </div>
           <div className="rounded-lg border border-card-border bg-accent/35 p-4">
             <p className="text-xs font-medium uppercase tracking-wider text-muted">
-              Enviadas / pendientes JEE
+              Actas en JEE / observadas
             </p>
-            <p className="mt-2 font-mono text-2xl font-semibold text-onpe tabular-nums">
+            <p className="mt-2 font-mono text-2xl font-semibold text-alerta tabular-nums">
               {maybeVotes(prediction.onpe.actasEnviadasJee)}
             </p>
             <p className="mt-2 text-xs text-muted">
-              Pendientes: {maybeVotes(prediction.onpe.actasPendientesJee)} (
-              {maybePct(prediction.onpe.actasPendientesJeePct, 3)})
+              No son pendientes ordinarias; quedan fuera del cómputo hasta resolución.
+              Pendientes operativas: {maybeVotes(prediction.onpe.actasPendientesJee)} (
+              {maybePct(prediction.onpe.actasPendientesJeePct, 3)}).
             </p>
           </div>
           <div className="rounded-lg border border-card-border bg-accent/35 p-4">
@@ -433,6 +512,231 @@ function PendingTerritoryPanel({
           Granularidad auditada: departamento para Perú y agregado único para exterior.
           Cuando ONPE exponga distrito/ciudad con el mismo contrato verificable, esta
           sección puede bajar a ese nivel sin cambiar el modelo.
+        </p>
+      </CardContent>
+    </Card>
+  );
+}
+
+function gapToneClass(gap: number | null | undefined) {
+  if (gap == null || gap === 0) return "text-muted";
+  return gap > 0 ? "text-keiko" : "text-sanchez";
+}
+
+function HowTo100Panel({
+  prediction,
+  territorial,
+  isLoading,
+}: {
+  prediction: PredictionResponse;
+  territorial?: OnpeTerritorial;
+  isLoading: boolean;
+}) {
+  const interiorProjection = useMemo(
+    () => buildInteriorProjection(territorial?.departments),
+    [territorial?.departments],
+  );
+  const topPending = useMemo(() => {
+    return [...(territorial?.departments ?? [])]
+      .filter((row) => row.actasPendientes != null && row.actasPendientes > 0)
+      .sort((a, b) => (b.actasPendientes ?? 0) - (a.actasPendientes ?? 0))
+      .slice(0, 6);
+  }, [territorial?.departments]);
+
+  const currentInteriorGap =
+    interiorProjection == null
+      ? null
+      : interiorProjection.currentKeikoVotes - interiorProjection.currentSanchezVotes;
+  const pendingInteriorGap =
+    interiorProjection == null
+      ? null
+      : interiorProjection.projectedPendingKeikoVotes -
+        interiorProjection.projectedPendingSanchezVotes;
+  const datumCombinedGap =
+    interiorProjection == null
+      ? null
+      : interiorProjection.projectedNetKeikoVotes +
+        prediction.exterior.datumProjectedGapVotes;
+  const exitPollCombinedGap =
+    interiorProjection == null
+      ? null
+      : interiorProjection.projectedNetKeikoVotes +
+        prediction.exterior.exitPollProjectedGapVotes;
+  const thirtyPpExteriorGap = Math.round(prediction.exterior.validVoteEstimate * 0.3);
+  const thirtyPpCombinedGap =
+    interiorProjection == null
+      ? null
+      : interiorProjection.projectedNetKeikoVotes + thirtyPpExteriorGap;
+
+  const unavailable = isLoading ? "Consultando..." : "No disponible";
+  const resultRows = [
+    {
+      label: "Solo Perú interior",
+      value:
+        interiorProjection == null
+          ? unavailable
+          : formatLeaderGapFromVotes(
+              interiorProjection.projectedKeikoVotes,
+              interiorProjection.projectedSanchezVotes,
+            ),
+      detail:
+        interiorProjection == null
+          ? isLoading
+            ? "Consultando desglose territorial ONPE."
+            : "ONPE territorial no disponible en esta sesión."
+          : `${formatSignedVotes(currentInteriorGap)} actual + ${formatSignedVotes(
+              pendingInteriorGap,
+            )} pendiente depto-aprox.`,
+      gap: interiorProjection?.projectedNetKeikoVotes ?? null,
+    },
+    {
+      label: "Perú + exterior Datum CR",
+      value:
+        datumCombinedGap == null
+          ? unavailable
+          : `${datumCombinedGap >= 0 ? "Keiko" : "Sánchez"} +${formatVotes(
+              Math.abs(datumCombinedGap),
+            )}`,
+      detail: `Exterior CR est.: ${formatSignedVotes(
+        prediction.exterior.datumProjectedGapVotes,
+      )} netos Keiko.`,
+      gap: datumCombinedGap,
+    },
+    {
+      label: "Perú + boca exterior",
+      value:
+        exitPollCombinedGap == null
+          ? unavailable
+          : `${exitPollCombinedGap >= 0 ? "Keiko" : "Sánchez"} +${formatVotes(
+              Math.abs(exitPollCombinedGap),
+            )}`,
+      detail: `Boca exterior est.: ${formatSignedVotes(
+        prediction.exterior.exitPollProjectedGapVotes,
+      )} netos Keiko.`,
+      gap: exitPollCombinedGap,
+    },
+    {
+      label: "Perú + exterior 30 pp",
+      value:
+        thirtyPpCombinedGap == null
+          ? unavailable
+          : `${thirtyPpCombinedGap >= 0 ? "Keiko" : "Sánchez"} +${formatVotes(
+              Math.abs(thirtyPpCombinedGap),
+            )}`,
+      detail: `Referencia matemática: ${formatSignedVotes(thirtyPpExteriorGap)} netos Keiko.`,
+      gap: thirtyPpCombinedGap,
+    },
+  ];
+
+  return (
+    <Card className="border-onpe/30">
+      <CardHeader>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <CardTitle>Cómo se llega al 100%</CardTitle>
+            <CardDescription>
+              Separación matemática entre Perú interior, JEE/observadas y exterior agregado.
+            </CardDescription>
+          </div>
+          <Badge variant="warning">No oficial</Badge>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-5">
+        <div className="grid gap-3 md:grid-cols-3">
+          <div className="rounded-lg border border-card-border bg-accent/35 p-4">
+            <p className="text-xs font-medium uppercase tracking-wider text-muted">
+              1. Perú interior pendiente
+            </p>
+            <p className="mt-2 font-mono text-2xl font-semibold text-onpe tabular-nums">
+              {interiorProjection == null
+                ? isLoading
+                  ? "..."
+                  : "n/d"
+                : formatVotes(interiorProjection.pendingActas)}
+            </p>
+            <p className="mt-2 text-xs leading-relaxed text-muted">
+              Fallback actual: departamento. Fórmula: válidos por acta contabilizada
+              * actas faltantes * porcentaje local observado.
+            </p>
+          </div>
+          <div className="rounded-lg border border-card-border bg-alerta-muted p-4">
+            <p className="text-xs font-medium uppercase tracking-wider text-muted">
+              2. JEE / observadas
+            </p>
+            <p className="mt-2 font-mono text-2xl font-semibold text-alerta tabular-nums">
+              {maybeVotes(prediction.onpe.actasEnviadasJee)}
+            </p>
+            <p className="mt-2 text-xs leading-relaxed text-muted">
+              ONPE las separa como bloque legal-operativo. Sin microdatos distrito
+              por distrito, no se asignan a candidato como voto ya resuelto.
+            </p>
+          </div>
+          <div className="rounded-lg border border-card-border bg-accent/35 p-4">
+            <p className="text-xs font-medium uppercase tracking-wider text-muted">
+              3. Exterior agregado
+            </p>
+            <p className="mt-2 font-mono text-2xl font-semibold text-keiko tabular-nums">
+              {formatSignedVotes(prediction.exterior.datumProjectedGapVotes)}
+            </p>
+            <p className="mt-2 text-xs leading-relaxed text-muted">
+              Datum CR exterior queda cerca de 100k si el volumen válido exterior
+              se acerca a {formatVotes(prediction.exterior.validVoteEstimate)} votos.
+            </p>
+          </div>
+        </div>
+
+        <div className="rounded-lg border border-card-border bg-card p-4">
+          <p className="text-sm font-medium text-foreground">Fórmula visible</p>
+          <p className="mt-2 font-mono text-xs leading-relaxed text-muted sm:text-sm">
+            gap actual + Perú interior pendiente + JEE/observadas no asignadas +
+            exterior agregado = cierre proyectado
+          </p>
+          <p className="mt-2 text-xs leading-relaxed text-muted">
+            La tabla inferior muestra el cierre si el JEE no se fuerza a ningún
+            candidato. El bloque JEE se conserva como riesgo separado porque no es
+            muestra aleatoria ni voto ya contabilizado.
+          </p>
+        </div>
+
+        <div className="grid gap-3 lg:grid-cols-4">
+          {resultRows.map((row) => (
+            <div key={row.label} className="rounded-lg border border-card-border bg-accent/35 p-4">
+              <p className="text-xs font-medium uppercase tracking-wider text-muted">
+                {row.label}
+              </p>
+              <p className={cn("mt-2 font-mono text-xl font-semibold tabular-nums", gapToneClass(row.gap))}>
+                {row.value}
+              </p>
+              <p className="mt-2 text-xs leading-relaxed text-muted">{row.detail}</p>
+            </div>
+          ))}
+        </div>
+
+        {topPending.length > 0 && (
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {topPending.map((row) => (
+              <div key={row.code} className="rounded-lg border border-card-border bg-card p-3">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm font-medium text-foreground">{row.name}</p>
+                  <span className={cn("font-mono text-xs", gapToneClass(row.projectedPendingNetKeikoVotes))}>
+                    {formatSignedVotes(row.projectedPendingNetKeikoVotes)}
+                  </span>
+                </div>
+                <p className="mt-1 text-xs text-muted">
+                  {maybeVotes(row.actasPendientes ?? null)} actas faltantes ·{" "}
+                  {row.validVotesPerActa == null
+                    ? "votos/acta n/d"
+                    : `${row.validVotesPerActa.toFixed(1)} válidos/acta`}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <p className="text-xs leading-relaxed text-muted">
+          Granularidad actual: departamento. Cuando el proxy ONPE de provincias/distritos
+          responda estable en producción, el mismo método baja a ciudad/distrito sin
+          mezclarlo con el exterior ni con el bloque JEE.
         </p>
       </CardContent>
     </Card>
@@ -1127,7 +1431,7 @@ function ExteriorAndCaveats({ prediction }: { prediction: PredictionResponse }) 
               .
             </p>
           </div>
-          <div className="grid gap-3 sm:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             <div className="rounded-lg border border-card-border bg-accent/35 p-3">
               <p className="text-xs text-muted">Votos válidos ext. hipotéticos</p>
               <p className="mt-1 font-mono text-lg font-semibold tabular-nums">
@@ -1159,6 +1463,34 @@ function ExteriorAndCaveats({ prediction }: { prediction: PredictionResponse }) 
               <p className="mt-1 text-xs text-muted">Doméstico tardío + exterior Datum.</p>
               <p className="mt-1 text-xs text-muted">
                 Rango: {maybePctRange(prediction.exterior.adjustedPendingSanchezRangePct, 2)}
+              </p>
+            </div>
+            <div className="rounded-lg border border-card-border bg-accent/35 p-3">
+              <p className="text-xs text-muted">Gap exterior ONPE observado</p>
+              <p className="mt-1 font-mono text-lg font-semibold tabular-nums text-keiko">
+                {formatSignedVotes(prediction.exterior.officialObservedGapVotes)}
+              </p>
+              <p className="mt-1 text-xs text-muted">
+                Positivo favorece a Keiko; solo actas exteriores ya contabilizadas.
+              </p>
+            </div>
+            <div className="rounded-lg border border-card-border bg-accent/35 p-3">
+              <p className="text-xs text-muted">Gap exterior Datum est.</p>
+              <p className="mt-1 font-mono text-lg font-semibold tabular-nums text-keiko">
+                {formatSignedVotes(prediction.exterior.datumProjectedGapVotes)}
+              </p>
+              <p className="mt-1 text-xs text-muted">
+                Rango: {formatSignedVotes(prediction.exterior.datumProjectedGapRangeVotes[0])} a{" "}
+                {formatSignedVotes(prediction.exterior.datumProjectedGapRangeVotes[1])}
+              </p>
+            </div>
+            <div className="rounded-lg border border-card-border bg-accent/35 p-3">
+              <p className="text-xs text-muted">Nacional para compensar exterior</p>
+              <p className="mt-1 font-mono text-lg font-semibold tabular-nums text-sanchez">
+                {maybePct(prediction.exterior.domesticSanchezPctToOffsetDatumExterior, 2)}
+              </p>
+              <p className="mt-1 text-xs text-muted">
+                Rango: {maybePctRange(prediction.exterior.domesticSanchezPctToOffsetDatumExteriorRange, 2)}
               </p>
             </div>
           </div>
@@ -1274,6 +1606,11 @@ export function PredictionClient({ initialPrediction }: { initialPrediction: Pre
         prediction={data}
         territorial={territorialQuery.data}
         isFetching={territorialQuery.isFetching}
+        isLoading={territorialQuery.isLoading}
+      />
+      <HowTo100Panel
+        prediction={data}
+        territorial={territorialQuery.data}
         isLoading={territorialQuery.isLoading}
       />
       <ProjectionPanel prediction={data} />
