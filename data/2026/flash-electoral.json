@@ -1,0 +1,206 @@
+{
+  "candidates": {
+    "a": "Keiko Fujimori",
+    "b": "Roberto Sánchez",
+    "partyA": "Fuerza Popular",
+    "partyB": "Juntos Por el Perú"
+  },
+  "sources": [
+    {
+      "id": "onpe-parcial",
+      "name": "ONPE",
+      "type": "oficial",
+      "instrument": "Escrutinio parcial",
+      "url": "https://elcomercio.pe/elecciones/resultados-onpe-en-vivo-conteo-oficial-de-la-segunda-vuelta-entre-keiko-fujimori-y-roberto-sanchez-de-elecciones-peru-2026-lbposting-noticia/",
+      "publishedAt": "2026-06-08T00:31:00-05:00",
+      "data": {
+        "a": 52.156,
+        "b": 47.844,
+        "labelA": "Keiko",
+        "labelB": "Sánchez",
+        "marginPp": 4.312,
+        "marginLeader": "a",
+        "advancePct": 76.966
+      },
+      "notes": "Snapshot ONPE al 76.966% replicado por El Comercio a las 00:31 del 08/06/2026: 71,398 actas contabilizadas de 92,766. No es muestra aleatoria; sin margen de error estadístico. Votos absolutos por candidato no publicados junto a este corte."
+    },
+    {
+      "id": "onpe-parcial-prev",
+      "name": "ONPE (cross-check)",
+      "type": "oficial",
+      "instrument": "Escrutinio parcial previo",
+      "url": "https://www.infobae.com/peru/2026/06/07/resultados-onpe-en-vivo-conteo-oficial-de-votos-de-keiko-fujimori-y-roberto-sanchez-en-la-segunda-vuelta-de-elecciones-2026/",
+      "publishedAt": "2026-06-07T22:38:00-05:00",
+      "data": {
+        "a": 52.681,
+        "b": 47.319,
+        "labelA": "Keiko",
+        "labelB": "Sánchez",
+        "marginPp": 5.362,
+        "marginLeader": "a",
+        "votesA": 6223129,
+        "votesB": 5589817,
+        "advancePct": 60.325
+      },
+      "notes": "Infobae replica ONPE al 60.325% de actas (07/06/2026 22:38)"
+    },
+    {
+      "id": "ipsos-boca",
+      "name": "Ipsos",
+      "type": "encuesta",
+      "instrument": "Boca de urna",
+      "url": "https://www.ipsos.com/es-pe/encuesta-boca-de-urna-segunda-vuelta-2026-realizada-por-encargo-de-peru-21-y-latina",
+      "publishedAt": "2026-06-08T00:00:00-05:00",
+      "data": {
+        "a": 50.7,
+        "b": 49.3,
+        "labelA": "Keiko",
+        "labelB": "Sánchez",
+        "marginPp": 1.4,
+        "marginLeader": "a",
+        "sampleSize": 18000,
+        "marginOfErrorNote": "No publicado como ± único en la página/PDF primario de Ipsos boca de urna 2026"
+      },
+      "notes": "Empate técnico; ficha oficial Ipsos reporta cobertura nacional y muestra de 18,000 encuestados. Margen de error numérico único no publicado en la página primaria."
+    },
+    {
+      "id": "datum-boca",
+      "name": "Datum",
+      "type": "encuesta",
+      "instrument": "Boca de urna",
+      "url": "https://gestion.pe/peru/politica/flash-electoral-2026-empate-tecnico-entre-keiko-fujimori-y-roberto-sanchez-a-boca-de-urna-oficial-datum-noticia/",
+      "publishedAt": "2026-06-07T17:30:00-05:00",
+      "data": {
+        "a": 50.53,
+        "b": 49.47,
+        "labelA": "Keiko",
+        "labelB": "Sánchez",
+        "marginPp": 1.06,
+        "marginLeader": "a",
+        "sampleSize": 52343,
+        "sampleSizeVerified": true,
+        "marginOfError": 3.0,
+        "marginOfErrorNote": "±3 pp reportado por Datum; nivel de confianza no publicado en fuente localizada",
+        "sampleSizeNote": "Muestra confirmada por América Noticias citando a Urpi Torrado; ficha primaria pública no ubicada"
+      },
+      "notes": "Empate técnico; ±3 pp según Urpi Torrado (Datum Internacional)"
+    },
+    {
+      "id": "ipsos-cr",
+      "name": "Ipsos/Transparencia",
+      "type": "muestra",
+      "instrument": "Conteo rápido 100%",
+      "url": "https://www.ipsos.com/es-pe/conteo-rapido-integral-de-ipsos-peru-por-encargo-de-transparencia-segunda-vuelta-2026",
+      "publishedAt": "2026-06-08T00:00:00-05:00",
+      "data": {
+        "a": 49.7,
+        "b": 50.3,
+        "labelA": "Keiko",
+        "labelB": "Sánchez",
+        "marginPp": 0.6,
+        "marginLeader": "b",
+        "sampleSize": 1037,
+        "marginOfError": 1.9,
+        "marginOfErrorNote": "El informe muestra ±1.9 para total nacional y aclara que el margen es variable por candidato",
+        "confidence": 95
+      },
+      "notes": "Empate técnico; 1,037 actas aleatorias en 27 circunscripciones; actas validadas al 99.5%"
+    },
+    {
+      "id": "datum-cr",
+      "name": "Datum",
+      "type": "muestra",
+      "instrument": "Conteo rápido 100%",
+      "url": "https://www.infobae.com/peru/2026/06/08/roberto-sanchez-cuenta-con-5014-y-keiko-fujimori-con-4986-segun-conteo-rapido-de-datum/",
+      "publishedAt": "2026-06-07T22:21:00-05:00",
+      "data": {
+        "a": 49.86,
+        "b": 50.14,
+        "labelA": "Keiko",
+        "labelB": "Sánchez",
+        "marginPp": 0.28,
+        "marginLeader": "b",
+        "sampleSize": 117199,
+        "sampleSizeVerified": false,
+        "marginOfError": 1.0,
+        "marginOfErrorNote": "±1 pp reportado por Datum; nivel de confianza no publicado en fuente localizada",
+        "sampleSizeNote": "Muestra no verificada en ficha primaria localizada"
+      },
+      "notes": "Empate técnico; Datum/América Multimedia; ±1% según Datum"
+    }
+  ],
+  "simulacros": [
+    {
+      "pollster": "Ipsos",
+      "date": "2026-05-29",
+      "dateEnd": "2026-05-30",
+      "url": "https://www.ipsos.com/es-pe/ultima-encuesta-publicable-segunda-vuelta-encuesta-peru-21-ipsos-mayo-2026",
+      "data": {
+        "a": 51.4,
+        "b": 48.6,
+        "labelA": "Keiko",
+        "labelB": "Sánchez",
+        "marginPp": 2.8,
+        "marginLeader": "a"
+      },
+      "marginOfError": 2.8
+    },
+    {
+      "pollster": "Datum",
+      "date": "2026-05-26",
+      "dateEnd": "2026-05-30",
+      "url": "https://www.datum.com.pe/new_web_files/files/opinion/567-1025%20-%20Encuesta%20EC%20MAYO%202026%20%2826%20al%2030%20mayo%29%20-%20Informe%20ENCUESTA%20Final_260531083136.pdf",
+      "data": {
+        "a": 52.9,
+        "b": 47.1,
+        "labelA": "Keiko",
+        "labelB": "Sánchez",
+        "marginPp": 5.8,
+        "marginLeader": "a",
+        "sampleSize": 1501,
+        "sampleSizeValid": 1126,
+        "rawEmittedA": 39.7,
+        "rawEmittedB": 35.4,
+        "blank": 14.4,
+        "nullPct": 10.5,
+        "confidence": 95,
+        "sourceQuality": "primary"
+      },
+      "marginOfError": 2.5
+    }
+  ],
+  "participation": {
+    "rate": 72.4,
+    "blank": 0.8,
+    "null": 5.7,
+    "marginOfError": 1.8,
+    "source": "Ipsos/Transparencia — conferencia conteo rápido",
+    "url": "https://www.ipsos.com/es-pe/conteo-rapido-integral-de-ipsos-peru-por-encargo-de-transparencia-segunda-vuelta-2026"
+  },
+  "territorial": {
+    "ipsos": {
+      "lima": { "a": 66.1, "b": 33.9, "leader": "Keiko" },
+      "interior": { "a": 43.9, "b": 56.1, "leader": "Sánchez" },
+      "regiones_cr": { "a": 42.6, "b": 57.4, "leader": "Sánchez" },
+      "lima_cr": { "a": 63.6, "b": 36.4, "leader": "Keiko" },
+      "urbano": { "a": 55.5, "b": 44.5, "leader": "Keiko" },
+      "rural": { "a": 32.2, "b": 67.8, "leader": "Sánchez" },
+      "costa": { "a": 63.0, "b": 37.0, "leader": "Keiko" },
+      "sierra": { "a": 31.3, "b": 68.7, "leader": "Sánchez" },
+      "selva": { "a": 43.8, "b": 56.2, "leader": "Sánchez" },
+      "norte": { "a": 51.5, "b": 48.5, "leader": "Keiko" },
+      "centro": { "a": 52.3, "b": 47.7, "leader": "Keiko" },
+      "sur": { "a": 26.1, "b": 73.9, "leader": "Sánchez" },
+      "oriente": { "a": 43.8, "b": 56.2, "leader": "Sánchez" }
+    }
+  },
+  "movement": [
+    { "stage": "Simulacro Ipsos", "marginPp": 2.8, "leader": "Keiko" },
+    { "stage": "Simulacro Datum", "marginPp": 5.8, "leader": "Keiko" },
+    { "stage": "Boca Ipsos", "marginPp": 1.4, "leader": "Keiko" },
+    { "stage": "Boca Datum", "marginPp": 1.06, "leader": "Keiko" },
+    { "stage": "CR Ipsos", "marginPp": 0.6, "leader": "Sánchez" },
+    { "stage": "CR Datum", "marginPp": 0.28, "leader": "Sánchez" },
+    { "stage": "ONPE parcial", "marginPp": 4.312, "leader": "Keiko" }
+  ]
+}
