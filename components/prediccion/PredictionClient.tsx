@@ -13,6 +13,7 @@ import {
   Sigma,
 } from "lucide-react";
 import { ONPE_POLL_INTERVAL_MS } from "@/components/providers/query-provider";
+import { CityForecastPanel } from "@/components/territorial/CityForecastPanel";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -1613,6 +1614,7 @@ export function PredictionClient({ initialPrediction }: { initialPrediction: Pre
         territorial={territorialQuery.data}
         isLoading={territorialQuery.isLoading}
       />
+      <CityForecastPanel />
       <ProjectionPanel prediction={data} />
       <OnpeVsQuickCounts prediction={data} />
 
