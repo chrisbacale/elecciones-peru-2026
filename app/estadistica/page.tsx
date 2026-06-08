@@ -1,10 +1,13 @@
 import { CandidateDiffTable } from "@/components/stats/CandidateDiffTable";
 import { CurrentRaceSnapshot } from "@/components/stats/CurrentRaceSnapshot";
 import { ErrorByYearChart } from "@/components/stats/ErrorByYearChart";
+import { JeeMonteCarloSection } from "@/components/stats/JeeMonteCarloSection";
 import { MetricCards } from "@/components/stats/MetricCards";
 import { Positioning2026 } from "@/components/stats/Positioning2026";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import jeeResolutionModel from "@/data/2026/jee-resolution-model.json";
 import { elections, getErrorMetrics } from "@/lib/data";
+import type { JeeResolutionModel } from "@/lib/types";
 
 export const metadata = {
   title: "Estadística histórica | Radar Electoral Perú",
@@ -61,6 +64,8 @@ export default function EstadisticaPage() {
       </section>
 
       <CurrentRaceSnapshot />
+
+      <JeeMonteCarloSection model={jeeResolutionModel as JeeResolutionModel} />
 
       <section>
         <h2 className="mb-4 text-sm font-medium uppercase tracking-wider text-muted">
