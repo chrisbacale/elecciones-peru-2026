@@ -1,10 +1,7 @@
 import { NextResponse } from "next/server";
-import { buildPredictionSnapshot } from "@/lib/prediction";
 import {
   fetchOnpeExterior,
-  fetchOnpeResumen,
   getKnownOnpeExteriorSnapshot,
-  getKnownOnpeSnapshot,
   getOnpeApiMeta,
 } from "@/lib/onpe-client";
 
@@ -15,14 +12,12 @@ export const maxDuration = 30;
 
 export async function GET() {
   try {
-    const [onpe, exterior] = await Promise.all([
-      fetchOnpeResumen(getKnownOnpeSnapshot()),
-      fetchOnpeExterior(getKnownOnpeExteriorSnapshot()),
-    ]);
-    const prediction = buildPredictionSnapshot(onpe, exterior);
+    const snapshot = getKnownOnpeExteriorSnapshot();
+    const data = await fetchOnpeExterior(snapshot);
+    const meta = getOnpeApiMeta();
 
     return NextResponse.json(
-      { ...prediction, meta: getOnpeApiMeta() },
+      { ...data, meta },
       {
         headers: {
           "Cache-Control": "no-store, max-age=0",
@@ -30,15 +25,15 @@ export async function GET() {
       },
     );
   } catch (error) {
-    const prediction = buildPredictionSnapshot(
-      getKnownOnpeSnapshot(),
-      getKnownOnpeExteriorSnapshot(),
-    );
+    const snapshot = getKnownOnpeExteriorSnapshot();
+    const meta = getOnpeApiMeta();
 
     return NextResponse.json(
       {
-        ...prediction,
-        meta: getOnpeApiMeta(),
+        ...snapshot,
+        meta,
+        status: "snapshot",
+        message: "Error al contactar ONPE exterior — usando snapshot conocido",
         error: error instanceof Error ? error.message : "Unknown error",
       },
       {

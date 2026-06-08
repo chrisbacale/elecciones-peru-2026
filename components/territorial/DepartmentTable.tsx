@@ -2,7 +2,7 @@
 
 import { ResponsiveTable } from "@/components/ui/responsive-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatPct } from "@/lib/format";
+import { formatPct, formatVotes } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { OnpeTerritorial } from "@/lib/types";
 
@@ -97,6 +97,15 @@ export function DepartmentTable({ territorial, isLoading }: DepartmentTableProps
                 render: (d) => (
                   <span className="font-mono tabular-nums text-muted">
                     {d.advancePct > 0 ? formatPct(d.advancePct, 1) : "—"}
+                  </span>
+                ),
+              },
+              {
+                key: "pending",
+                header: "Faltan",
+                render: (d) => (
+                  <span className="font-mono tabular-nums text-alerta">
+                    {d.actasPendientes == null ? "—" : formatVotes(d.actasPendientes)}
                   </span>
                 ),
               },

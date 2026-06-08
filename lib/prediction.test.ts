@@ -49,9 +49,9 @@ describe("buildPredictionSnapshot", () => {
   it("incluye simulación determinística con intervalos y frecuencias", () => {
     const snapshot = buildPredictionSnapshot();
 
-    expect(snapshot.projection.modelVersion).toBe("prediction-v2.4");
+    expect(snapshot.projection.modelVersion).toBe("prediction-v2.5");
     expect(snapshot.projection.simulations).toBe(20000);
-    expect(snapshot.projection.countedWeightPct).toBeCloseTo(93.617, 2);
+    expect(snapshot.projection.countedWeightPct).toBeCloseTo(93.727, 2);
     expect(snapshot.projection.weightingNote).toContain("proxy");
     expect(snapshot.projection.probabilityNote).toContain("No debe leerse como certeza legal");
     expect(snapshot.projection.sanchezCi80[0]).toBeLessThan(
@@ -65,6 +65,10 @@ describe("buildPredictionSnapshot", () => {
         snapshot.projection.probabilitySanchezLead +
         snapshot.projection.probabilityPracticalTie,
     ).toBeCloseTo(100, 0);
+    expect(snapshot.projection.frequencyKeikoLead).toBe(
+      snapshot.projection.probabilityKeikoLead,
+    );
+    expect(snapshot.projection.modelParameters.regimeWeights.exteriorAdjusted).toBeGreaterThan(0);
     expect(snapshot.projection.histogram).toHaveLength(8);
   });
 
@@ -80,13 +84,29 @@ describe("buildPredictionSnapshot", () => {
       "foreign-adjustment",
       "modeled-margin",
     ]);
-    expect(snapshot.exterior.officialResultsStatus).toBe("not_verified");
-    expect(snapshot.exterior.actasTotal).toBeNull();
-    expect(snapshot.exterior.pendingPct).toBeNull();
+    expect(snapshot.exterior.officialResultsStatus).toBe("snapshot");
+    expect(snapshot.exterior.actasTotal).toBe(2543);
+    expect(snapshot.exterior.actasContabilizadas).toBe(12);
+    expect(snapshot.exterior.actasPendientes).toBe(2531);
+    expect(snapshot.exterior.pendingPct).toBeCloseTo(99.53, 2);
+    expect(snapshot.exterior.officialKeikoPct).toBe(56.919);
+    expect(snapshot.exterior.officialSanchezPct).toBe(43.081);
+    expect(snapshot.exterior.officialVotesKeiko).toBe(1164);
+    expect(snapshot.exterior.officialVotesSanchez).toBe(881);
     expect(snapshot.exterior.validVoteEstimate).toBeGreaterThan(350000);
+    expect(snapshot.exterior.turnoutAssumptionRangePct).toEqual([25, 45]);
+    expect(snapshot.exterior.validVoteAssumptionRangePct).toEqual([90, 97]);
+    expect(snapshot.exterior.validVoteEstimateRange[0]).toBeLessThan(
+      snapshot.exterior.validVoteEstimate,
+    );
+    expect(snapshot.exterior.validVoteEstimateRange[1]).toBeGreaterThan(
+      snapshot.exterior.validVoteEstimate,
+    );
+    expect(snapshot.exterior.shareOfPendingValidEstimateRangePct).not.toBeNull();
+    expect(snapshot.exterior.adjustedPendingSanchezRangePct).not.toBeNull();
     expect(snapshot.exterior.adjustedPendingSanchezPct).not.toBeNull();
     expect(snapshot.criticalDrivers.find((driver) => driver.id === "foreign")?.source).toBe(
-      "Padrón ONPE + sensibilidad Datum CR exterior",
+      "ONPE exterior agregado + sensibilidad Datum CR exterior",
     );
     expect(snapshot.criticalDrivers.find((driver) => driver.id === "jee")?.impactPp).toBeNull();
   });
@@ -95,19 +115,19 @@ describe("buildPredictionSnapshot", () => {
     const base = buildPredictionSnapshot();
     const onpe: OnpeResumen = {
       status: "live",
-      timestamp: "2026-06-08T11:22:00.151-05:00",
-      advancePct: 93.617,
-      actasProcesadas: 86845,
+      timestamp: "2026-06-08T11:56:00.321-05:00",
+      advancePct: 93.727,
+      actasProcesadas: 86947,
       actasTotal: 92766,
-      actasEnviadasJee: 1514,
-      actasPendientesJee: 4407,
-      actasEnviadasJeePct: 1.632,
-      actasPendientesJeePct: 4.751,
+      actasEnviadasJee: 1515,
+      actasPendientesJee: 4304,
+      actasEnviadasJeePct: 1.633,
+      actasPendientesJeePct: 4.64,
       candidates: {
-        keiko: { votes: 8774506, pct: 50.017 },
-        sanchez: { votes: 8768500, pct: 49.983 },
+        keiko: { votes: 8779917, pct: 50.016 },
+        sanchez: { votes: 8774253, pct: 49.984 },
       },
-      validVotes: 17543006,
+      validVotes: 17554170,
       blankVotes: null,
       nullVotes: null,
       marginPp: 0.03,
