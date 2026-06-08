@@ -104,12 +104,12 @@ const SOURCE_GROUPS: SourceGroup[] = [
       {
         label: "Datum conteo rápido",
         href: "https://www.datum.com.pe/new_web_files/files/pdf/ELECCIONES%202026%20-%202%20Vuelta%20-%20Informe%20CONTEO%20R%C3%81PIDO_260607104858.pdf",
-        note: "Sánchez 50.14 / Fujimori 49.86; margen dentro de +/-1 pp.",
+        note: "Sánchez 50.14 / Fujimori 49.86; PDF localizado, tratado como referencia secundaria hasta reconciliar muestra y confianza.",
       },
       {
         label: "Datum boca de urna",
         href: "https://www.datum.com.pe/new_web_files/files/pdf/ELECCIONES%202026%20-%202%20Vuelta%20-%20Informe%20BOCA%20DE%20URNA%20v1_260607063337.pdf",
-        note: "Fujimori 50.53 / Sánchez 49.47; muestra reportada 52,343.",
+        note: "Fujimori 50.53 / Sánchez 49.47; muestra reportada 52,343, calidad documental separada de Ipsos primario.",
       },
       {
         label: "Andina",

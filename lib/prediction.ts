@@ -1,6 +1,12 @@
 import { flashElectoral, getValidatedErrorMetrics } from "./data";
+import jeeResolutionModelData from "@/data/2026/jee-resolution-model.json";
 import { calcPendingVoteRequirement } from "./stats";
-import type { CandidatePair, OnpeExteriorResumen, OnpeResumen } from "./types";
+import type {
+  CandidatePair,
+  JeeResolutionModel,
+  OnpeExteriorResumen,
+  OnpeResumen,
+} from "./types";
 
 export type ProjectionStatus =
   | "alta_incertidumbre"
@@ -157,6 +163,27 @@ export type PredictionSnapshot = {
     }>;
     note: string;
   };
+  componentRead: {
+    source: string;
+    cutPeru: string;
+    cutUtc: string;
+    status: "snapshot" | "live";
+    officialGapKeikoMinusSanchez: number;
+    pendingPeruGapKeikoMinusSanchez: number;
+    expectedJeeGapKeikoMinusSanchez: number;
+    peruOnlyExpectedGapKeikoMinusSanchez: number;
+    exteriorDatumGapKeikoMinusSanchez: number;
+    exteriorExitPollGapKeikoMinusSanchez: number;
+    exteriorThirtyPpGapKeikoMinusSanchez: number;
+    peruPlusDatumGapKeikoMinusSanchez: number;
+    peruPlusExitPollGapKeikoMinusSanchez: number;
+    peruPlusExteriorThirtyPpGapKeikoMinusSanchez: number;
+    pendingPeruActas: number;
+    jeeActasAtRisk: number;
+    foreignAggregateActas: number;
+    foreignValidVotesUsed: number;
+    note: string;
+  };
   exterior: {
     eligibleVoters: number;
     mesas: number;
@@ -204,6 +231,8 @@ export type PredictionSnapshot = {
   caveats: string[];
   sources: Array<{ label: string; url: string }>;
 };
+
+const jeeResolutionModel = jeeResolutionModelData as JeeResolutionModel;
 
 type CompletionCut = {
   advancePct: number;
@@ -1219,7 +1248,7 @@ function buildErrorBudget(): ErrorBudgetRow[] {
       label: "Conteos rápidos",
       pp80: round(metrics.conteoRapido.marginError.mean, 2),
       pp95: round(metrics.conteoRapido.marginError.max, 2),
-      note: "Calibrado con error histórico Ipsos vs ONPE 100% y MOE reportado por Ipsos/Datum.",
+      note: "Calibrado con error histórico Ipsos vs ONPE 100%, MOE primario Ipsos y MOE Datum localizado con calidad documental desigual.",
     },
     {
       id: "territorial",
@@ -1403,6 +1432,56 @@ function buildTrendSignals(
   ];
 }
 
+function buildComponentRead(): PredictionSnapshot["componentRead"] {
+  const officialGap =
+    jeeResolutionModel.officialCurrent.marginKeikoMinusSanchez;
+  const pendingPeruGap =
+    jeeResolutionModel.components.pendingPeru.margin_keiko_minus_roberto;
+  const expectedJeeGap =
+    jeeResolutionModel.components.expectedJeeResolution
+      .expectedCountedMarginKeikoMinusSanchez;
+  const peruOnlyExpectedGap = officialGap + pendingPeruGap + expectedJeeGap;
+  const exteriorDatumGap = estimateExteriorDatumGapVotes();
+  const exteriorExitPollGap = estimateExteriorExitPollGapVotes();
+  const exteriorThirtyPpGap = Math.round(
+    estimateExteriorValidVotes() * 0.3,
+  );
+
+  return {
+    source: "data/2026/jee-resolution-model.json",
+    cutPeru: jeeResolutionModel.cutPeru,
+    cutUtc: jeeResolutionModel.cutUtc,
+    status: jeeResolutionModel.status,
+    officialGapKeikoMinusSanchez: round(officialGap, 1) ?? officialGap,
+    pendingPeruGapKeikoMinusSanchez: round(pendingPeruGap, 1) ?? pendingPeruGap,
+    expectedJeeGapKeikoMinusSanchez: round(expectedJeeGap, 1) ?? expectedJeeGap,
+    peruOnlyExpectedGapKeikoMinusSanchez:
+      round(peruOnlyExpectedGap, 1) ?? peruOnlyExpectedGap,
+    exteriorDatumGapKeikoMinusSanchez: exteriorDatumGap,
+    exteriorExitPollGapKeikoMinusSanchez: exteriorExitPollGap,
+    exteriorThirtyPpGapKeikoMinusSanchez: exteriorThirtyPpGap,
+    peruPlusDatumGapKeikoMinusSanchez: round(
+      peruOnlyExpectedGap + exteriorDatumGap,
+      1,
+    ) ?? (peruOnlyExpectedGap + exteriorDatumGap),
+    peruPlusExitPollGapKeikoMinusSanchez: round(
+      peruOnlyExpectedGap + exteriorExitPollGap,
+      1,
+    ) ?? (peruOnlyExpectedGap + exteriorExitPollGap),
+    peruPlusExteriorThirtyPpGapKeikoMinusSanchez: round(
+      peruOnlyExpectedGap + exteriorThirtyPpGap,
+      1,
+    ) ?? (peruOnlyExpectedGap + exteriorThirtyPpGap),
+    pendingPeruActas: jeeResolutionModel.components.pendingPeru.actas,
+    jeeActasAtRisk: jeeResolutionModel.components.jeeAtRisk.actas,
+    foreignAggregateActas:
+      jeeResolutionModel.components.foreignPendingAggregate.actas,
+    foreignValidVotesUsed: estimateExteriorValidVotes(),
+    note:
+      "Lectura principal auditada: snapshot JEE/ciudad-distrito para Peru y sensibilidad exterior agregada. Se mantiene separada del modelo secundario live por regimenes.",
+  };
+}
+
 function quickCountRow(id: "ipsos-cr" | "datum-cr") {
   const source = getSource(id);
   const data = source.data;
@@ -1528,6 +1607,7 @@ export function buildPredictionSnapshot(
     requirements,
     scenarios,
     eta,
+    componentRead: buildComponentRead(),
     exterior: {
       eligibleVoters: exteriorRoster.eligibleVoters,
       mesas: exteriorRoster.mesas,

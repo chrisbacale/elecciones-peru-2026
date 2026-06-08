@@ -36,7 +36,9 @@ export function ErrorChart({ metrics }: { metrics: ErrorMetrics }) {
             <XAxis dataKey="year" tick={{ fill: "var(--muted)" }} />
             <YAxis tick={{ fill: "var(--muted)" }} unit=" pp" />
             <Tooltip
+              allowEscapeViewBox={{ x: true, y: true }}
               cursor={{ fill: "var(--accent)" }}
+              wrapperStyle={{ zIndex: 60, outline: "none" }}
               content={
                 <ChartTooltip
                   nameFormatter={(name) =>

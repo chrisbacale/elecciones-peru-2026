@@ -237,6 +237,11 @@ export type OnpeCityForecast = {
   topDepartmentsPeru: CityForecastPlaceRow[];
   topProvincesPeru: CityForecastPlaceRow[];
   topDistrictsPeru: CityForecastDistrictRow[];
+  publishedCoverage?: {
+    unresolvedLeafCount: number;
+    rankedDistrictRowsAvailable: number;
+    note: string;
+  };
   method: string[];
   privacyNote: string;
   message?: string;

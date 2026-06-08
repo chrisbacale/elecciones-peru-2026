@@ -23,7 +23,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ResponsiveTable, type ResponsiveColumn } from "@/components/ui/responsive-table";
+import cityForecastSnapshot from "@/data/2026/city-level-forecast.json";
 import { formatDateTime, formatPct, formatPp, formatVotes } from "@/lib/format";
+import { useOnpeCityForecast } from "@/hooks/useOnpeCityForecast";
+import { useOnpeJeeModel } from "@/hooks/useOnpeJeeModel";
 import { useOnpeTerritorial } from "@/hooks/useOnpeTerritorial";
 import type {
   CriticalDriverRow,
@@ -33,8 +36,10 @@ import type {
   ScenarioRow,
   TrendSignalRow,
 } from "@/lib/prediction";
-import type { OnpeTerritorial } from "@/lib/types";
+import type { JeeResolutionModel, OnpeCityForecast, OnpeTerritorial } from "@/lib/types";
 import { cn } from "@/lib/utils";
+
+const CITY_FORECAST_SNAPSHOT = cityForecastSnapshot as unknown as OnpeCityForecast;
 
 type PredictionResponse = PredictionSnapshot & {
   meta?: {
@@ -146,6 +151,12 @@ function formatLeaderGapFromVotes(keikoVotes: number, sanchezVotes: number) {
   return leader === "Empate" ? "Empate" : `${leader} +${formatVotes(Math.abs(gap))}`;
 }
 
+function formatLeaderGapFromSignedGap(gap: number | null | undefined) {
+  if (gap == null) return "No disponible";
+  const leader = gap > 0 ? "Keiko" : gap < 0 ? "Sánchez" : "Empate";
+  return leader === "Empate" ? "Empate" : `${leader} +${formatVotes(Math.abs(gap))}`;
+}
+
 function formatActasProgress(
   counted: number | null | undefined,
   total: number | null | undefined,
@@ -248,6 +259,8 @@ function StatusPanel({
 
 function KpiGrid({ prediction, isFetching }: { prediction: PredictionResponse; isFetching: boolean }) {
   const tieRequirement = prediction.requirements.find((row) => row.id === "tie");
+  const onpeLeaderTone = candidateToneClass(prediction.onpe.marginLeader);
+  const onpeLeaderShort = shortCandidateName(prediction.onpe.marginLeader);
 
   const items = [
     {
@@ -262,9 +275,9 @@ function KpiGrid({ prediction, isFetching }: { prediction: PredictionResponse; i
     },
     {
       label: "Margen ONPE actual",
-      value: formatPp(prediction.onpe.marginPp, 3),
+      value: `${onpeLeaderShort} ${formatPp(prediction.onpe.marginPp, 3)}`,
       detail: `${prediction.onpe.marginLeader} lidera el escrutinio contabilizado`,
-      tone: "text-keiko",
+      tone: onpeLeaderTone,
       icon: RefreshCw,
     },
     {
@@ -428,6 +441,21 @@ function PendingTerritoryPanel({
         </span>
       ),
     },
+    {
+      key: "impact",
+      header: "Impacto pend.",
+      className: "text-right",
+      render: (row) => (
+        <span
+          className={cn(
+            "font-mono font-semibold tabular-nums",
+            gapToneClass(row.projectedPendingNetKeikoVotes),
+          )}
+        >
+          {formatSignedVotes(row.projectedPendingNetKeikoVotes)}
+        </span>
+      ),
+    },
   ];
 
   return (
@@ -526,13 +554,40 @@ function gapToneClass(gap: number | null | undefined) {
   return gap > 0 ? "text-keiko" : "text-sanchez";
 }
 
+function candidateToneClass(candidate: string | null | undefined) {
+  const normalized = (candidate ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+  if (normalized.includes("keiko") || normalized.includes("fujimori")) return "text-keiko";
+  if (
+    normalized.includes("sanchez") ||
+    normalized.includes("palomino") ||
+    normalized.includes("roberto")
+  ) {
+    return "text-sanchez";
+  }
+  return "text-muted";
+}
+
+function shortCandidateName(candidate: string | null | undefined) {
+  const tone = candidateToneClass(candidate);
+  if (tone === "text-keiko") return "Keiko";
+  if (tone === "text-sanchez") return "Sánchez";
+  return candidate ?? "Sin líder";
+}
+
 function HowTo100Panel({
   prediction,
   territorial,
+  jeeModel,
+  isJeeFetching,
   isLoading,
 }: {
   prediction: PredictionResponse;
   territorial?: OnpeTerritorial;
+  jeeModel?: JeeResolutionModel;
+  isJeeFetching: boolean;
   isLoading: boolean;
 }) {
   const interiorProjection = useMemo(
@@ -545,6 +600,12 @@ function HowTo100Panel({
       .sort((a, b) => (b.actasPendientes ?? 0) - (a.actasPendientes ?? 0))
       .slice(0, 6);
   }, [territorial?.departments]);
+  const cityForecastQuery = useOnpeCityForecast();
+  const cityForecast = cityForecastQuery.data ?? CITY_FORECAST_SNAPSHOT;
+  const districtPreview = useMemo(
+    () => cityForecast.topDistrictsPeru.slice(0, 3),
+    [cityForecast.topDistrictsPeru],
+  );
 
   const currentInteriorGap =
     interiorProjection == null
@@ -640,9 +701,12 @@ function HowTo100Panel({
           datum: datumCombinedGap,
           exitPoll: exitPollCombinedGap,
         };
+  const componentRead = prediction.componentRead;
+  const jeeStatus = jeeModel?.status ?? componentRead.status;
+  const jeeCut = jeeModel?.cutPeru ?? componentRead.cutPeru;
 
   return (
-    <Card className="border-onpe/30">
+    <Card id="lectura-componentes" className="border-onpe/30">
       <CardHeader>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
@@ -651,10 +715,126 @@ function HowTo100Panel({
               Separación matemática entre Perú interior, JEE/observadas y exterior agregado.
             </CardDescription>
           </div>
-          <Badge variant="warning">Aritmética auditada</Badge>
+          <div className="flex flex-wrap gap-2">
+            <Badge variant="warning">Aritmética auditada</Badge>
+            <Badge variant={jeeStatus === "live" ? "live" : "snapshot"}>
+              JEE {isJeeFetching ? "actualizando" : jeeStatus}
+            </Badge>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-5">
+        <div className="rounded-xl border border-card-border bg-card p-4">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-sm font-semibold text-foreground">
+                Puente auditado: ONPE + Perú pendiente + JEE + exterior
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-muted">
+                Corte JEE/ciudad-distrito: {formatDateTime(jeeCut)}.
+                Esta cuenta es snapshot reproducible; la tabla departamental live
+                de abajo puede tener un corte posterior.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-4 grid gap-2 lg:grid-cols-5">
+            {[
+              {
+                label: "1. ONPE actual del corte",
+                value: componentRead.officialGapKeikoMinusSanchez,
+                detail: "Brecha oficial antes de sumar bloques no cerrados.",
+              },
+              {
+                label: "2. Perú pendiente",
+                value: componentRead.pendingPeruGapKeikoMinusSanchez,
+                detail: `${formatVotes(componentRead.pendingPeruActas)} actas operativas.`,
+              },
+              {
+                label: "3. JEE esperado",
+                value: componentRead.expectedJeeGapKeikoMinusSanchez,
+                detail: `${formatVotes(componentRead.jeeActasAtRisk)} actas en riesgo legal.`,
+              },
+              {
+                label: "4. Solo Perú + JEE",
+                value: componentRead.peruOnlyExpectedGapKeikoMinusSanchez,
+                detail: "Sin voto exterior agregado.",
+              },
+              {
+                label: "5. + exterior 30 pp",
+                value: componentRead.peruPlusExteriorThirtyPpGapKeikoMinusSanchez,
+                detail: `${formatSignedVotes(componentRead.exteriorThirtyPpGapKeikoMinusSanchez)} netos Keiko.`,
+              },
+            ].map((row) => (
+              <div key={row.label} className="rounded-lg border border-card-border bg-accent/35 p-3">
+                <p className="text-[11px] font-medium uppercase tracking-wider text-muted">
+                  {row.label}
+                </p>
+                <p className={cn("mt-2 font-mono text-lg font-semibold tabular-nums", gapToneClass(row.value))}>
+                  {formatLeaderGapFromSignedGap(row.value)}
+                </p>
+                <p className="mt-2 text-xs leading-relaxed text-muted">{row.detail}</p>
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-4 text-sm leading-relaxed text-foreground/85">
+            Lectura directa: el Perú pendiente más JEE todavía deja el cierre
+            alrededor de {formatLeaderGapFromSignedGap(componentRead.peruOnlyExpectedGapKeikoMinusSanchez)}.
+            Si se añade exterior con una ventaja neta de 30 puntos para Keiko,
+            el cierre pasa a {formatLeaderGapFromSignedGap(componentRead.peruPlusExteriorThirtyPpGapKeikoMinusSanchez)}.
+          </p>
+          <p className="mt-2 text-xs leading-relaxed text-muted">
+            {componentRead.note} El exterior usado aquí es agregado, sin países,
+            con {formatVotes(componentRead.foreignValidVotesUsed)} votos válidos
+            estimados.
+          </p>
+          {districtPreview.length > 0 && (
+            <div className="mt-4 rounded-lg border border-card-border bg-background/60 p-3">
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted">
+                    Distritos que más mueven el cierre
+                  </p>
+                  <p className="mt-1 text-xs leading-relaxed text-muted">
+                    Top 3 del ranking ciudad/distrito; combina actas pendientes
+                    y JEE con el patrón local auditado.
+                  </p>
+                </div>
+                <a
+                  href="#distritos-criticos"
+                  className="text-xs font-semibold text-onpe underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  Ver tabla completa
+                </a>
+              </div>
+              <div className="mt-3 grid gap-2 md:grid-cols-3">
+                {districtPreview.map((row) => (
+                  <div key={row.dist_ubigeo} className="rounded-md border border-card-border bg-card p-3">
+                    <p className="text-sm font-medium text-foreground">
+                      {row.district_or_city}
+                    </p>
+                    <p className="mt-1 text-xs text-muted">
+                      {row.province_or_country}, {row.department_or_continent}
+                    </p>
+                    <p className="mt-2 font-mono text-sm font-semibold tabular-nums">
+                      pend. {formatVotes(row.pending_actas)} · JEE {formatVotes(row.jee_actas)}
+                    </p>
+                    <p
+                      className={cn(
+                        "mt-1 font-mono text-sm font-semibold tabular-nums",
+                        gapToneClass(row.city_weighted_margin_keiko_minus_roberto),
+                      )}
+                    >
+                      {formatLeaderGapFromSignedGap(row.city_weighted_margin_keiko_minus_roberto)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
         {cleanRead && (
           <div className="rounded-xl border border-onpe/30 bg-onpe-muted p-4">
             <div className="grid gap-3 lg:grid-cols-[1fr_1fr_1fr]">
@@ -695,10 +875,9 @@ function HowTo100Panel({
               </div>
             </div>
             <p className="mt-4 text-sm leading-relaxed text-foreground/85">
-              No hay contradicción matemática: sin exterior, el Perú proyectado puede
-              seguir favoreciendo a Sánchez; con un exterior de +30 pp para Keiko, el
-              exterior supera esa brecha y revierte el cierre. Las actas JEE se
-              mantienen separadas porque legalmente no son votos ya contabilizados.
+              No hay contradicción matemática: sin exterior, la lectura puede seguir
+              favoreciendo a Sánchez; con exterior +30 pp para Keiko, ese bloque puede
+              revertir el cierre. JEE queda separado porque no es voto ya contabilizado.
             </p>
           </div>
         )}
@@ -1078,9 +1257,9 @@ function ErrorBudgetPanel({ rows }: { rows: ErrorBudgetRow[] }) {
       <CardHeader>
         <div className="flex items-center justify-between gap-3">
           <div>
-            <CardTitle>Presupuesto de error real</CardTitle>
+            <CardTitle>Presupuesto de incertidumbre del modelo</CardTitle>
             <CardDescription>
-              Separado por fuente de incertidumbre; no es un único MOE simple.
+              Separado por fuente de incertidumbre; no es un único margen de error muestral.
             </CardDescription>
           </div>
           <ShieldCheck className="h-5 w-5 text-alerta" aria-hidden="true" />
@@ -1619,8 +1798,8 @@ function FollowCta() {
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-muted">
             Publicaré lecturas, cambios de modelo y señales relevantes conforme
-            avance ONPE/JNE. La página evita proclamar ganador antes de que la
-            evidencia estadística sea suficientemente robusta.
+            avance ONPE/JNE. La página nunca proclama ganador legal: solo muestra
+            escenarios y riesgos hasta el cierre oficial.
           </p>
         </div>
         <a
@@ -1647,6 +1826,7 @@ export function PredictionClient({ initialPrediction }: { initialPrediction: Pre
     staleTime: ONPE_POLL_INTERVAL_MS,
   });
   const territorialQuery = useOnpeTerritorial();
+  const jeeModelQuery = useOnpeJeeModel();
 
   const scenariosForTable = useMemo(() => data.scenarios, [data.scenarios]);
 
@@ -1666,6 +1846,8 @@ export function PredictionClient({ initialPrediction }: { initialPrediction: Pre
       <HowTo100Panel
         prediction={data}
         territorial={territorialQuery.data}
+        jeeModel={jeeModelQuery.data}
+        isJeeFetching={jeeModelQuery.isFetching}
         isLoading={territorialQuery.isLoading}
       />
       <TrendSignalsPanel rows={data.trendSignals} />

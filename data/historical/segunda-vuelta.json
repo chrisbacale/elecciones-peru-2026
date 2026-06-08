@@ -551,9 +551,11 @@
           "sampleSize": 117199,
           "sampleSizeVerified": false,
           "marginOfError": 1.0,
-          "sampleSizeNote": "Muestra no verificada en ficha primaria localizada",
-          "methodologyNote": "Margen reportado por Datum; nivel de confianza y muestra no verificados en fuente primaria localizada",
-          "source": "Datum"
+          "sampleSizeNote": "Dato de muestra pendiente de reconciliar con la ficha pública localizada",
+          "methodologyNote": "Margen reportado por Datum; nivel de confianza y muestra no tratados como primarios hasta reconciliación documental",
+          "source": "Datum",
+          "sourceUrl": "https://www.datum.com.pe/new_web_files/files/pdf/ELECCIONES%202026%20-%202%20Vuelta%20-%20Informe%20CONTEO%20R%C3%81PIDO_260607104858.pdf",
+          "sourceQuality": "secondary"
         }
       },
       "onpe100": null,

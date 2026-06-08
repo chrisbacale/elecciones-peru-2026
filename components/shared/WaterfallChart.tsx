@@ -59,7 +59,9 @@ export function WaterfallChart({ data }: { data: MovementStage[] }) {
           />
           <ReferenceLine y={0} stroke="var(--chart-axis)" />
           <Tooltip
+            allowEscapeViewBox={{ x: true, y: true }}
             cursor={{ fill: "var(--accent)" }}
+            wrapperStyle={{ zIndex: 60, outline: "none" }}
             content={
               <ChartTooltip
                 nameFormatter={() => "Margen"}

@@ -67,6 +67,8 @@ export function MarginEvolutionChart({
             width={56}
           />
           <Tooltip
+            allowEscapeViewBox={{ x: true, y: true }}
+            wrapperStyle={{ zIndex: 60, outline: "none" }}
             content={
               <ChartTooltip
                 nameFormatter={(name) =>

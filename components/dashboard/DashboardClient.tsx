@@ -378,9 +378,10 @@ export function DashboardClient() {
             </p>
             <p>
               <strong className="text-foreground">ONPE parcial ({advancePct.toFixed(1)}%):</strong>{" "}
-              Keiko adelanta con +{onpeMargin.toFixed(3)} pp, pero el escrutinio está incompleto.
-              El interior favorece a Sánchez; el resultado puede revertirse con
-              el avance restante.
+              {onpe?.marginLeader ?? "La ventaja parcial"}{" "}
+              marca {Math.abs(onpeMargin).toFixed(3)} pp en el escrutinio contabilizado,
+              pero el cómputo sigue incompleto y no equivale a proclamación.
+              El avance restante puede cambiar la lectura operativa.
             </p>
             <p>
               <strong className="text-foreground">Promedio CR:</strong> Sánchez{" "}

@@ -142,7 +142,7 @@ export function CityForecastPanel() {
   const { data, isLoading, isFetching, isError } = useOnpeCityForecast();
 
   return (
-    <Card className="border-onpe/30">
+    <Card id="distritos-criticos" className="border-onpe/30">
       <CardHeader>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
@@ -185,13 +185,13 @@ export function CityForecastPanel() {
               </div>
               <div className="rounded-lg border border-card-border bg-card p-4">
                 <p className="text-xs font-medium uppercase tracking-wider text-muted">
-                  Perú interior
+                  Perú no resuelto
                 </p>
                 <p className={cn("mt-2 font-mono text-xl font-semibold tabular-nums", gapClass(data.aggregates.peru.margin_keiko_minus_roberto))}>
                   {leaderGap(data.aggregates.peru.margin_keiko_minus_roberto)}
                 </p>
                 <p className="mt-2 text-xs text-muted">
-                  {formatVotes(data.aggregates.peru.pending_actas)} pendientes ·{" "}
+                  Incluye {formatVotes(data.aggregates.peru.pending_actas)} pendientes ·{" "}
                   {formatVotes(data.aggregates.peru.jee_actas)} JEE.
                 </p>
               </div>
@@ -208,7 +208,7 @@ export function CityForecastPanel() {
               </div>
               <div className="rounded-lg border border-card-border bg-card p-4">
                 <p className="text-xs font-medium uppercase tracking-wider text-muted">
-                  Base oficial actual
+                  Base oficial del corte
                 </p>
                 <p className={cn("mt-2 font-mono text-xl font-semibold tabular-nums", gapClass(data.officialCurrent.margin_keiko_minus_roberto))}>
                   {leaderGap(data.officialCurrent.margin_keiko_minus_roberto)}
@@ -221,7 +221,7 @@ export function CityForecastPanel() {
 
             <div className="grid gap-3 lg:grid-cols-3">
               <ScenarioCard
-                label="Ciudad ponderada"
+                label="Base ciudad: pendiente + JEE"
                 scenario={data.scenarios.city_weighted_current}
               />
               <ScenarioCard
@@ -258,14 +258,15 @@ export function CityForecastPanel() {
                   Distritos peruanos críticos
                 </h3>
                 <p className="text-xs text-muted">
-                  Incluye actas pendientes y actas en JEE; no incluye detalle de
-                  países del exterior.
+                  Incluye actas pendientes y actas en JEE; muestra todas las
+                  filas peruanas publicadas por el ranking compacto.
                 </p>
               </div>
               <ResponsiveTable
-                data={data.topDistrictsPeru.slice(0, 16)}
+                data={data.topDistrictsPeru}
                 keyExtractor={(row) => row.dist_ubigeo}
                 columns={districtColumns}
+                caption="Ranking disponible de distritos peruanos críticos"
               />
             </div>
 
@@ -273,7 +274,11 @@ export function CityForecastPanel() {
               Método: cada distrito con actas no resueltas se estima por separado.
               Si tiene votos actuales suficientes, usa el share observado; con
               pocos votos mezcla ese share con el modelo previo; sin votos usa el
-              modelo distrital anterior. {data.privacyNote}
+              modelo distrital anterior. Cobertura publicada:{" "}
+              {formatVotes(data.topDistrictsPeru.length)} distritos peruanos del
+              ranking disponible sobre {formatVotes(data.unresolvedLeafCount)}{" "}
+              unidades no resueltas del análisis fuente.{" "}
+              {data.publishedCoverage?.note ?? data.privacyNote}
             </p>
           </>
         )}
