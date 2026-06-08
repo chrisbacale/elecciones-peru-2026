@@ -12,26 +12,26 @@
       "type": "oficial",
       "instrument": "Escrutinio parcial",
       "url": "https://resultadosegundavuelta.onpe.gob.pe/main/resumen",
-      "publishedAt": "2026-06-08T03:26:01-05:00",
+      "publishedAt": "2026-06-08T04:16:00.854-05:00",
       "data": {
-        "a": 50.608,
-        "b": 49.392,
+        "a": 50.46,
+        "b": 49.54,
         "labelA": "Keiko",
         "labelB": "Sánchez",
-        "marginPp": 1.216,
+        "marginPp": 0.92,
         "marginLeader": "a",
-        "votesA": 8580566,
-        "votesB": 8374457,
-        "advancePct": 89.344,
-        "actasProcesadas": 82881,
+        "votesA": 8639146,
+        "votesB": 8481592,
+        "advancePct": 90.488,
+        "actasProcesadas": 83942,
         "actasTotal": 92766,
-        "actasPendientes": 8408,
-        "actasJee": 1477,
-        "actasPendientesPct": 9.064,
-        "actasJeePct": 1.592,
+        "actasPendientes": 7335,
+        "actasJee": 1489,
+        "actasPendientesPct": 7.907,
+        "actasJeePct": 1.605,
         "actasNote": "Corte primario ONPE verificado por endpoints XHR: resumen-general/totales y participantes con idEleccion=10."
       },
-      "notes": "Corte ONPE al 89.344% verificado el 08/06/2026 03:26 PET: Keiko 50.608% y Sánchez 49.392%. No es muestra aleatoria; sin margen de error estadístico. El bloque no contabilizado incluye actas pendientes y enviadas al JEE."
+      "notes": "Corte ONPE al 90.488% verificado el 08/06/2026 04:16 PET: Keiko 50.460% y Sánchez 49.540%. No es muestra aleatoria; sin margen de error estadístico. El bloque no contabilizado incluye 1,489 actas enviadas al JEE y 7,335 pendientes."
     },
     {
       "id": "onpe-parcial-prev",
@@ -102,7 +102,7 @@
       "name": "Ipsos/Transparencia",
       "type": "muestra",
       "instrument": "Conteo rápido 100%",
-      "url": "https://rpp.pe/politica/elecciones/resultados-conteo-rapido-integral-ipsos-transparencia-100-votos-segunda-vuelta-2026-elecciones-noticia-1692002",
+      "url": "https://www.ipsos.com/es-pe/conteo-rapido-integral-de-ipsos-peru-por-encargo-de-transparencia-segunda-vuelta-2026",
       "publishedAt": "2026-06-08T00:00:00-05:00",
       "data": {
         "a": 49.7,
@@ -113,10 +113,10 @@
         "marginLeader": "b",
         "sampleSize": 1037,
         "marginOfError": 1.9,
-        "marginOfErrorNote": "±1.9 pp reportado por Transparencia en cobertura de La República; ficha primaria pública de segunda vuelta no localizada en esta auditoría",
+        "marginOfErrorNote": "±1.9 pp para el resultado nacional según informe primario Ipsos/Transparencia; muestra de 1,037 actas, 95% de confianza.",
         "confidence": 95,
-        "sourceQuality": "secondary",
-        "sourceUrl": "https://larepublica.pe/amp/politica/2026/06/07/conteo-rapido-al-100-roberto-sanchez-con-503-y-keiko-fujimori-con-497-segun-ipsos-hnews-71183"
+        "sourceQuality": "primary",
+        "sourceUrl": "https://www.ipsos.com/es-pe/conteo-rapido-integral-de-ipsos-peru-por-encargo-de-transparencia-segunda-vuelta-2026"
       },
       "notes": "Empate técnico; 1,037 actas aleatorias en 27 circunscripciones; actas validadas al 99.5%"
     },
@@ -196,15 +196,15 @@
       "interior": { "a": 43.9, "b": 56.1, "leader": "Sánchez" },
       "regiones_cr": { "a": 42.6, "b": 57.4, "leader": "Sánchez" },
       "lima_cr": { "a": 63.6, "b": 36.4, "leader": "Keiko" },
-      "urbano": { "a": 55.5, "b": 44.5, "leader": "Keiko" },
-      "rural": { "a": 32.2, "b": 67.8, "leader": "Sánchez" },
-      "costa": { "a": 63.0, "b": 37.0, "leader": "Keiko" },
-      "sierra": { "a": 31.3, "b": 68.7, "leader": "Sánchez" },
-      "selva": { "a": 43.8, "b": 56.2, "leader": "Sánchez" },
-      "norte": { "a": 51.5, "b": 48.5, "leader": "Keiko" },
-      "centro": { "a": 52.3, "b": 47.7, "leader": "Keiko" },
-      "sur": { "a": 26.1, "b": 73.9, "leader": "Sánchez" },
-      "oriente": { "a": 43.8, "b": 56.2, "leader": "Sánchez" }
+      "urbano": { "a": 53.9, "b": 46.1, "leader": "Keiko" },
+      "rural": { "a": 31.0, "b": 69.0, "leader": "Sánchez" },
+      "costa": { "a": 60.5, "b": 39.5, "leader": "Keiko" },
+      "sierra": { "a": 29.8, "b": 70.2, "leader": "Sánchez" },
+      "selva": { "a": 41.4, "b": 58.6, "leader": "Sánchez" },
+      "norte": { "a": 52.4, "b": 47.6, "leader": "Keiko" },
+      "centro": { "a": 48.5, "b": 51.5, "leader": "Sánchez" },
+      "sur": { "a": 25.0, "b": 75.0, "leader": "Sánchez" },
+      "oriente": { "a": 42.6, "b": 57.4, "leader": "Sánchez" }
     },
     "datum": {
       "amazonas": { "a": 34.74, "b": 65.26, "leader": "Sánchez" },
@@ -246,6 +246,10 @@
     { "stage": "ONPE 80.988%", "marginPp": 3.344, "leader": "Keiko" },
     { "stage": "ONPE 81.865%", "marginPp": 3.142, "leader": "Keiko" },
     { "stage": "ONPE 85.484%", "marginPp": 2.162, "leader": "Keiko" },
-    { "stage": "ONPE 89.344%", "marginPp": 1.216, "leader": "Keiko" }
+    { "stage": "ONPE 89.344%", "marginPp": 1.216, "leader": "Keiko" },
+    { "stage": "ONPE 89.921%", "marginPp": 1.096, "leader": "Keiko" },
+    { "stage": "ONPE 90.020%", "marginPp": 1.062, "leader": "Keiko" },
+    { "stage": "ONPE 90.258%", "marginPp": 1.016, "leader": "Keiko" },
+    { "stage": "ONPE 90.488%", "marginPp": 0.92, "leader": "Keiko" }
   ]
 }

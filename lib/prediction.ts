@@ -35,6 +35,8 @@ export type ProjectionSummary = {
   modelName: string;
   seed: number;
   simulations: number;
+  countedWeightPct: number;
+  weightingNote: string;
   leader: "Keiko" | "Sanchez" | "Empate";
   keikoMedianPct: number;
   sanchezMedianPct: number;
@@ -48,6 +50,7 @@ export type ProjectionSummary = {
   probabilityPracticalTie: number;
   epsilonPp: number;
   currentLeaderReversalRisk: number;
+  currentLeaderNonHoldRisk: number;
   noCallReason: string;
   methodNote: string;
   histogram: Array<{ bucket: string; count: number; pct: number }>;
@@ -69,6 +72,16 @@ export type CriticalDriverRow = {
   estimatedVotes?: number | null;
   sanchezPct: number;
   impactPp: number;
+  note: string;
+};
+
+export type TrendSignalRow = {
+  id: string;
+  label: string;
+  value: number;
+  unit: "pct" | "pp" | "votes" | "actas";
+  tone: ScenarioRow["tone"];
+  detail: string;
   note: string;
 };
 
@@ -110,6 +123,7 @@ export type PredictionSnapshot = {
   projection: ProjectionSummary;
   errorBudget: ErrorBudgetRow[];
   criticalDrivers: CriticalDriverRow[];
+  trendSignals: TrendSignalRow[];
   requirements: RequirementRow[];
   scenarios: ScenarioRow[];
   eta: {
@@ -150,7 +164,7 @@ const HISTORICAL_CUTS: CompletionCut[] = [
 ];
 
 const SIMULATION_COUNT = 20_000;
-const MODEL_VERSION = "prediction-v2.1";
+const MODEL_VERSION = "prediction-v2.2";
 const PRACTICAL_TIE_EPSILON_PP = 0.1;
 const EXTERIOR_VALID_VOTE_ESTIMATE = Math.round(1_194_172 * 0.34 * 0.94);
 
@@ -525,7 +539,18 @@ function getLateDomesticMean(): number {
   return 0.58 * regional + 0.22 * selva + 0.2 * sierra;
 }
 
-function getLateOnpeDeltaSanchezPct(onpe: OnpeResumen): number | null {
+type LateOnpeDelta = {
+  previousAdvancePct: number | null;
+  currentAdvancePct: number;
+  advanceDeltaPct: number | null;
+  votesKeiko: number;
+  votesSanchez: number;
+  totalVotes: number;
+  sanchezPct: number;
+  sanchezPctShift: number | null;
+};
+
+function getLateOnpeDelta(onpe: OnpeResumen): LateOnpeDelta | null {
   const previous = getSource("onpe-parcial-prev").data;
   const previousA = previous.votesA;
   const previousB = previous.votesB;
@@ -546,7 +571,28 @@ function getLateOnpeDeltaSanchezPct(onpe: OnpeResumen): number | null {
   const deltaB = currentB - previousB;
   const totalDelta = deltaA + deltaB;
   if (totalDelta <= 0) return null;
-  return round((deltaB / totalDelta) * 100, 3);
+  return {
+    previousAdvancePct: previous.advancePct ?? null,
+    currentAdvancePct: onpe.advancePct,
+    advanceDeltaPct:
+      previous.advancePct == null ? null : round(onpe.advancePct - previous.advancePct, 3),
+    votesKeiko: deltaA,
+    votesSanchez: deltaB,
+    totalVotes: totalDelta,
+    sanchezPct: round((deltaB / totalDelta) * 100, 3),
+    sanchezPctShift:
+      previous.b == null ? null : round(onpe.candidates.sanchez.pct - previous.b, 3),
+  };
+}
+
+function getLateOnpeDeltaSanchezPct(onpe: OnpeResumen): number | null {
+  return getLateOnpeDelta(onpe)?.sanchezPct ?? null;
+}
+
+function estimateMarginShiftFromPending(onpe: OnpeResumen, pendingSanchezPct: number): number {
+  const pendingWeight = 1 - onpe.advancePct / 100;
+  const finalSanchezShift = pendingWeight * (pendingSanchezPct - onpe.candidates.sanchez.pct);
+  return round(finalSanchezShift * 2, 2);
 }
 
 function buildProjection(onpe: OnpeResumen): ProjectionSummary {
@@ -560,7 +606,8 @@ function buildProjection(onpe: OnpeResumen): ProjectionSummary {
       : 0.16;
   const exteriorMean = flashElectoral.territorial.datum?.extranjero?.b ?? 37.33;
   const domesticMean = getLateDomesticMean();
-  const lateDeltaMean = getLateOnpeDeltaSanchezPct(onpe) ?? domesticMean;
+  const lateDelta = getLateOnpeDelta(onpe);
+  const lateDeltaMean = lateDelta?.sanchezPct ?? domesticMean;
   const territorialPendingMean =
     exteriorVoteWeight * exteriorMean + (1 - exteriorVoteWeight) * domesticMean;
   const historicalSigma = Math.max(0.25, metrics.conteoRapido.candidateError.mean);
@@ -571,8 +618,11 @@ function buildProjection(onpe: OnpeResumen): ProjectionSummary {
   const seed = hashSeed(
     [
       MODEL_VERSION,
-      onpe.timestamp,
       onpe.advancePct,
+      onpe.actasProcesadas,
+      onpe.actasTotal,
+      onpe.actasEnviadasJee,
+      onpe.actasPendientesJee,
       onpe.candidates.keiko.votes,
       onpe.candidates.sanchez.votes,
     ].join("|"),
@@ -594,11 +644,20 @@ function buildProjection(onpe: OnpeResumen): ProjectionSummary {
     const lateDeltaDraw = normal(rand, lateDeltaMean, 3.1);
     const statusQuoDraw = normal(rand, onpe.candidates.sanchez.pct, 1.1);
     const residualNoise = normal(rand, 0, 1.2);
+    const regimeRoll = rand();
+    const structuralDraw =
+      regimeRoll < 0.34
+        ? quickPendingTarget
+        : regimeRoll < 0.58
+          ? lateDeltaDraw
+          : regimeRoll < 0.82
+            ? territorialDraw
+            : statusQuoDraw;
     const pendingSanchezPct = clamp(
-      0.42 * quickPendingTarget +
-        0.28 * territorialDraw +
-        0.2 * lateDeltaDraw +
-        0.1 * statusQuoDraw +
+      0.62 * structuralDraw +
+        0.24 * quickPendingTarget +
+        0.08 * territorialDraw +
+        0.06 * statusQuoDraw +
         residualNoise,
       30,
       75,
@@ -614,20 +673,50 @@ function buildProjection(onpe: OnpeResumen): ProjectionSummary {
 
   const sanchezMedian = percentile(sanchezShares, 0.5);
   const signedMarginMedian = percentile(signedMargins, 0.5);
+  const sanchezCi80: [number, number] = [
+    round(percentile(sanchezShares, 0.1), 3),
+    round(percentile(sanchezShares, 0.9), 3),
+  ];
+  const sanchezCi95: [number, number] = [
+    round(percentile(sanchezShares, 0.025), 3),
+    round(percentile(sanchezShares, 0.975), 3),
+  ];
+  const signedMarginCi80: [number, number] = [
+    round(percentile(signedMargins, 0.1), 3),
+    round(percentile(signedMargins, 0.9), 3),
+  ];
+  const signedMarginCi95: [number, number] = [
+    round(percentile(signedMargins, 0.025), 3),
+    round(percentile(signedMargins, 0.975), 3),
+  ];
   const sanchezLeads = signedMargins.filter((value) => value < -PRACTICAL_TIE_EPSILON_PP).length;
   const keikoLeads = signedMargins.filter((value) => value > PRACTICAL_TIE_EPSILON_PP).length;
   const practicalTies = SIMULATION_COUNT - sanchezLeads - keikoLeads;
-  const probabilitySanchez = (sanchezLeads + 0.5) / (SIMULATION_COUNT + 1);
-  const probabilityKeiko = (keikoLeads + 0.5) / (SIMULATION_COUNT + 1);
-  const probabilityPracticalTie = practicalTies / SIMULATION_COUNT;
+  const alpha = 0.5;
+  const probabilityDenominator = SIMULATION_COUNT + 3 * alpha;
+  const probabilitySanchez = (sanchezLeads + alpha) / probabilityDenominator;
+  const probabilityKeiko = (keikoLeads + alpha) / probabilityDenominator;
+  const probabilityPracticalTie = (practicalTies + alpha) / probabilityDenominator;
   const currentLeaderIsKeiko = onpe.candidates.keiko.pct >= onpe.candidates.sanchez.pct;
   const currentLeaderReversalRisk = currentLeaderIsKeiko ? probabilitySanchez : probabilityKeiko;
+  const currentLeaderNonHoldRisk =
+    currentLeaderReversalRisk + probabilityPracticalTie * 0.5;
+  const leaderProbabilityPct = Math.max(probabilityKeiko, probabilitySanchez) * 100;
+  const ci95CrossesZero = signedMarginCi95[0] <= 0 && signedMarginCi95[1] >= 0;
+  const noCallReason = ci95CrossesZero
+    ? "El intervalo 95% del margen cruza 0: todavía hay masa estadística a ambos lados del empate."
+    : leaderProbabilityPct < 90
+      ? "La probabilidad modelada de liderazgo no alcanza el umbral prudente de 90%."
+      : "La proyección muestra ventaja, pero no equivale a proclamación oficial ONPE/JNE.";
 
   return {
     modelVersion: MODEL_VERSION,
-    modelName: "Monte Carlo determinístico ONPE + CR + territorio",
+    modelName: "Monte Carlo determinístico por regímenes ONPE + CR",
     seed,
     simulations: SIMULATION_COUNT,
+    countedWeightPct: round(onpe.advancePct, 3),
+    weightingNote:
+      "El peso observado usa actas contabilizadas como proxy del peso de votos válidos porque ONPE publica avance de actas, no un denominador final de votos válidos. Es una fuente explícita de riesgo del modelo.",
     leader:
       Math.abs(signedMarginMedian) < 0.005
         ? "Empate"
@@ -636,26 +725,20 @@ function buildProjection(onpe: OnpeResumen): ProjectionSummary {
           : "Sanchez",
     keikoMedianPct: round(100 - sanchezMedian, 3),
     sanchezMedianPct: round(sanchezMedian, 3),
-    sanchezCi80: [round(percentile(sanchezShares, 0.1), 3), round(percentile(sanchezShares, 0.9), 3)],
-    sanchezCi95: [round(percentile(sanchezShares, 0.025), 3), round(percentile(sanchezShares, 0.975), 3)],
+    sanchezCi80,
+    sanchezCi95,
     signedMarginMedianPp: round(signedMarginMedian, 3),
-    signedMarginCi80Pp: [
-      round(percentile(signedMargins, 0.1), 3),
-      round(percentile(signedMargins, 0.9), 3),
-    ],
-    signedMarginCi95Pp: [
-      round(percentile(signedMargins, 0.025), 3),
-      round(percentile(signedMargins, 0.975), 3),
-    ],
+    signedMarginCi80Pp: signedMarginCi80,
+    signedMarginCi95Pp: signedMarginCi95,
     probabilityKeikoLead: round(probabilityKeiko * 100, 2),
     probabilitySanchezLead: round(probabilitySanchez * 100, 2),
     probabilityPracticalTie: round(probabilityPracticalTie * 100, 2),
     epsilonPp: PRACTICAL_TIE_EPSILON_PP,
     currentLeaderReversalRisk: round(currentLeaderReversalRisk * 100, 2),
-    noCallReason:
-      "El intervalo 95% del margen cruza 0 y la probabilidad de liderazgo no alcanza el umbral prudente de 90%.",
+    currentLeaderNonHoldRisk: round(currentLeaderNonHoldRisk * 100, 2),
+    noCallReason,
     methodNote:
-      "Simulación determinística: ONPE observado fijo, conteos rápidos como mediciones ruidosas con MOE, error histórico de CR, perfil territorial tardío y estrés exterior ponderado por votos válidos estimados.",
+      "Simulación determinística por regímenes alternativos: ancla de conteos rápidos, delta ONPE tardío, composición territorial y status quo. Las probabilidades son de liderazgo modelado, no proclamación oficial.",
     histogram: buildHistogram(signedMargins),
   };
 }
@@ -713,7 +796,7 @@ function buildCriticalDrivers(onpe: OnpeResumen): CriticalDriverRow[] {
       : null;
   const exteriorMean = flashElectoral.territorial.datum?.extranjero?.b ?? 37.33;
   const domesticMean = getLateDomesticMean();
-  const lateDelta = getLateOnpeDeltaSanchezPct(onpe);
+  const lateDelta = getLateOnpeDelta(onpe);
 
   return [
     {
@@ -722,8 +805,8 @@ function buildCriticalDrivers(onpe: OnpeResumen): CriticalDriverRow[] {
       source: "ONPE actual vs corte con votos absolutos previo",
       pendingActas: actasNoContabilizadas,
       estimatedVotes: pendingValidVotes,
-      sanchezPct: lateDelta ?? domesticMean,
-      impactPp: 1.4,
+      sanchezPct: lateDelta?.sanchezPct ?? domesticMean,
+      impactPp: estimateMarginShiftFromPending(onpe, lateDelta?.sanchezPct ?? domesticMean),
       note: "Si el patrón de las actas recién incorporadas continúa, el bloque pendiente favorece más a Sánchez que el ONPE acumulado.",
     },
     {
@@ -734,7 +817,7 @@ function buildCriticalDrivers(onpe: OnpeResumen): CriticalDriverRow[] {
       estimatedVotes:
         pendingValidVotes != null ? Math.max(0, pendingValidVotes - EXTERIOR_VALID_VOTE_ESTIMATE) : null,
       sanchezPct: round(domesticMean, 2),
-      impactPp: 2.2,
+      impactPp: estimateMarginShiftFromPending(onpe, domesticMean),
       note: "Si el pendiente nacional se parece al interior/regiones, empuja el cierre hacia Sánchez.",
     },
     {
@@ -744,7 +827,7 @@ function buildCriticalDrivers(onpe: OnpeResumen): CriticalDriverRow[] {
       pendingActas: 2_543,
       estimatedVotes: EXTERIOR_VALID_VOTE_ESTIMATE,
       sanchezPct: exteriorMean,
-      impactPp: -0.9,
+      impactPp: estimateMarginShiftFromPending(onpe, exteriorMean),
       note: "El conteo rápido Datum ubica el exterior más favorable a Keiko; se pondera por participación esperada, no por padrón.",
     },
     {
@@ -754,8 +837,80 @@ function buildCriticalDrivers(onpe: OnpeResumen): CriticalDriverRow[] {
       pendingActas: onpe.actasEnviadasJee ?? null,
       estimatedVotes: null,
       sanchezPct: onpe.candidates.sanchez.pct,
-      impactPp: 0.6,
+      impactPp: round((onpe.actasEnviadasJeePct ?? 0) / 2, 2),
       note: "Bloque legal-operativo con capacidad de mover un margen estrecho después del conteo operativo.",
+    },
+  ];
+}
+
+function buildTrendSignals(
+  onpe: OnpeResumen,
+  requirements: RequirementRow[],
+  projection: ProjectionSummary,
+): TrendSignalRow[] {
+  const voteGap =
+    onpe.candidates.keiko.votes != null && onpe.candidates.sanchez.votes != null
+      ? onpe.candidates.keiko.votes - onpe.candidates.sanchez.votes
+      : 0;
+  const lateDelta = getLateOnpeDelta(onpe);
+  const tieRequirement =
+    requirements.find((row) => row.id === "tie")?.requiredPendingSanchezPct ?? 50;
+  const currentLeaderTone: ScenarioRow["tone"] =
+    voteGap > 0 ? "keiko" : voteGap < 0 ? "sanchez" : "neutral";
+
+  return [
+    {
+      id: "official-gap",
+      label: "Brecha oficial ONPE",
+      value: Math.abs(voteGap),
+      unit: "votes",
+      tone: currentLeaderTone,
+      detail:
+        voteGap >= 0
+          ? "Keiko lidera el voto válido contabilizado."
+          : "Sánchez lidera el voto válido contabilizado.",
+      note: "Brecha observada, no proyección final.",
+    },
+    {
+      id: "late-delta",
+      label: "Delta ONPE reciente",
+      value: lateDelta?.sanchezPct ?? onpe.candidates.sanchez.pct,
+      unit: "pct",
+      tone:
+        (lateDelta?.sanchezPct ?? onpe.candidates.sanchez.pct) >= tieRequirement
+          ? "sanchez"
+          : "neutral",
+      detail:
+        lateDelta == null
+          ? "No hay votos absolutos suficientes para medir el delta reciente."
+          : `${lateDelta.totalVotes.toLocaleString("es-PE")} votos válidos añadidos desde ${lateDelta.previousAdvancePct ?? "corte previo"}%.`,
+      note:
+        lateDelta?.sanchezPctShift == null
+          ? "Señal de llegada tardía no disponible."
+          : `Sánchez subió ${lateDelta.sanchezPctShift.toFixed(3)} pp en el acumulado ONPE desde el corte previo.`,
+    },
+    {
+      id: "tie-threshold",
+      label: "Umbral que decide el empate",
+      value: tieRequirement,
+      unit: "pct",
+      tone: lateDelta != null && lateDelta.sanchezPct >= tieRequirement ? "sanchez" : "keiko",
+      detail: "Sánchez debe superar este porcentaje en lo no contabilizado.",
+      note: "Keiko retiene mayoría nacional si el bloque pendiente queda por debajo de este umbral.",
+    },
+    {
+      id: "modeled-margin",
+      label: "Margen mediano modelado",
+      value: projection.signedMarginMedianPp,
+      unit: "pp",
+      tone:
+        projection.signedMarginMedianPp > 0
+          ? "keiko"
+          : projection.signedMarginMedianPp < 0
+            ? "sanchez"
+            : "neutral",
+      detail: "Convención: positivo favorece a Keiko; negativo favorece a Sánchez.",
+      note: "Debe leerse junto con IC80/IC95 y no como resultado proclamado.",
     },
   ];
 }
@@ -829,6 +984,7 @@ export function buildPredictionSnapshot(onpeInput?: OnpeResumen): PredictionSnap
   const requirements = buildRequirementRows(onpe);
   const scenarios = buildScenarios(onpe, requirements);
   const projection = buildProjection(onpe);
+  const trendSignals = buildTrendSignals(onpe, requirements, projection);
   const status = getProjectionStatus(projection);
   const latestCut = { advancePct: onpe.advancePct, timestamp: onpe.timestamp };
   const eta = estimateCompletionEta([...HISTORICAL_CUTS, latestCut]);
@@ -864,6 +1020,7 @@ export function buildPredictionSnapshot(onpeInput?: OnpeResumen): PredictionSnap
     projection,
     errorBudget: buildErrorBudget(),
     criticalDrivers: buildCriticalDrivers(onpe),
+    trendSignals,
     requirements,
     scenarios,
     eta,

@@ -45,7 +45,7 @@ export function ChartTooltip({
   return (
     <div
       className={cn(
-        "min-w-40 rounded-lg border border-card-border bg-card px-3 py-2 text-card-foreground shadow-lg shadow-black/20",
+        "z-50 min-w-40 max-w-[min(20rem,calc(100vw-2rem))] rounded-lg border border-card-border bg-card/95 px-3 py-2 text-card-foreground shadow-xl shadow-black/30 ring-1 ring-border/40 backdrop-blur",
         className
       )}
     >
@@ -60,13 +60,13 @@ export function ChartTooltip({
           const name = entry.name ?? entry.dataKey;
 
           return (
-            <li key={`${entry.dataKey ?? entry.name}-${String(entry.value)}`} className="flex items-center gap-2 text-xs">
+            <li key={`${entry.dataKey ?? entry.name}-${String(entry.value)}`} className="flex items-start gap-2 text-xs">
               <span
                 className="inline-block h-2 w-2 shrink-0 rounded-full"
                 style={{ backgroundColor: color }}
                 aria-hidden="true"
               />
-              <span className="min-w-0 flex-1 truncate text-muted">
+              <span className="min-w-0 flex-1 text-muted">
                 {nameFormatter ? nameFormatter(name, entry) : name}
               </span>
               <span className="font-mono font-semibold tabular-nums text-foreground">

@@ -364,7 +364,7 @@ export function HistoricalResultMatrix({
                 </tr>
                 <tr className="border-t border-card-border/80 bg-accent/35">
                   <td colSpan={2} className="px-4 py-2 text-right">
-                    <span className="text-sm font-semibold italic text-muted underline decoration-slate-600 underline-offset-4">
+                    <span className="text-sm font-semibold italic text-muted underline decoration-border underline-offset-4">
                       diferencia
                     </span>
                   </td>

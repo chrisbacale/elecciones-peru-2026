@@ -3,17 +3,6 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  ReferenceLine,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
-import {
   Activity,
   AlertTriangle,
   Clock3,
@@ -23,7 +12,6 @@ import {
   ShieldCheck,
   Sigma,
 } from "lucide-react";
-import { ChartTooltip } from "@/components/charts/ChartTooltip";
 import { ONPE_POLL_INTERVAL_MS } from "@/components/providers/query-provider";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -41,6 +29,7 @@ import type {
   PredictionSnapshot,
   RequirementRow,
   ScenarioRow,
+  TrendSignalRow,
 } from "@/lib/prediction";
 import { cn } from "@/lib/utils";
 
@@ -74,6 +63,17 @@ function toneClass(tone: ScenarioRow["tone"]) {
   if (tone === "keiko") return "text-keiko";
   if (tone === "sanchez") return "text-sanchez";
   return "text-muted";
+}
+
+function formatSignalValue(row: TrendSignalRow) {
+  if (row.unit === "pct") return formatPct(row.value, 2);
+  if (row.unit === "pp") return formatPp(row.value, 3);
+  if (row.unit === "votes" || row.unit === "actas") return formatVotes(row.value);
+  return String(row.value);
+}
+
+function clampPct(value: number) {
+  return Math.max(0, Math.min(100, value * 100));
 }
 
 function StatusPanel({
@@ -220,6 +220,35 @@ function KpiGrid({ prediction, isFetching }: { prediction: PredictionResponse; i
   );
 }
 
+function TrendSignalsPanel({ rows }: { rows: TrendSignalRow[] }) {
+  return (
+    <Card className="border-onpe/25">
+      <CardHeader>
+        <CardTitle>Qué mirar primero</CardTitle>
+        <CardDescription>
+          Cuatro señales para leer la predicción sin perderse en todos los gráficos.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {rows.map((row) => (
+            <div key={row.id} className="rounded-lg border border-card-border bg-accent/35 p-4">
+              <p className="text-xs font-medium uppercase tracking-wider text-muted">
+                {row.label}
+              </p>
+              <p className={cn("mt-2 font-mono text-2xl font-semibold tabular-nums", toneClass(row.tone))}>
+                {formatSignalValue(row)}
+              </p>
+              <p className="mt-2 text-xs leading-relaxed text-foreground/85">{row.detail}</p>
+              <p className="mt-2 text-xs leading-relaxed text-muted">{row.note}</p>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 function OnpeVsQuickCounts({ prediction }: { prediction: PredictionResponse }) {
   return (
     <section className="grid gap-4 lg:grid-cols-3">
@@ -333,6 +362,7 @@ function ProjectionPanel({ prediction }: { prediction: PredictionResponse }) {
       : projection.leader === "Keiko"
         ? "text-keiko"
         : "text-muted";
+  const histogramMax = Math.max(1, ...projection.histogram.map((entry) => entry.pct));
 
   return (
     <section className="grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
@@ -362,13 +392,12 @@ function ProjectionPanel({ prediction }: { prediction: PredictionResponse }) {
               </p>
             </div>
             <div className="rounded-lg border border-card-border bg-accent/35 p-4">
-              <p className="text-xs text-muted">Riesgo de reversión</p>
+              <p className="text-xs text-muted">Riesgo de no retener liderazgo claro</p>
               <p className="mt-1 font-mono text-2xl font-semibold text-alerta tabular-nums">
-                {formatProbability(projection.currentLeaderReversalRisk)}
+                {formatProbability(projection.currentLeaderNonHoldRisk)}
               </p>
               <p className="mt-2 text-xs text-muted">
-                Prob. Sánchez {formatProbability(projection.probabilitySanchezLead)} ·
-                Keiko {formatProbability(projection.probabilityKeikoLead)} ·
+                Reversión estricta {formatProbability(projection.currentLeaderReversalRisk)} ·
                 empate práctico {formatProbability(projection.probabilityPracticalTie)}
               </p>
             </div>
@@ -397,6 +426,13 @@ function ProjectionPanel({ prediction }: { prediction: PredictionResponse }) {
             {projection.methodNote} Seed reproducible:{" "}
             <span className="font-mono text-foreground">{projection.seed}</span>.
           </p>
+          <p className="text-xs leading-relaxed text-muted">
+            Peso usado:{" "}
+            <span className="font-mono text-foreground">
+              {formatPct(projection.countedWeightPct, 3)}
+            </span>
+            . {projection.weightingNote}
+          </p>
         </CardContent>
       </Card>
 
@@ -408,56 +444,36 @@ function ProjectionPanel({ prediction }: { prediction: PredictionResponse }) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="h-80 w-full">
-            <ResponsiveContainer
-              width="100%"
-              height="100%"
-              minHeight={320}
-              initialDimension={{ width: 780, height: 320 }}
-            >
-              <BarChart
-                data={projection.histogram}
-                margin={{ top: 8, right: 8, left: 0, bottom: 56 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
-                <XAxis
-                  dataKey="bucket"
-                  stroke="var(--chart-axis)"
-                  fontSize={11}
-                  angle={-22}
-                  textAnchor="end"
-                  height={72}
-                />
-                <YAxis
-                  stroke="var(--chart-axis)"
-                  fontSize={12}
-                  tickFormatter={(value) => `${value}%`}
-                />
-                <Tooltip
-                  cursor={{ fill: "var(--accent)" }}
-                  content={
-                    <ChartTooltip
-                      nameFormatter={() => "Simulaciones"}
-                      valueFormatter={(value) =>
-                        typeof value === "number" ? formatPct(value, 2) : "—"
-                      }
-                    />
-                  }
-                />
-                <Bar dataKey="pct" radius={[6, 6, 0, 0]}>
-                  {projection.histogram.map((entry) => (
-                    <Cell
-                      key={entry.bucket}
-                      fill={
-                        entry.bucket.startsWith("Keiko")
-                          ? "var(--keiko)"
-                          : "var(--sanchez)"
-                      }
-                    />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="overflow-x-auto pb-2">
+            <div className="min-w-[720px]">
+              <div className="flex h-72 items-end gap-2 border-b border-l border-card-border px-3 pt-3">
+                {projection.histogram.map((entry) => {
+                  const favorsKeiko = entry.bucket.startsWith("Keiko");
+                  return (
+                    <div key={entry.bucket} className="flex h-full flex-1 flex-col justify-end gap-2">
+                      <div className="text-center font-mono text-xs text-muted">
+                        {formatPct(entry.pct, 1)}
+                      </div>
+                      <div
+                        title={`${entry.bucket}: ${formatVotes(entry.count)} simulaciones (${formatPct(entry.pct, 2)})`}
+                        className={cn(
+                          "min-h-1 rounded-t-md transition-opacity hover:opacity-80",
+                          favorsKeiko ? "bg-keiko" : "bg-sanchez",
+                        )}
+                        style={{ height: `${Math.max(2, (entry.pct / histogramMax) * 220)}px` }}
+                        role="img"
+                        aria-label={`${entry.bucket}: ${formatPct(entry.pct, 2)} de simulaciones`}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="mt-2 grid grid-cols-8 gap-2 px-3 text-center text-[11px] leading-tight text-muted">
+                {projection.histogram.map((entry) => (
+                  <span key={entry.bucket}>{entry.bucket}</span>
+                ))}
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -682,48 +698,35 @@ function RequirementChart({ rows }: { rows: RequirementRow[] }) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-72 w-full">
-          <ResponsiveContainer
-            width="100%"
-            height="100%"
-            minHeight={288}
-            initialDimension={{ width: 720, height: 288 }}
-          >
-            <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 24 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
-              <ReferenceLine y={50} stroke="var(--chart-axis)" strokeDasharray="4 4" />
-              <XAxis dataKey="label" stroke="var(--chart-axis)" fontSize={12} />
-              <YAxis
-                domain={[45, 62]}
-                stroke="var(--chart-axis)"
-                fontSize={12}
-                tickFormatter={(value) => `${value}%`}
-              />
-              <Tooltip
-                cursor={{ fill: "var(--accent)" }}
-                content={
-                  <ChartTooltip
-                    nameFormatter={() => "Sánchez pendiente"}
-                    valueFormatter={(value) =>
-                      typeof value === "number" ? formatPct(value, 2) : "—"
-                    }
+        <div className="space-y-4">
+          {data.map((entry) => {
+            const value = entry.required ?? 0;
+            const width = clampPct((value - 45) / 20);
+            return (
+              <div key={entry.label}>
+                <div className="mb-1 flex items-center justify-between gap-3 text-xs">
+                  <span className="font-medium text-foreground">{entry.label}</span>
+                  <span className="font-mono text-sanchez">{maybePct(entry.required, 2)}</span>
+                </div>
+                <div className="relative h-7 rounded-md border border-card-border bg-accent/45">
+                  <div className="absolute bottom-0 left-1/4 top-0 border-l border-dashed border-card-border" />
+                  <div
+                    title={`${entry.label}: Sánchez necesita ${maybePct(entry.required, 2)} en lo pendiente`}
+                    className={cn(
+                      "h-full rounded-md transition-opacity hover:opacity-80",
+                      value >= 58 ? "bg-sanchez" : "bg-encuesta",
+                    )}
+                    style={{ width: `${width}%` }}
+                    role="img"
+                    aria-label={`${entry.label}: ${maybePct(entry.required, 2)}`}
                   />
-                }
-              />
-              <Bar dataKey="required" radius={[6, 6, 0, 0]}>
-                {data.map((entry) => (
-                  <Cell
-                    key={entry.label}
-                    fill={
-                      entry.required != null && entry.required >= 58
-                        ? "var(--sanchez)"
-                        : "var(--encuesta)"
-                    }
-                  />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+                </div>
+              </div>
+            );
+          })}
+          <p className="text-xs text-muted">
+            Escala visual: 45% a 65% del bloque pendiente; la línea punteada marca 50%.
+          </p>
         </div>
       </CardContent>
     </Card>
@@ -750,46 +753,39 @@ function ScenarioChart({ scenarios }: { scenarios: ScenarioRow[] }) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="overflow-x-auto pb-2">
-          <div className="h-80 min-w-[760px]">
-            <ResponsiveContainer
-              width="100%"
-              height="100%"
-              minHeight={320}
-              initialDimension={{ width: 920, height: 320 }}
-            >
-              <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 64 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
-              <ReferenceLine y={50} stroke="var(--chart-axis)" strokeDasharray="4 4" />
-              <XAxis
-                dataKey="label"
-                stroke="var(--chart-axis)"
-                fontSize={11}
-                angle={-20}
-                textAnchor="end"
-                height={72}
-              />
-              <YAxis
-                domain={[46, 54]}
-                stroke="var(--chart-axis)"
-                fontSize={12}
-                tickFormatter={(value) => `${value}%`}
-              />
-              <Tooltip
-                cursor={{ fill: "var(--accent)" }}
-                content={
-                  <ChartTooltip
-                    nameFormatter={(name) => (name === "keiko" ? "Keiko" : "Sánchez")}
-                    valueFormatter={(value) =>
-                      typeof value === "number" ? formatPct(value, 3) : "—"
-                    }
-                  />
-                }
-              />
-              <Bar dataKey="keiko" name="keiko" fill="var(--keiko)" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="sanchez" name="sanchez" fill="var(--sanchez)" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+        <div className="space-y-3">
+          {data.map((entry) => (
+            <div key={entry.label} className="grid gap-2 md:grid-cols-[12rem_1fr] md:items-center">
+              <div>
+                <p className="text-sm font-medium text-foreground">{entry.label}</p>
+                <p className="font-mono text-xs text-muted">
+                  K {formatPct(entry.keiko, 2)} / S {formatPct(entry.sanchez, 2)}
+                </p>
+              </div>
+              <div
+                className="relative h-8 overflow-hidden rounded-md border border-card-border bg-accent/45"
+                title={`${entry.label}: Keiko ${formatPct(entry.keiko, 3)} / Sánchez ${formatPct(entry.sanchez, 3)}`}
+                role="img"
+                aria-label={`${entry.label}: Keiko ${formatPct(entry.keiko, 2)} y Sánchez ${formatPct(entry.sanchez, 2)}`}
+              >
+                <div className="absolute bottom-0 left-1/2 top-0 z-10 border-l border-dashed border-card-border" />
+                <div className="flex h-full">
+                  <div className="h-full bg-keiko" style={{ width: `${entry.keiko}%` }} />
+                  <div className="h-full bg-sanchez" style={{ width: `${entry.sanchez}%` }} />
+                </div>
+              </div>
+            </div>
+          ))}
+          <div className="flex items-center gap-4 text-xs text-muted">
+            <span className="inline-flex items-center gap-1">
+              <span className="h-2.5 w-2.5 rounded-full bg-keiko" aria-hidden="true" />
+              Keiko
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <span className="h-2.5 w-2.5 rounded-full bg-sanchez" aria-hidden="true" />
+              Sánchez
+            </span>
+            <span>Línea punteada: 50%</span>
           </div>
         </div>
       </CardContent>
@@ -984,6 +980,7 @@ export function PredictionClient({ initialPrediction }: { initialPrediction: Pre
     queryKey: ["prediccion", "snapshot"],
     queryFn: fetchPrediction,
     initialData: initialPrediction,
+    refetchOnMount: "always",
     refetchInterval: ONPE_POLL_INTERVAL_MS,
     staleTime: ONPE_POLL_INTERVAL_MS,
   });
@@ -1003,6 +1000,7 @@ export function PredictionClient({ initialPrediction }: { initialPrediction: Pre
       )}
 
       <KpiGrid prediction={data} isFetching={isFetching} />
+      <TrendSignalsPanel rows={data.trendSignals} />
       <ProjectionPanel prediction={data} />
       <OnpeVsQuickCounts prediction={data} />
 
