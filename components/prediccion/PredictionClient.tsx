@@ -174,9 +174,15 @@ function KpiGrid({ prediction, isFetching }: { prediction: PredictionResponse; i
       icon: AlertTriangle,
     },
     {
-      label: "Exterior ONPE",
-      value: `${prediction.exterior.pendingPct.toFixed(0)}% pendiente`,
-      detail: `${formatVotes(prediction.exterior.actasTotal)} actas · ${formatVotes(prediction.exterior.validVoteEstimate)} votos válidos est.`,
+      label: "Exterior auditado",
+      value:
+        prediction.exterior.pendingPct == null
+          ? "ONPE n/d"
+          : `${prediction.exterior.pendingPct.toFixed(0)}% pendiente`,
+      detail:
+        prediction.exterior.actasTotal == null
+          ? `${formatVotes(prediction.exterior.validVoteEstimate)} votos válidos hipotéticos`
+          : `${formatVotes(prediction.exterior.actasTotal)} actas · ${formatVotes(prediction.exterior.validVoteEstimate)} votos válidos est.`,
       tone: "text-encuesta",
       icon: Globe2,
     },
@@ -458,7 +464,6 @@ function ProjectionPanel({ prediction }: { prediction: PredictionResponse }) {
                         {formatPct(entry.pct, 1)}
                       </div>
                       <div
-                        title={`${entry.bucket}: ${formatVotes(entry.count)} simulaciones (${formatPct(entry.pct, 2)})`}
                         className={cn(
                           "min-h-1 rounded-t-md transition-opacity hover:opacity-80",
                           favorsKeiko ? "bg-keiko" : "bg-sanchez",
@@ -585,10 +590,14 @@ function CriticalDriversPanel({ rows }: { rows: CriticalDriverRow[] }) {
         <span
           className={cn(
             "font-mono tabular-nums",
-            row.impactPp >= 0 ? "text-sanchez" : "text-keiko",
+            row.impactPp == null
+              ? "text-muted"
+              : row.impactPp >= 0
+                ? "text-sanchez"
+                : "text-keiko",
           )}
         >
-          {formatPp(row.impactPp, 2)}
+          {row.impactPp == null ? "n/d" : formatPp(row.impactPp, 2)}
         </span>
       ),
     },
@@ -714,7 +723,6 @@ function RequirementChart({ rows }: { rows: RequirementRow[] }) {
                 <div className="relative h-7 rounded-md border border-card-border bg-accent/45">
                   <div className="absolute bottom-0 left-1/4 top-0 border-l border-dashed border-card-border" />
                   <div
-                    title={`${entry.label}: Sánchez necesita ${maybePct(entry.required, 2)} en lo pendiente`}
                     className={cn(
                       "h-full rounded-md transition-opacity hover:opacity-80",
                       value >= 58 ? "bg-sanchez" : "bg-encuesta",
@@ -767,7 +775,6 @@ function ScenarioChart({ scenarios }: { scenarios: ScenarioRow[] }) {
               </div>
               <div
                 className="relative h-8 overflow-hidden rounded-md border border-card-border bg-accent/45"
-                title={`${entry.label}: Keiko ${formatPct(entry.keiko, 3)} / Sánchez ${formatPct(entry.sanchez, 3)}`}
                 role="img"
                 aria-label={`${entry.label}: Keiko ${formatPct(entry.keiko, 2)} y Sánchez ${formatPct(entry.sanchez, 2)}`}
               >
@@ -885,6 +892,16 @@ function ExteriorAndCaveats({ prediction }: { prediction: PredictionResponse }) 
           <div className="rounded-lg border border-card-border bg-card p-4 text-sm leading-relaxed">
             <p className="font-medium text-foreground">Lectura actual</p>
             <p className="mt-2 text-muted">{prediction.exterior.note}</p>
+            <p className="mt-2 text-xs text-muted">
+              Estado ONPE exterior desagregado:{" "}
+              <span className="font-mono text-foreground">
+                {prediction.exterior.officialResultsStatus}
+              </span>
+              {prediction.exterior.actasTotal == null
+                ? " · actas exteriores oficiales no verificadas por endpoint"
+                : ` · ${formatVotes(prediction.exterior.actasTotal)} actas`}
+              .
+            </p>
             <p className="mt-2 text-muted">
               Conteo rápido Datum exterior: Keiko{" "}
                 <span className="font-mono text-keiko">
@@ -899,7 +916,7 @@ function ExteriorAndCaveats({ prediction }: { prediction: PredictionResponse }) 
           </div>
           <div className="grid gap-3 sm:grid-cols-3">
             <div className="rounded-lg border border-card-border bg-accent/35 p-3">
-              <p className="text-xs text-muted">Votos válidos ext. estimados</p>
+              <p className="text-xs text-muted">Votos válidos ext. hipotéticos</p>
               <p className="mt-1 font-mono text-lg font-semibold tabular-nums">
                 {formatVotes(prediction.exterior.validVoteEstimate)}
               </p>

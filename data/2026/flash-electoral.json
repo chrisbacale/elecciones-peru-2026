@@ -12,26 +12,26 @@
       "type": "oficial",
       "instrument": "Escrutinio parcial",
       "url": "https://resultadosegundavuelta.onpe.gob.pe/main/resumen",
-      "publishedAt": "2026-06-08T10:56:00.301-05:00",
+      "publishedAt": "2026-06-08T11:22:00.151-05:00",
       "data": {
-        "a": 50.031,
-        "b": 49.969,
+        "a": 50.017,
+        "b": 49.983,
         "labelA": "Keiko",
         "labelB": "Sánchez",
-        "marginPp": 0.06,
+        "marginPp": 0.03,
         "marginLeader": "a",
-        "votesA": 8769857,
-        "votesB": 8758903,
-        "advancePct": 93.502,
-        "actasProcesadas": 86738,
+        "votesA": 8774506,
+        "votesB": 8768500,
+        "advancePct": 93.617,
+        "actasProcesadas": 86845,
         "actasTotal": 92766,
-        "actasPendientes": 4515,
-        "actasJee": 1513,
-        "actasPendientesPct": 4.867,
-        "actasJeePct": 1.631,
+        "actasPendientes": 4407,
+        "actasJee": 1514,
+        "actasPendientesPct": 4.751,
+        "actasJeePct": 1.632,
         "actasNote": "Corte primario ONPE verificado por endpoints XHR: resumen-general/totales y participantes con idEleccion=10."
       },
-      "notes": "Corte ONPE al 93.502% verificado el 08/06/2026 10:56 PET: Keiko 50.031% y Sánchez 49.969%. No es muestra aleatoria; sin margen de error estadístico. El bloque no contabilizado incluye 1,513 actas enviadas al JEE y 4,515 pendientes."
+      "notes": "Corte ONPE al 93.617% verificado el 08/06/2026 11:22 PET: Keiko 50.017% y Sánchez 49.983%. No es muestra aleatoria; sin margen de error estadístico. El bloque no contabilizado incluye 1,514 actas enviadas al JEE y 4,407 pendientes."
     },
     {
       "id": "onpe-parcial-prev",
@@ -236,6 +236,64 @@
       "extranjero": { "a": 62.67, "b": 37.33, "leader": "Keiko" }
     }
   },
+  "exterior": {
+    "officialRosterElectionDay": {
+      "eligibleVoters": 1194172,
+      "mesas": 2506,
+      "locals": 219,
+      "cities": 206,
+      "source": "ONPE/Andina logística electoral segunda vuelta 2026",
+      "sourceUrl": "https://andina.pe/agencia/noticia-elecciones-2026-onpe-preve-habilitar-92729-mesas-sufragio-para-segunda-vuelta-1078354.aspx",
+      "sourceQuality": "official"
+    },
+    "officialRosterPreDeployment": {
+      "eligibleVoters": 1210813,
+      "mesas": 2506,
+      "locals": 218,
+      "cities": 210,
+      "source": "JNE supervisión de material electoral exterior, 21 mayo 2026",
+      "sourceUrl": "https://www.gob.pe/institucion/jne/noticias/1396197-presidente-del-jne-superviso-entrega-de-material-electoral-para-peruanos-residentes-en-el-exterior",
+      "sourceQuality": "official"
+    },
+    "datumExitPoll": {
+      "a": 66.86,
+      "b": 33.14,
+      "labelA": "Keiko",
+      "labelB": "Sánchez",
+      "leader": "Keiko",
+      "instrument": "Boca de urna exterior",
+      "authority": false,
+      "source": "Datum/El Comercio",
+      "sourceUrl": "https://elcomercio.pe/politica/elecciones/flash-electoral-elecciones-peru-2026-segunda-vuelta-en-vivo-resultados-a-boca-de-urna-de-datum-este-7-de-junio-ultimas-noticia/",
+      "sourceQuality": "secondary"
+    },
+    "datumQuickCount": {
+      "a": 62.67,
+      "b": 37.33,
+      "labelA": "Keiko",
+      "labelB": "Sánchez",
+      "leader": "Keiko",
+      "instrument": "Conteo rápido exterior",
+      "authority": false,
+      "source": "Datum/Gestión",
+      "sourceUrl": "https://gestion.pe/peru/politica/datum-como-votaron-las-regiones-en-la-segunda-vuelta-electoral-2026-keiko-fujimori-y-roberto-sanchez-noticia/",
+      "sourceQuality": "secondary"
+    },
+    "officialOnpeExteriorResults": {
+      "status": "not_verified",
+      "actasTotal": null,
+      "actasContabilizadas": null,
+      "votesA": null,
+      "votesB": null,
+      "source": "ONPE exterior desagregado no incorporado al cliente de la app",
+      "note": "No usar Datum exterior como resultado ONPE. Es sensibilidad estadística hasta verificar un endpoint exterior oficial reproducible."
+    },
+    "assumptions": {
+      "turnoutPct": 34,
+      "validVotePct": 94,
+      "note": "Hipótesis de volumen para sensibilidad; no es resultado oficial ni participación exterior final."
+    }
+  },
   "movement": [
     { "stage": "Simulacro Ipsos", "marginPp": 2.8, "leader": "Keiko" },
     { "stage": "Simulacro Datum", "marginPp": 5.8, "leader": "Keiko" },
@@ -253,6 +311,9 @@
     { "stage": "ONPE 90.488%", "marginPp": 0.92, "leader": "Keiko" },
     { "stage": "ONPE 90.742%", "marginPp": 0.88, "leader": "Keiko" },
     { "stage": "ONPE 93.467%", "marginPp": 0.07, "leader": "Keiko" },
-    { "stage": "ONPE 93.502%", "marginPp": 0.06, "leader": "Keiko" }
+    { "stage": "ONPE 93.502%", "marginPp": 0.06, "leader": "Keiko" },
+    { "stage": "ONPE 93.556%", "marginPp": 0.04, "leader": "Keiko" },
+    { "stage": "ONPE 93.599%", "marginPp": 0.04, "leader": "Keiko" },
+    { "stage": "ONPE 93.617%", "marginPp": 0.03, "leader": "Keiko" }
   ]
 }
