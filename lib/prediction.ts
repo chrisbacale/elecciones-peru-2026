@@ -53,6 +53,7 @@ export type ProjectionSummary = {
   currentLeaderNonHoldRisk: number;
   noCallReason: string;
   methodNote: string;
+  probabilityNote: string;
   histogram: Array<{ bucket: string; count: number; pct: number }>;
 };
 
@@ -144,6 +145,11 @@ export type PredictionSnapshot = {
     actasTotal: number;
     actasContabilizadas: number;
     pendingPct: number;
+    turnoutAssumptionPct: number;
+    validVoteAssumptionPct: number;
+    validVoteEstimate: number;
+    shareOfPendingValidEstimatePct: number | null;
+    adjustedPendingSanchezPct: number | null;
     datumSanchezPct: number;
     datumKeikoPct: number;
     note: string;
@@ -161,12 +167,24 @@ const HISTORICAL_CUTS: CompletionCut[] = [
   { advancePct: 76.966, timestamp: "2026-06-08T00:31:00-05:00" },
   { advancePct: 81.865, timestamp: "2026-06-08T01:16:00-05:00" },
   { advancePct: 85.484, timestamp: "2026-06-08T02:02:01-05:00" },
+  { advancePct: 90.488, timestamp: "2026-06-08T04:16:00-05:00" },
 ];
 
 const SIMULATION_COUNT = 20_000;
-const MODEL_VERSION = "prediction-v2.2";
+const MODEL_VERSION = "prediction-v2.3";
 const PRACTICAL_TIE_EPSILON_PP = 0.1;
-const EXTERIOR_VALID_VOTE_ESTIMATE = Math.round(1_194_172 * 0.34 * 0.94);
+const EXTERIOR_ELIGIBLE_VOTERS = 1_194_172;
+const EXTERIOR_MESAS = 2_506;
+const EXTERIOR_LOCALS = 219;
+const EXTERIOR_CITIES = 206;
+const EXTERIOR_ACTAS_TOTAL = 2_543;
+const EXTERIOR_TURNOUT_ASSUMPTION_PCT = 34;
+const EXTERIOR_VALID_VOTE_ASSUMPTION_PCT = 94;
+const EXTERIOR_VALID_VOTE_ESTIMATE = Math.round(
+  EXTERIOR_ELIGIBLE_VOTERS *
+    (EXTERIOR_TURNOUT_ASSUMPTION_PCT / 100) *
+    (EXTERIOR_VALID_VOTE_ASSUMPTION_PCT / 100),
+);
 
 function round(value: number, decimals = 2): number {
   const factor = 10 ** decimals;
@@ -455,12 +473,12 @@ function buildScenarios(onpe: OnpeResumen, requirements: RequirementRow[]) {
   const ipsosRequirement =
     requirements.find((row) => row.id === "ipsos-cr")
       ?.requiredPendingSanchezPct ?? 50.3;
-  const datumExterior =
-    flashElectoral.territorial.datum?.extranjero?.b ?? 37.33;
+  const datumExterior = getExteriorDatumSanchezPct();
   const ipsosRegiones =
     flashElectoral.territorial.ipsos.regiones_cr?.b ?? 57.4;
   const ipsosRural = flashElectoral.territorial.ipsos.rural?.b ?? 67.8;
   const lateDelta = getLateOnpeDeltaSanchezPct(onpe);
+  const exteriorAdjusted = buildExteriorAdjustedPendingSanchezPct(onpe);
 
   return [
     buildScenario(
@@ -476,6 +494,13 @@ function buildScenarios(onpe: OnpeResumen, requirements: RequirementRow[]) {
       tieRequirement,
       onpe,
       "Muestra el porcentaje mínimo que necesita Sánchez en lo no contabilizado para empatar.",
+    ),
+    buildScenario(
+      "exterior-adjusted",
+      "Mix pendiente con exterior Datum",
+      exteriorAdjusted ?? ipsosRegiones,
+      onpe,
+      "Sensibilidad base que separa exterior: no usa resultado ONPE exterior oficial porque la app aún no tiene desglose verificado; el peso se estima con participación explícita y preferencia Datum exterior.",
     ),
     buildScenario(
       "datum-anchor",
@@ -530,6 +555,36 @@ function estimatePendingValidVotes(onpe: OnpeResumen): number | null {
   if (observedValid == null || onpe.advancePct <= 0) return null;
   const estimatedFinalValid = observedValid / (onpe.advancePct / 100);
   return Math.max(0, Math.round(estimatedFinalValid - observedValid));
+}
+
+function getExteriorDatumSanchezPct(): number {
+  return flashElectoral.territorial.datum?.extranjero?.b ?? 37.33;
+}
+
+function getExteriorDatumKeikoPct(): number {
+  return flashElectoral.territorial.datum?.extranjero?.a ?? 62.67;
+}
+
+function estimateExteriorShareOfPending(onpe: OnpeResumen): number | null {
+  const pendingValidVotes = estimatePendingValidVotes(onpe);
+  if (pendingValidVotes == null || pendingValidVotes <= 0) return null;
+  return clamp(EXTERIOR_VALID_VOTE_ESTIMATE / pendingValidVotes, 0, 0.6);
+}
+
+function buildExteriorAdjustedPendingSanchezPct(onpe: OnpeResumen): number | null {
+  const pendingValidVotes = estimatePendingValidVotes(onpe);
+  if (pendingValidVotes == null || pendingValidVotes <= 0) return null;
+  const exteriorVotes = Math.min(EXTERIOR_VALID_VOTE_ESTIMATE, pendingValidVotes);
+  const domesticVotes = Math.max(0, pendingValidVotes - exteriorVotes);
+  const totalVotes = domesticVotes + exteriorVotes;
+  if (totalVotes <= 0) return null;
+
+  return round(
+    (domesticVotes * getLateDomesticMean() +
+      exteriorVotes * getExteriorDatumSanchezPct()) /
+      totalVotes,
+    3,
+  );
 }
 
 function getLateDomesticMean(): number {
@@ -595,21 +650,22 @@ function estimateMarginShiftFromPending(onpe: OnpeResumen, pendingSanchezPct: nu
   return round(finalSanchezShift * 2, 2);
 }
 
+function formatExteriorShare(value: number | null): string {
+  return value == null ? "peso no estimable" : `${round(value * 100, 1)}%`;
+}
+
 function buildProjection(onpe: OnpeResumen): ProjectionSummary {
   const metrics = getValidatedErrorMetrics();
   const ipsos = quickCountRow("ipsos-cr");
   const datum = quickCountRow("datum-cr");
-  const pendingValidVotes = estimatePendingValidVotes(onpe);
-  const exteriorVoteWeight =
-    pendingValidVotes && pendingValidVotes > 0
-      ? clamp(EXTERIOR_VALID_VOTE_ESTIMATE / pendingValidVotes, 0, 0.45)
-      : 0.16;
-  const exteriorMean = flashElectoral.territorial.datum?.extranjero?.b ?? 37.33;
+  const exteriorVoteWeight = estimateExteriorShareOfPending(onpe) ?? 0.16;
+  const exteriorMean = getExteriorDatumSanchezPct();
   const domesticMean = getLateDomesticMean();
   const lateDelta = getLateOnpeDelta(onpe);
   const lateDeltaMean = lateDelta?.sanchezPct ?? domesticMean;
-  const territorialPendingMean =
-    exteriorVoteWeight * exteriorMean + (1 - exteriorVoteWeight) * domesticMean;
+  const exteriorAdjustedMean =
+    buildExteriorAdjustedPendingSanchezPct(onpe) ??
+    (exteriorVoteWeight * exteriorMean + (1 - exteriorVoteWeight) * domesticMean);
   const historicalSigma = Math.max(0.25, metrics.conteoRapido.candidateError.mean);
   const ipsosSigma = Math.sqrt(((ipsos.marginOfError ?? 1.9) / 1.96) ** 2 + historicalSigma ** 2);
   const datumSigma = Math.sqrt(((datum.marginOfError ?? 1.0) / 1.96) ** 2 + historicalSigma ** 2);
@@ -640,25 +696,27 @@ function buildProjection(onpe: OnpeResumen): ProjectionSummary {
     const quickPendingTarget =
       requiredPendingShare(onpe.advancePct, onpe.candidates.sanchez.pct, quickFinal) ??
       quickFinal;
-    const territorialDraw = normal(rand, territorialPendingMean, 4.8);
-    const lateDeltaDraw = normal(rand, lateDeltaMean, 3.1);
-    const statusQuoDraw = normal(rand, onpe.candidates.sanchez.pct, 1.1);
-    const residualNoise = normal(rand, 0, 1.2);
+    const exteriorAdjustedDraw = normal(rand, exteriorAdjustedMean, 4.3);
+    const domesticDraw = normal(rand, domesticMean, 5.1);
+    const lateDeltaDraw = normal(rand, lateDeltaMean, 3.4);
+    const statusQuoDraw = normal(rand, onpe.candidates.sanchez.pct, 1.4);
     const regimeRoll = rand();
-    const structuralDraw =
-      regimeRoll < 0.34
+    const regimeDraw =
+      regimeRoll < 0.3
         ? quickPendingTarget
-        : regimeRoll < 0.58
+        : regimeRoll < 0.55
           ? lateDeltaDraw
-          : regimeRoll < 0.82
-            ? territorialDraw
-            : statusQuoDraw;
+          : regimeRoll < 0.78
+            ? exteriorAdjustedDraw
+            : regimeRoll < 0.9
+              ? domesticDraw
+              : statusQuoDraw;
     const pendingSanchezPct = clamp(
-      0.62 * structuralDraw +
-        0.24 * quickPendingTarget +
-        0.08 * territorialDraw +
-        0.06 * statusQuoDraw +
-        residualNoise,
+      0.82 * regimeDraw +
+        0.1 * quickPendingTarget +
+        0.05 * exteriorAdjustedDraw +
+        0.03 * statusQuoDraw +
+        normal(rand, 0, 0.9),
       30,
       75,
     );
@@ -706,7 +764,7 @@ function buildProjection(onpe: OnpeResumen): ProjectionSummary {
   const noCallReason = ci95CrossesZero
     ? "El intervalo 95% del margen cruza 0: todavía hay masa estadística a ambos lados del empate."
     : leaderProbabilityPct < 90
-      ? "La probabilidad modelada de liderazgo no alcanza el umbral prudente de 90%."
+      ? "La frecuencia simulada de liderazgo no alcanza el umbral prudente de 90%."
       : "La proyección muestra ventaja, pero no equivale a proclamación oficial ONPE/JNE.";
 
   return {
@@ -738,7 +796,9 @@ function buildProjection(onpe: OnpeResumen): ProjectionSummary {
     currentLeaderNonHoldRisk: round(currentLeaderNonHoldRisk * 100, 2),
     noCallReason,
     methodNote:
-      "Simulación determinística por regímenes alternativos: ancla de conteos rápidos, delta ONPE tardío, composición territorial y status quo. Las probabilidades son de liderazgo modelado, no proclamación oficial.",
+      "Simulación determinística por regímenes alternativos: ancla de conteos rápidos, delta ONPE tardío, mix pendiente con exterior, composición doméstica y status quo. Las frecuencias son de liderazgo simulado, no proclamación oficial ni posterior calibrado.",
+    probabilityNote:
+      "La frecuencia se calcula dentro de esta familia de escenarios auditables. No debe leerse como certeza legal ni como modelo bayesiano calibrado con microdatos de todas las actas pendientes.",
     histogram: buildHistogram(signedMargins),
   };
 }
@@ -790,13 +850,10 @@ function buildCriticalDrivers(onpe: OnpeResumen): CriticalDriverRow[] {
       ? onpe.actasTotal - onpe.actasProcesadas
       : null;
   const pendingValidVotes = estimatePendingValidVotes(onpe);
-  const domesticPendingActas =
-    actasNoContabilizadas != null
-      ? Math.max(0, actasNoContabilizadas - 2_543)
-      : null;
-  const exteriorMean = flashElectoral.territorial.datum?.extranjero?.b ?? 37.33;
+  const exteriorMean = getExteriorDatumSanchezPct();
   const domesticMean = getLateDomesticMean();
   const lateDelta = getLateOnpeDelta(onpe);
+  const exteriorShare = estimateExteriorShareOfPending(onpe);
 
   return [
     {
@@ -813,22 +870,22 @@ function buildCriticalDrivers(onpe: OnpeResumen): CriticalDriverRow[] {
       id: "domestic-late",
       label: "Bloque nacional tardío",
       source: "Ipsos territorial + ONPE pendientes",
-      pendingActas: domesticPendingActas,
+      pendingActas: actasNoContabilizadas,
       estimatedVotes:
         pendingValidVotes != null ? Math.max(0, pendingValidVotes - EXTERIOR_VALID_VOTE_ESTIMATE) : null,
       sanchezPct: round(domesticMean, 2),
       impactPp: estimateMarginShiftFromPending(onpe, domesticMean),
-      note: "Si el pendiente nacional se parece al interior/regiones, empuja el cierre hacia Sánchez.",
+      note: "En esta sensibilidad, si el pendiente doméstico se parece al interior/regiones, favorece a Sánchez. No resta actas exteriores porque falta desglose ONPE exterior verificado.",
     },
     {
       id: "foreign",
       label: "Exterior pendiente",
       source: "ONPE exterior + Datum exterior",
-      pendingActas: 2_543,
+      pendingActas: EXTERIOR_ACTAS_TOTAL,
       estimatedVotes: EXTERIOR_VALID_VOTE_ESTIMATE,
       sanchezPct: exteriorMean,
       impactPp: estimateMarginShiftFromPending(onpe, exteriorMean),
-      note: "El conteo rápido Datum ubica el exterior más favorable a Keiko; se pondera por participación esperada, no por padrón.",
+      note: `Sin desglose ONPE exterior verificado en la app. El conteo rápido Datum ubica el exterior más favorable a Keiko; el modelo lo pondera como ${exteriorShare == null ? "peso no estimable" : `${round(exteriorShare * 100, 1)}%`} del voto válido pendiente estimado, no como padrón completo.`,
     },
     {
       id: "jee",
@@ -855,6 +912,8 @@ function buildTrendSignals(
   const lateDelta = getLateOnpeDelta(onpe);
   const tieRequirement =
     requirements.find((row) => row.id === "tie")?.requiredPendingSanchezPct ?? 50;
+  const exteriorAdjusted = buildExteriorAdjustedPendingSanchezPct(onpe);
+  const exteriorShare = estimateExteriorShareOfPending(onpe);
   const currentLeaderTone: ScenarioRow["tone"] =
     voteGap > 0 ? "keiko" : voteGap < 0 ? "sanchez" : "neutral";
 
@@ -897,6 +956,20 @@ function buildTrendSignals(
       tone: lateDelta != null && lateDelta.sanchezPct >= tieRequirement ? "sanchez" : "keiko",
       detail: "Sánchez debe superar este porcentaje en lo no contabilizado.",
       note: "Keiko retiene mayoría nacional si el bloque pendiente queda por debajo de este umbral.",
+    },
+    {
+      id: "foreign-adjustment",
+      label: "Ajuste exterior explícito",
+      value: exteriorAdjusted ?? getExteriorDatumSanchezPct(),
+      unit: "pct",
+      tone:
+        exteriorAdjusted == null
+          ? "neutral"
+          : exteriorAdjusted >= tieRequirement
+            ? "sanchez"
+            : "keiko",
+      detail: `Mix de pendiente doméstico + exterior Datum (${formatExteriorShare(exteriorShare)} del pendiente estimado).`,
+      note: "No usa votos exteriores oficiales porque la app aún no tiene desglose ONPE exterior verificado; es sensibilidad con Datum CR exterior.",
     },
     {
       id: "modeled-margin",
@@ -988,6 +1061,8 @@ export function buildPredictionSnapshot(onpeInput?: OnpeResumen): PredictionSnap
   const status = getProjectionStatus(projection);
   const latestCut = { advancePct: onpe.advancePct, timestamp: onpe.timestamp };
   const eta = estimateCompletionEta([...HISTORICAL_CUTS, latestCut]);
+  const exteriorShare = estimateExteriorShareOfPending(onpe);
+  const exteriorAdjustedPending = buildExteriorAdjustedPendingSanchezPct(onpe);
   const actasNoContabilizadas =
     onpe.actasTotal != null && onpe.actasProcesadas != null
       ? onpe.actasTotal - onpe.actasProcesadas
@@ -1025,23 +1100,29 @@ export function buildPredictionSnapshot(onpeInput?: OnpeResumen): PredictionSnap
     scenarios,
     eta,
     exterior: {
-      eligibleVoters: 1_194_172,
-      mesas: 2_506,
-      locals: 219,
-      cities: 206,
-      actasTotal: 2_543,
+      eligibleVoters: EXTERIOR_ELIGIBLE_VOTERS,
+      mesas: EXTERIOR_MESAS,
+      locals: EXTERIOR_LOCALS,
+      cities: EXTERIOR_CITIES,
+      actasTotal: EXTERIOR_ACTAS_TOTAL,
       actasContabilizadas: 0,
       pendingPct: 100,
-      datumSanchezPct: flashElectoral.territorial.datum?.extranjero?.b ?? 37.33,
-      datumKeikoPct: flashElectoral.territorial.datum?.extranjero?.a ?? 62.67,
+      turnoutAssumptionPct: EXTERIOR_TURNOUT_ASSUMPTION_PCT,
+      validVoteAssumptionPct: EXTERIOR_VALID_VOTE_ASSUMPTION_PCT,
+      validVoteEstimate: EXTERIOR_VALID_VOTE_ESTIMATE,
+      shareOfPendingValidEstimatePct:
+        exteriorShare == null ? null : round(exteriorShare * 100, 2),
+      adjustedPendingSanchezPct: exteriorAdjustedPending,
+      datumSanchezPct: getExteriorDatumSanchezPct(),
+      datumKeikoPct: getExteriorDatumKeikoPct(),
       note:
-        "ONPE reporta 0/2,543 actas exteriores contabilizadas en el corte nacional verificado. El dato de preferencia exterior proviene del conteo rápido Datum, no de ONPE final.",
+        "Sin desglose ONPE exterior verificado en la app. El dato de preferencia exterior proviene del conteo rápido Datum, no de ONPE final; el volumen de votos válidos exteriores es una hipótesis explícita de participación para sensibilidad estadística.",
     },
     caveats: [
       "ONPE parcial es oficial, pero no es una muestra aleatoria: el orden de llegada de actas puede sesgar el porcentaje nacional.",
       "Los conteos rápidos Ipsos/Datum son estimaciones con margen de error; ambos se reportan como empate técnico.",
       "La app separa cómputo ONPE a 100% de proclamación JNE; las actas enviadas al JEE pueden cambiar después de la contabilización operativa.",
-      "Sin distribución completa de actas pendientes por distrito/ciudad, no se publica una probabilidad de liderazgo como si fuera definitiva.",
+      "Sin distribución completa de actas pendientes por distrito/ciudad, no se publica una frecuencia de liderazgo simulado como si fuera definitiva.",
     ],
     sources: [
       {

@@ -46,14 +46,15 @@ export function ErrorByYearChart({ metrics }: { metrics: ErrorMetrics }) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-72 w-full">
-          <ResponsiveContainer
-            width="100%"
-            height="100%"
-            minHeight={288}
-            initialDimension={{ width: 720, height: 288 }}
-          >
-            <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+        <div className="overflow-x-auto pb-2">
+          <div className="h-72 min-w-[720px]">
+            <ResponsiveContainer
+              width="100%"
+              height="100%"
+              minHeight={288}
+              initialDimension={{ width: 720, height: 288 }}
+            >
+              <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
               <XAxis dataKey="year" stroke="var(--chart-axis)" fontSize={12} />
               <YAxis
@@ -81,8 +82,9 @@ export function ErrorByYearChart({ metrics }: { metrics: ErrorMetrics }) {
               />
               <Bar dataKey="boca" name="boca" fill="var(--stage-boca)" radius={[4, 4, 0, 0]} />
               <Bar dataKey="cr" name="cr" fill="var(--stage-cr)" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </CardContent>
     </Card>

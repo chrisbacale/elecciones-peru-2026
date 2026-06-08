@@ -443,7 +443,7 @@ export function SourceAuditPanel() {
                       href={item.href}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-2 font-semibold text-sky-200 underline decoration-sky-500/40 underline-offset-4 transition-colors hover:text-sky-100"
+                      className="inline-flex items-center gap-2 font-semibold text-encuesta underline decoration-encuesta/50 underline-offset-4 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
                       {item.label}

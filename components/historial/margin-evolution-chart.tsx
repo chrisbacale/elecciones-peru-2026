@@ -41,17 +41,18 @@ export function MarginEvolutionChart({
   const data = buildChartData(elections, provider);
 
   return (
-    <div className="h-[360px] w-full">
-      <ResponsiveContainer
-        width="100%"
-        height="100%"
-        minHeight={320}
-        initialDimension={{ width: 960, height: 360 }}
-      >
-        <LineChart
-          data={data}
-          margin={{ top: 8, right: 16, left: 0, bottom: 8 }}
+    <div className="overflow-x-auto pb-2">
+      <div className="h-[360px] min-w-[960px]">
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+          minHeight={320}
+          initialDimension={{ width: 960, height: 360 }}
         >
+          <LineChart
+            data={data}
+            margin={{ top: 8, right: 16, left: 0, bottom: 8 }}
+          >
           <CartesianGrid
             strokeDasharray="3 3"
             stroke="var(--chart-grid)"
@@ -123,8 +124,9 @@ export function MarginEvolutionChart({
             connectNulls={false}
             name="onpe"
           />
-        </LineChart>
-      </ResponsiveContainer>
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

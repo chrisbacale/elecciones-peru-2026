@@ -41,7 +41,7 @@ export function FollowXRibbon() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Seguir las actualizaciones de CIM en X, se abre en una nueva pestaña"
-      className="fixed bottom-4 right-4 z-50 inline-flex h-12 w-12 max-w-[calc(100vw-2rem)] items-center justify-center gap-3 rounded-full border border-card-border bg-card/95 p-0 text-sm font-semibold text-foreground shadow-xl shadow-black/25 backdrop-blur transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:h-auto sm:w-auto sm:rounded-xl sm:px-3 sm:py-2"
+      className="fixed bottom-[calc(env(safe-area-inset-bottom)+1rem)] right-4 z-50 hidden h-12 w-12 max-w-[calc(100vw-2rem)] items-center justify-center gap-3 rounded-full border border-card-border bg-card/95 p-0 text-sm font-semibold text-foreground shadow-xl shadow-black/25 backdrop-blur transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:inline-flex sm:h-auto sm:w-auto sm:rounded-xl sm:px-3 sm:py-2"
     >
       <XMark />
       <span className="hidden sm:block">

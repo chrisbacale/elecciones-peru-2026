@@ -36,14 +36,15 @@ export function WaterfallChart({ flash }: { flash: FlashElectoral2026 }) {
           {summary}
         </CardDescription>
       </CardHeader>
-      <div className="h-64 w-full">
-        <ResponsiveContainer
-          width="100%"
-          height="100%"
-          minHeight={256}
-          initialDimension={{ width: 720, height: 256 }}
-        >
-          <BarChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 40 }}>
+      <div className="overflow-x-auto pb-2">
+        <div className="h-64 min-w-[720px]">
+          <ResponsiveContainer
+            width="100%"
+            height="100%"
+            minHeight={256}
+            initialDimension={{ width: 720, height: 256 }}
+          >
+            <BarChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 40 }}>
             <ReferenceLine y={0} stroke="var(--chart-axis)" />
             <XAxis
               dataKey="stage"
@@ -76,8 +77,9 @@ export function WaterfallChart({ flash }: { flash: FlashElectoral2026 }) {
                 />
               ))}
             </Bar>
-          </BarChart>
-        </ResponsiveContainer>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </Card>
   );
