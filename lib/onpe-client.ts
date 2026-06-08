@@ -1,4 +1,5 @@
 import flash2026 from "@/data/2026/flash-electoral.json";
+import territorialSnapshot from "@/data/2026/onpe-territorial-snapshot.json";
 import electionsData from "@/data/historical/segunda-vuelta.json";
 import type {
   ElectionRecord,
@@ -239,6 +240,18 @@ export function getKnownOnpeExteriorSnapshot(): OnpeExteriorResumen {
       exterior?.status === "not_verified"
         ? "Sin snapshot oficial exterior verificado"
         : "API ONPE exterior intermitente — mostrando snapshot exterior agregado",
+  };
+}
+
+export function getKnownOnpeTerritorialSnapshot(): OnpeTerritorial {
+  return {
+    status: "snapshot",
+    timestamp: territorialSnapshot.timestamp,
+    departments: [...territorialSnapshot.departments].sort((a, b) =>
+      a.name.localeCompare(b.name)
+    ),
+    message:
+      "ONPE territorial intermitente — mostrando snapshot departamental auditado",
   };
 }
 
@@ -633,14 +646,14 @@ export async function fetchOnpeTerritorial(): Promise<OnpeTerritorial> {
     if (departments.length > 0) break;
   }
 
+  if (departments.length === 0) {
+    return getKnownOnpeTerritorialSnapshot();
+  }
+
   return {
-    status: anyLive && departments.length > 0 ? "live" : "snapshot",
+    status: anyLive ? "live" : "snapshot",
     timestamp: new Date().toISOString(),
     departments: departments.sort((a, b) => a.name.localeCompare(b.name)),
-    message:
-      departments.length === 0
-        ? "Sin datos territoriales en vivo — usar overlay Ipsos"
-        : undefined,
   };
 }
 
