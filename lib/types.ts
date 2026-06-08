@@ -267,16 +267,26 @@ export type JeeResolutionHistoricalRow = {
 export type JeeResolutionSummaryStats = {
   mean: number;
   median: number;
+  p025: number;
+  p05: number;
   p10: number;
   p90: number;
-  p025: number;
+  p95: number;
   p975: number;
-  modeledMarginOfError90: number;
-  modeledMarginOfError95: number;
+  centralInterval80HalfWidth: number;
+  centralInterval90HalfWidth: number;
+  centralInterval95HalfWidth: number;
   probabilityKeikoLeads: number;
   probabilitySanchezLeads: number;
   probabilityWithin20000Votes: number;
 };
+
+export type JeeResolutionScalarStats = Omit<
+  JeeResolutionSummaryStats,
+  | "probabilityKeikoLeads"
+  | "probabilitySanchezLeads"
+  | "probabilityWithin20000Votes"
+>;
 
 export type JeeMonteCarlo = {
   iterations: number;
@@ -284,7 +294,7 @@ export type JeeMonteCarlo = {
   scenarioKey: string;
   finalMarginKeikoMinusSanchez: JeeResolutionSummaryStats;
   peruOnlyMarginKeikoMinusSanchez: JeeResolutionSummaryStats;
-  jeeAdmissionRate: JeeResolutionSummaryStats;
+  jeeAdmissionRate: JeeResolutionScalarStats;
   histogram: Array<{
     from: number;
     to: number;
@@ -368,6 +378,19 @@ export type JeeResolutionModel = {
     status: string;
     timestamp: string;
     source: string;
+    reconciliation?: {
+      method: string;
+      targetScope: string;
+      inputKeikoSum: number;
+      inputSanchezSum: number;
+      inputCandidateSum: number;
+      targetValidVotes: number;
+      scaleFactor: number;
+      outputKeikoSum: number;
+      outputSanchezSum: number;
+      outputCandidateSum: number;
+      note: string;
+    };
   };
   historicalJeeResolution: {
     rows: JeeResolutionHistoricalRow[];

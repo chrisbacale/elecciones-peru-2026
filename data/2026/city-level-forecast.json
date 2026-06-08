@@ -252,6 +252,83 @@
       "keiko_votes": 314.3,
       "roberto_votes": 1459,
       "margin_keiko_minus_roberto": -1144.8
+    },
+    {
+      "scope_label": "PERU",
+      "department_or_continent": "HUANCAVELICA",
+      "pending_actas": 0,
+      "jee_actas": 11,
+      "foreign_actas": 0,
+      "estimated_valid_votes": 1730.5,
+      "keiko_votes": 297.2,
+      "roberto_votes": 1433.4,
+      "margin_keiko_minus_roberto": -1135.9
+    },
+    {
+      "scope_label": "PERU",
+      "department_or_continent": "LAMBAYEQUE",
+      "pending_actas": 0,
+      "jee_actas": 15,
+      "foreign_actas": 0,
+      "estimated_valid_votes": 3089.2,
+      "keiko_votes": 1824.6,
+      "roberto_votes": 1264.7,
+      "margin_keiko_minus_roberto": 560
+    },
+    {
+      "scope_label": "PERU",
+      "department_or_continent": "ICA",
+      "pending_actas": 0,
+      "jee_actas": 22,
+      "foreign_actas": 0,
+      "estimated_valid_votes": 4932.6,
+      "keiko_votes": 2697.9,
+      "roberto_votes": 2234.6,
+      "margin_keiko_minus_roberto": 463.2
+    },
+    {
+      "scope_label": "PERU",
+      "department_or_continent": "PASCO",
+      "pending_actas": 0,
+      "jee_actas": 14,
+      "foreign_actas": 0,
+      "estimated_valid_votes": 2389.4,
+      "keiko_votes": 982.4,
+      "roberto_votes": 1407.1,
+      "margin_keiko_minus_roberto": -424.6
+    },
+    {
+      "scope_label": "PERU",
+      "department_or_continent": "SAN MARTÍN",
+      "pending_actas": 5,
+      "jee_actas": 13,
+      "foreign_actas": 0,
+      "estimated_valid_votes": 3155.8,
+      "keiko_votes": 1399.6,
+      "roberto_votes": 1756.1,
+      "margin_keiko_minus_roberto": -357.1
+    },
+    {
+      "scope_label": "PERU",
+      "department_or_continent": "TUMBES",
+      "pending_actas": 0,
+      "jee_actas": 2,
+      "foreign_actas": 0,
+      "estimated_valid_votes": 399.2,
+      "keiko_votes": 300.1,
+      "roberto_votes": 99.2,
+      "margin_keiko_minus_roberto": 200.9
+    },
+    {
+      "scope_label": "PERU",
+      "department_or_continent": "MOQUEGUA",
+      "pending_actas": 0,
+      "jee_actas": 2,
+      "foreign_actas": 0,
+      "estimated_valid_votes": 432.3,
+      "keiko_votes": 132.8,
+      "roberto_votes": 299.5,
+      "margin_keiko_minus_roberto": -166.7
     }
   ],
   "topProvincesPeru": [
