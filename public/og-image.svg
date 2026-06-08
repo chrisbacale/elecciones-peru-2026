@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#020617"/>
+  <rect x="60" y="60" width="1080" height="510" rx="24" fill="#0f172a" stroke="#1e293b" stroke-width="2"/>
+  <text x="100" y="160" fill="#f1f5f9" font-size="56" font-family="system-ui,sans-serif" font-weight="700">Radar Electoral Per�</text>
+  <text x="100" y="220" fill="#94a3b8" font-size="32" font-family="system-ui,sans-serif">Segunda vuelta 20012026 � ONPE en vivo</text>
+  <rect x="100" y="280" width="400" height="24" rx="12" fill="#F97316"/>
+  <rect x="500" y="280" width="340" height="24" rx="12" fill="#A78BFA"/>
+  <text x="100" y="360" fill="#059669" font-size="28" font-family="monospace">ONPE � Ipsos � Datum � JNE</text>
+  <text x="100" y="480" fill="#3b82f6" font-size="24" font-family="system-ui,sans-serif">Boca de urna � Conteo r�pido � Resultado oficial</text>
+</svg>

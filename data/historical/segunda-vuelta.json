@@ -1,0 +1,616 @@
+[
+  {
+    "year": 2001,
+    "date": "2001-06-03",
+    "candidates": {
+      "a": "Alejandro Toledo",
+      "b": "Alan García",
+      "partyA": "Perú Posible",
+      "partyB": "Partido Aprista Peruano",
+      "winner": "Alejandro Toledo"
+    },
+    "instruments": {
+      "simulacro": {
+        "a": 53.2,
+        "b": 46.8,
+        "labelA": "Toledo",
+        "labelB": "García",
+        "source": "Ipsos simulacro día anterior"
+      },
+      "bocaUrna": {
+        "ipsos": {
+          "a": 53.4,
+          "b": 46.6,
+          "labelA": "Toledo",
+          "labelB": "García",
+          "marginPp": 6.8,
+          "marginLeader": "a",
+          "marginOfErrorNote": "No publicado en fuentes localizadas para Apoyo/Ipsos 2001",
+          "source": "Ipsos"
+        }
+      },
+      "conteoRapido": {
+        "ipsos": {
+          "a": 52.6,
+          "b": 47.4,
+          "labelA": "Toledo",
+          "labelB": "García",
+          "marginPp": 5.2,
+          "marginLeader": "a",
+          "marginOfErrorNote": "No publicado en fuentes localizadas para Apoyo/Ipsos 2001",
+          "source": "Ipsos"
+        }
+      },
+      "onpe100": {
+        "a": 53.08,
+        "b": 46.92,
+        "labelA": "Toledo",
+        "labelB": "García",
+        "votesA": 5548556,
+        "votesB": 4904929,
+        "marginPp": 6.16,
+        "marginLeader": "a",
+        "exact": true,
+        "ipsosBaseline": { "a": 53.1, "b": 46.9 }
+      }
+    },
+    "metadata": {
+      "sources": [
+        "Ipsos Comparativo CR+ONPE 100% V3 (2021)",
+        "ONPE / JNE resultados oficiales segunda vuelta 2001"
+      ],
+      "notes": ["Segunda vuelta: Toledo vs García (3 jun 2001)"]
+    }
+  },
+  {
+    "year": 2006,
+    "date": "2006-06-04",
+    "candidates": {
+      "a": "Alan García",
+      "b": "Ollanta Humala",
+      "partyA": "APRA",
+      "partyB": "UPP",
+      "winner": "Alan García"
+    },
+    "instruments": {
+      "simulacro": {
+        "a": 53.0,
+        "b": 47.0,
+        "labelA": "García",
+        "labelB": "Humala",
+        "source": "Ipsos simulacro día anterior"
+      },
+      "bocaUrna": {
+        "ipsos": {
+          "a": 52.8,
+          "b": 47.2,
+          "labelA": "García",
+          "labelB": "Humala",
+          "marginPp": 5.6,
+          "marginLeader": "a",
+          "sampleSize": 20000,
+          "marginOfError": 5.0,
+          "methodologyNote": "MOE y muestra reportados por nota de agencias; ficha primaria no ubicada",
+          "source": "Ipsos"
+        },
+        "datum": {
+          "a": 54.9,
+          "b": 45.1,
+          "labelA": "García",
+          "labelB": "Humala",
+          "marginPp": 9.8,
+          "marginLeader": "a",
+          "sampleSize": 27476,
+          "marginOfError": 4.9,
+          "methodologyNote": "MOE y muestra reportados por nota de agencias; confianza no publicada en fuente localizada",
+          "source": "Datum (reporte periodístico; ficha pública no ubicada)"
+        }
+      },
+      "conteoRapido": {
+        "ipsos": {
+          "a": 52.7,
+          "b": 47.3,
+          "labelA": "García",
+          "labelB": "Humala",
+          "marginPp": 5.4,
+          "marginLeader": "a",
+          "sampleSize": 1280,
+          "marginOfError": 1.0,
+          "methodologyNote": "1,280 mesas; MOE ±1 reportado por nota secundaria; ficha primaria no ubicada; confianza no publicada",
+          "source": "Ipsos"
+        }
+      },
+      "onpe100": {
+        "a": 52.625,
+        "b": 47.375,
+        "labelA": "García",
+        "labelB": "Humala",
+        "votesA": 6965017,
+        "votesB": 6270080,
+        "marginPp": 5.25,
+        "marginLeader": "a",
+        "exact": true,
+        "ipsosBaseline": { "a": 52.6, "b": 47.4 }
+      }
+    },
+    "metadata": {
+      "sources": [
+        "Ipsos Comparativo CR+ONPE 100% V3 (2021)",
+        "ONPE gob.pe — resultados al 100% (14 jun 2006)"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "year": 2011,
+    "date": "2011-06-05",
+    "candidates": {
+      "a": "Ollanta Humala",
+      "b": "Keiko Fujimori",
+      "partyA": "Gana Perú",
+      "partyB": "Fuerza 2011",
+      "winner": "Ollanta Humala"
+    },
+    "instruments": {
+      "simulacro": {
+        "a": 51.9,
+        "b": 48.1,
+        "labelA": "Humala",
+        "labelB": "Keiko",
+        "source": "Ipsos simulacro día anterior"
+      },
+      "bocaUrna": {
+        "ipsos": {
+          "a": 52.6,
+          "b": 47.4,
+          "labelA": "Humala",
+          "labelB": "Keiko",
+          "marginPp": 5.2,
+          "marginLeader": "a",
+          "sampleSize": 354,
+          "marginOfError": 3.0,
+          "confidence": 95,
+          "methodologyNote": "354 centros de votación",
+          "source": "Ipsos"
+        },
+        "datum": {
+          "a": 52.7,
+          "b": 47.3,
+          "labelA": "Humala",
+          "labelB": "Keiko",
+          "marginPp": 5.4,
+          "marginLeader": "a",
+          "source": "Datum/Andina (ficha pública no ubicada)"
+        }
+      },
+      "conteoRapido": {
+        "ipsos": {
+          "a": 51.4,
+          "b": 48.6,
+          "labelA": "Humala",
+          "labelB": "Keiko",
+          "marginPp": 2.8,
+          "marginLeader": "a",
+          "sampleSize": 1376,
+          "marginOfError": 1.0,
+          "confidence": 95,
+          "methodologyNote": "1,376 mesas de sufragio",
+          "source": "Ipsos"
+        },
+        "datum": {
+          "a": 51.0,
+          "b": 49.0,
+          "labelA": "Humala",
+          "labelB": "Keiko",
+          "marginPp": 2.0,
+          "marginLeader": "a",
+          "source": "Datum (reporte periodístico; ficha pública no ubicada)"
+        }
+      },
+      "onpe100": {
+        "a": 51.449,
+        "b": 48.551,
+        "labelA": "Humala",
+        "labelB": "Keiko",
+        "votesA": 7937704,
+        "votesB": 7490647,
+        "marginPp": 2.898,
+        "marginLeader": "a",
+        "exact": true,
+        "ipsosBaseline": { "a": 51.4, "b": 48.6 }
+      }
+    },
+    "metadata": {
+      "sources": [
+        "Ipsos Comparativo CR+ONPE 100% V3 (2021)",
+        "ONPE gob.pe — cómputo final (15 jun 2011)"
+      ],
+      "notes": [
+        "Boca de urna sobreestimó a Humala por 1.2 pp respecto al ONPE final"
+      ]
+    }
+  },
+  {
+    "year": 2016,
+    "date": "2016-06-05",
+    "candidates": {
+      "a": "Pedro Pablo Kuczynski",
+      "b": "Keiko Fujimori",
+      "partyA": "Peruanos Por el Kambio",
+      "partyB": "Fuerza Popular",
+      "winner": "Pedro Pablo Kuczynski"
+    },
+    "instruments": {
+      "simulacro": {
+        "a": 46.9,
+        "b": 53.1,
+        "labelA": "PPK",
+        "labelB": "Keiko",
+        "marginPp": 6.2,
+        "marginLeader": "b",
+        "sampleSize": 1815,
+        "marginOfError": 2.3,
+        "confidence": 95,
+        "source": "Ipsos Opinión Data Mayo IV 2016",
+        "sourceUrl": "https://www.ipsos.com/sites/default/files/publication/2016-05/Opinion%20Data%20Mayo%20IV%202016.pdf",
+        "sourceQuality": "primary"
+      },
+      "simulacroPorEncuestadora": {
+        "ipsos": {
+          "a": 46.9,
+          "b": 53.1,
+          "labelA": "PPK",
+          "labelB": "Keiko",
+          "marginPp": 6.2,
+          "marginLeader": "b",
+          "sampleSize": 1815,
+          "marginOfError": 2.3,
+          "confidence": 95,
+          "source": "Ipsos Opinión Data Mayo IV 2016",
+          "sourceUrl": "https://www.ipsos.com/sites/default/files/publication/2016-05/Opinion%20Data%20Mayo%20IV%202016.pdf",
+          "sourceQuality": "primary"
+        },
+        "datum": {
+          "a": 47.1,
+          "b": 52.9,
+          "labelA": "PPK",
+          "labelB": "Keiko",
+          "marginPp": 5.8,
+          "marginLeader": "b",
+          "sampleSize": 1964,
+          "sampleSizeValid": 1691,
+          "marginOfError": 2.2,
+          "confidence": 95,
+          "sampleSizeNote": "Canal N reporta 1,964 encuestas efectivas; Panamericana reporta 1,979 emitidos / 1,691 votos válidos",
+          "methodologyNote": "Serie 23-25 mayo 2016, no día anterior; base válida 1,691",
+          "source": "Datum simulacro 23-25 mayo 2016 (serie no día anterior)",
+          "sourceUrl": "https://panamericana.pe/buenosdiasperu/politica/206921-keiko-fujimori-registra-52-9-ppk-47-1-segun-simulacro-votacion-datum/amp",
+          "sourceQuality": "secondary"
+        }
+      },
+      "bocaUrna": {
+        "ipsos": {
+          "a": 50.4,
+          "b": 49.6,
+          "labelA": "PPK",
+          "labelB": "Keiko",
+          "marginPp": 0.8,
+          "marginLeader": "a",
+          "sampleSize": 362,
+          "marginOfError": 3.0,
+          "confidence": 95,
+          "methodologyNote": "362 centros de votación",
+          "source": "Ipsos"
+        }
+      },
+      "conteoRapido": {
+        "ipsos": {
+          "a": 50.5,
+          "b": 49.5,
+          "labelA": "PPK",
+          "labelB": "Keiko",
+          "marginPp": 1.0,
+          "marginLeader": "a",
+          "sampleSize": 1610,
+          "marginOfError": 1.0,
+          "confidence": 95,
+          "methodologyNote": "1,610 mesas de sufragio",
+          "source": "Ipsos"
+        }
+      },
+      "onpe100": {
+        "a": 50.12,
+        "b": 49.88,
+        "labelA": "PPK",
+        "labelB": "Keiko",
+        "votesA": 8596937,
+        "votesB": 8555880,
+        "marginPp": 0.24,
+        "marginLeader": "a",
+        "exact": true,
+        "ipsosBaseline": { "a": 50.1, "b": 49.9 }
+      }
+    },
+    "metadata": {
+      "sources": [
+        "Ipsos Comparativo CR+ONPE 100% V3 (2021)",
+        "https://www.ipsos.com/sites/default/files/publication/2016-05/Opinion%20Data%20Mayo%20IV%202016.pdf",
+        "ONPE / El Comercio — resultados al 100% (12 jun 2016)"
+      ],
+      "notes": ["ONPE al 100%: PPK 50.120% / Keiko 49.880%; la tabla Ipsos redondea a 50.1 / 49.9"]
+    }
+  },
+  {
+    "year": 2021,
+    "date": "2021-06-06",
+    "candidates": {
+      "a": "Pedro Castillo",
+      "b": "Keiko Fujimori",
+      "partyA": "Perú Libre",
+      "partyB": "Fuerza Popular",
+      "winner": "Pedro Castillo"
+    },
+    "instruments": {
+      "simulacro": {
+        "a": 49.6,
+        "b": 50.4,
+        "labelA": "Castillo",
+        "labelB": "Keiko",
+        "source": "Ipsos simulacro día anterior"
+      },
+      "simulacroPorEncuestadora": {
+        "ipsos": {
+          "a": 49.6,
+          "b": 50.4,
+          "labelA": "Castillo",
+          "labelB": "Keiko",
+          "marginPp": 0.8,
+          "marginLeader": "b",
+          "source": "Ipsos simulacro día anterior"
+        },
+        "datum": {
+          "a": 50.5,
+          "b": 49.5,
+          "labelA": "Castillo",
+          "labelB": "Keiko",
+          "marginPp": 1.0,
+          "marginLeader": "a",
+          "sampleSize": 1201,
+          "marginOfError": 2.8,
+          "confidence": 95,
+          "rawEmittedA": 42.6,
+          "rawEmittedB": 41.7,
+          "blank": 10.3,
+          "nullPct": 5.4,
+          "validVoteDerived": true,
+          "fieldwork": "2021-05-25..2021-05-27",
+          "source": "Datum simulacro 25-27 mayo 2021",
+          "sourceUrl": "https://canaln.pe/actualidad/pedro-castillo-logra-426-y-keiko-fujimori-llega-417-simulacro-votacion-datum-n435503",
+          "sourceQuality": "secondary"
+        }
+      },
+      "bocaUrna": {
+        "ipsos": {
+          "a": 49.7,
+          "b": 50.3,
+          "labelA": "Castillo",
+          "labelB": "Keiko",
+          "marginPp": 0.6,
+          "marginLeader": "b",
+          "sampleSize": 30000,
+          "marginOfError": 3.0,
+          "methodologyNote": "30,000 personas; MOE publicado en cobertura periodística",
+          "source": "Ipsos"
+        }
+      },
+      "conteoRapido": {
+        "ipsos": {
+          "a": 50.2,
+          "b": 49.8,
+          "labelA": "Castillo",
+          "labelB": "Keiko",
+          "marginPp": 0.4,
+          "marginLeader": "a",
+          "sampleSize": 1675,
+          "marginOfError": 1.0,
+          "methodologyNote": "1,675 mesas; página oficial Ipsos no publica confianza",
+          "source": "Ipsos"
+        }
+      },
+      "onpe100": {
+        "a": 50.126,
+        "b": 49.874,
+        "labelA": "Castillo",
+        "labelB": "Keiko",
+        "votesA": 8836380,
+        "votesB": 8792117,
+        "marginPp": 0.252,
+        "marginLeader": "a",
+        "exact": true,
+        "ipsosBaseline": { "a": 50.2, "b": 49.8 }
+      }
+    },
+    "participation": { "rate": 74.56, "blank": 0.64, "null": 5.9 },
+    "metadata": {
+      "sources": [
+        "Ipsos Comparativo CR+ONPE 100% V3 (2021)",
+        "JNE Resolución 0750-2021-JNE (20 jul 2021)"
+      ],
+      "notes": [
+        "Boca favoreció a Keiko; conteo rápido y ONPE favorecieron a Castillo"
+      ]
+    }
+  },
+  {
+    "year": 2026,
+    "date": "2026-06-07",
+    "candidates": {
+      "a": "Keiko Fujimori",
+      "b": "Roberto Sánchez",
+      "partyA": "Fuerza Popular",
+      "partyB": "Juntos Por el Perú"
+    },
+    "instruments": {
+      "simulacro": {
+        "a": 51.4,
+        "b": 48.6,
+        "labelA": "Keiko",
+        "labelB": "Sánchez",
+        "source": "Ipsos simulacro válido 29-30 mayo 2026"
+      },
+      "simulacroPorEncuestadora": {
+        "ipsos": {
+          "a": 51.4,
+          "b": 48.6,
+          "labelA": "Keiko",
+          "labelB": "Sánchez",
+          "marginPp": 2.8,
+          "marginLeader": "a",
+          "sampleSize": 1204,
+          "marginOfError": 2.8,
+          "confidence": 95,
+          "source": "Ipsos/Perú21",
+          "sourceUrl": "https://www.ipsos.com/es-pe/ultima-encuesta-publicable-segunda-vuelta-encuesta-peru-21-ipsos-de-mayo-2026",
+          "sourceQuality": "primary"
+        },
+        "datum": {
+          "a": 52.9,
+          "b": 47.1,
+          "labelA": "Keiko",
+          "labelB": "Sánchez",
+          "marginPp": 5.8,
+          "marginLeader": "a",
+          "sampleSize": 1501,
+          "sampleSizeValid": 1126,
+          "marginOfError": 2.5,
+          "confidence": 95,
+          "rawEmittedA": 39.7,
+          "rawEmittedB": 35.4,
+          "blank": 14.4,
+          "nullPct": 10.5,
+          "fieldwork": "2026-05-26..2026-05-30",
+          "source": "Datum/El Comercio",
+          "sourceUrl": "https://www.datum.com.pe/new_web_files/files/opinion/567-1025%20-%20Encuesta%20EC%20MAYO%202026%20%2826%20al%2030%20mayo%29%20-%20Informe%20ENCUESTA%20Final_260531083136.pdf",
+          "sourceQuality": "primary"
+        }
+      },
+      "bocaUrna": {
+        "ipsos": {
+          "a": 50.7,
+          "b": 49.3,
+          "labelA": "Keiko",
+          "labelB": "Sánchez",
+          "marginPp": 1.4,
+          "marginLeader": "a",
+          "sampleSize": 18000,
+          "marginOfErrorNote": "No publicado como ± único en la página/PDF primario de Ipsos boca de urna 2026",
+          "source": "Ipsos",
+          "sourceUrl": "https://www.ipsos.com/es-pe/encuesta-boca-de-urna-segunda-vuelta-2026-realizada-por-encargo-de-peru-21-y-latina",
+          "sourceQuality": "primary"
+        },
+        "datum": {
+          "a": 50.53,
+          "b": 49.47,
+          "labelA": "Keiko",
+          "labelB": "Sánchez",
+          "marginPp": 1.06,
+          "marginLeader": "a",
+          "sampleSize": 52343,
+          "sampleSizeVerified": true,
+          "marginOfError": 3.0,
+          "sampleSizeNote": "Muestra confirmada por América Noticias citando a Urpi Torrado; ficha primaria pública no ubicada",
+          "methodologyNote": "Margen y muestra reportados por América Noticias/Datum; nivel de confianza no publicado en fuente localizada",
+          "source": "Datum/América Noticias",
+          "sourceUrl": "https://www.americatv.com.pe/noticias/actualidad/keiko-fujimori-y-roberto-sanchez-asi-va-conteo-onpe-n519038",
+          "sourceQuality": "secondary"
+        }
+      },
+      "conteoRapido": {
+        "ipsos": {
+          "a": 49.7,
+          "b": 50.3,
+          "labelA": "Keiko",
+          "labelB": "Sánchez",
+          "marginPp": 0.6,
+          "marginLeader": "b",
+          "sampleSize": 1037,
+          "marginOfError": 1.9,
+          "marginOfErrorNote": "El informe muestra ±1.9 para total nacional y aclara que el margen es variable por candidato",
+          "confidence": 95,
+          "source": "Ipsos/Transparencia",
+          "sourceUrl": "https://www.ipsos.com/es-pe/conteo-rapido-integral-de-ipsos-peru-por-encargo-de-transparencia-segunda-vuelta-2026",
+          "sourceQuality": "primary"
+        },
+        "datum": {
+          "a": 49.86,
+          "b": 50.14,
+          "labelA": "Keiko",
+          "labelB": "Sánchez",
+          "marginPp": 0.28,
+          "marginLeader": "b",
+          "sampleSize": 117199,
+          "sampleSizeVerified": false,
+          "marginOfError": 1.0,
+          "sampleSizeNote": "Muestra no verificada en ficha primaria localizada",
+          "methodologyNote": "Margen reportado por Datum; nivel de confianza y muestra no verificados en fuente primaria localizada",
+          "source": "Datum"
+        }
+      },
+      "onpe100": null,
+      "onpePartial": {
+        "a": 52.156,
+        "b": 47.844,
+        "labelA": "Keiko",
+        "labelB": "Sánchez",
+        "marginPp": 4.312,
+        "marginLeader": "a",
+        "advancePct": 76.966,
+        "timestamp": "2026-06-08T00:31:00-05:00",
+        "source": "ONPE parcial replicado por El Comercio"
+      }
+    },
+    "participation": {
+      "rate": 72.4,
+      "blank": 0.8,
+      "null": 5.7,
+      "source": "Ipsos/Transparencia — Omar Awapara, conferencia CR 07/06/2026"
+    },
+    "territorial": {
+      "lima_boca": { "a": 66.1, "b": 33.9, "leader": "Keiko" },
+      "lima_cr": { "a": 63.6, "b": 36.4, "leader": "Keiko" },
+      "regiones_boca": { "a": 43.9, "b": 56.1, "leader": "Sánchez" },
+      "regiones_cr": { "a": 42.6, "b": 57.4, "leader": "Sánchez" },
+      "urbano": { "a": 55.5, "b": 44.5, "leader": "Keiko" },
+      "rural": { "a": 32.2, "b": 67.8, "leader": "Sánchez" },
+      "sierra": { "a": 31.3, "b": 68.7, "leader": "Sánchez" },
+      "sur": { "a": 26.1, "b": 73.9, "leader": "Sánchez" },
+      "costa": { "a": 63.0, "b": 37.0, "leader": "Keiko" },
+      "selva": { "a": 43.8, "b": 56.2, "leader": "Sánchez" },
+      "norte": { "a": 51.5, "b": 48.5, "leader": "Keiko" },
+      "centro": { "a": 52.3, "b": 47.7, "leader": "Keiko" },
+      "oriente": { "a": 43.8, "b": 56.2, "leader": "Sánchez" }
+    },
+    "metadata": {
+      "sources": [
+        "https://resultadosegundavuelta.onpe.gob.pe/main/resumen",
+        "https://elcomercio.pe/elecciones/resultados-onpe-en-vivo-conteo-oficial-de-la-segunda-vuelta-entre-keiko-fujimori-y-roberto-sanchez-de-elecciones-peru-2026-lbposting-noticia/",
+        "https://elcomercio.pe/politica/elecciones/flash-electoral-segunda-vuelta-elecciones-peru-2026-en-vivo-resultados-de-ipsos-a-boca-de-urna-hoy-7-de-junio-keiko-fujimori-roberto-sanchez-ultimas-noticia/",
+        "https://www.ipsos.com/es-pe/encuesta-boca-de-urna-segunda-vuelta-2026-realizada-por-encargo-de-peru-21-y-latina",
+        "https://www.ipsos.com/es-pe/conteo-rapido-integral-de-ipsos-peru-por-encargo-de-transparencia-segunda-vuelta-2026",
+        "https://gestion.pe/peru/politica/flash-electoral-2026-empate-tecnico-entre-keiko-fujimori-y-roberto-sanchez-a-boca-de-urna-oficial-datum-noticia/",
+        "https://www.americatv.com.pe/noticias/actualidad/keiko-fujimori-y-roberto-sanchez-asi-va-conteo-onpe-n519038",
+        "https://gestion.pe/peru/politica/resultados-conteo-rapido-ipsos-2026-roberto-sanchez-503-y-keiko-fujimori-497-noticia/",
+        "https://www.infobae.com/peru/2026/06/08/roberto-sanchez-cuenta-con-5014-y-keiko-fujimori-con-4986-segun-conteo-rapido-de-datum/",
+        "https://www.ipsos.com/es-pe/ultima-encuesta-publicable-segunda-vuelta-encuesta-peru-21-ipsos-mayo-2026",
+        "https://www.datum.com.pe/new_web_files/files/opinion/567-1025%20-%20Encuesta%20EC%20MAYO%202026%20%2826%20al%2030%20mayo%29%20-%20Informe%20ENCUESTA%20Final_260531083136.pdf",
+        "https://www.americatv.com.pe/noticias/actualidad/simulacro-datum-fujimori-lidera-votos-validos-ante-sanchez-n518762",
+        "https://www.infobae.com/america/agencias/2026/06/08/proyecciones-ratifican-un-empate-tecnico-en-peru-pero-con-una-minima-ventaja-para-sanchez/"
+      ],
+      "notes": [
+        "ONPE 100% pendiente — JNE estima proclamación mediados julio 2026",
+        "ONPE parcial puede variar por orden territorial de actas (Lima primero)",
+        "Al 76.966% ONPE (00:31, 08/06/2026) Keiko 52.156% / Sánchez 47.844% — réplica pública de El Comercio; 71,398 actas contabilizadas de 92,766; votos absolutos por candidato no publicados junto a ese corte"
+      ]
+    }
+  }
+]
