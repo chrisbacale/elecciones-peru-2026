@@ -49,7 +49,7 @@ describe("buildPredictionSnapshot", () => {
   it("incluye simulación determinística con intervalos y frecuencias", () => {
     const snapshot = buildPredictionSnapshot();
 
-    expect(snapshot.projection.modelVersion).toBe("prediction-v2.6");
+    expect(snapshot.projection.modelVersion).toBe("prediction-v2.7");
     expect(snapshot.projection.simulations).toBe(20000);
     expect(snapshot.projection.countedWeightPct).toBeCloseTo(93.87, 2);
     expect(snapshot.projection.weightingNote).toContain("proxy");

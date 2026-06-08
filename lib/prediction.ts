@@ -218,7 +218,7 @@ const HISTORICAL_CUTS: CompletionCut[] = [
 ];
 
 const SIMULATION_COUNT = 20_000;
-const MODEL_VERSION = "prediction-v2.6";
+const MODEL_VERSION = "prediction-v2.7";
 const PRACTICAL_TIE_EPSILON_PP = 0.1;
 const FALLBACK_EXTERIOR_ROSTER = {
   eligibleVoters: 1_194_172,
@@ -1168,7 +1168,7 @@ function buildProjection(onpe: OnpeResumen): ProjectionSummary {
 
   return {
     modelVersion: MODEL_VERSION,
-    modelName: "Monte Carlo determinístico por regímenes ONPE + CR",
+    modelName: "Modelo secundario por regímenes ONPE + CR",
     seed,
     simulations: SIMULATION_COUNT,
     countedWeightPct: round(onpe.advancePct, 3),
@@ -1198,9 +1198,9 @@ function buildProjection(onpe: OnpeResumen): ProjectionSummary {
     currentLeaderNonHoldRisk: round(currentLeaderNonHoldRisk * 100, 2),
     noCallReason,
     methodNote:
-      "Simulación determinística por regímenes alternativos: ancla de conteos rápidos, delta ONPE tardío, mix pendiente con exterior, composición doméstica y status quo. Las frecuencias son de liderazgo simulado, no proclamación oficial ni posterior calibrado.",
+      "Simulación determinística por regímenes alternativos: ancla de conteos rápidos, delta ONPE tardío, mix pendiente con exterior, composición doméstica y status quo. Es lectura secundaria; la aritmética principal separa Perú, JEE y exterior agregado.",
     probabilityNote:
-      "La frecuencia se calcula dentro de esta familia de escenarios auditables. No debe leerse como certeza legal, probabilidad bayesiana ni modelo calibrado con microdatos de todas las actas pendientes.",
+      "La frecuencia se calcula dentro de esta familia de escenarios auditables. No debe leerse como certeza legal, probabilidad bayesiana, proclamación ni sustituto del cierre por componentes Perú + exterior.",
     modelParameters: {
       regimeWeights,
       blendWeights,
