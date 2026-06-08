@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   title: "Radar Electoral Perú — Segunda vuelta 2001–2026",
   description:
     "Dashboard en vivo de ONPE 2026, histórico Ipsos vs ONPE 2001–2021 y análisis estadístico de boca de urna, conteo rápido y resultado oficial.",
-  metadataBase: new URL("https://radar-electoral-peru.vercel.app"),
+  metadataBase: new URL("https://elecciones-peru-2026-liart.vercel.app"),
   openGraph: {
     title: "Radar Electoral Perú — Segunda vuelta 2001–2026",
     description:
