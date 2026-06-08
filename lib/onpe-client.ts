@@ -4,7 +4,6 @@ import type { ElectionRecord, OnpeResumen, OnpeTerritorial, OnpeStatus } from ".
 
 export const ONPE_BASES = [
   "https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend",
-  "https://resultadoelectoral.onpe.gob.pe/presentacion-backend",
 ] as const;
 
 /** idEleccion vivo para Segunda Elección Presidencial 2026. */

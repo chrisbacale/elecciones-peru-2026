@@ -79,7 +79,7 @@ export default function RootLayout({
         <ThemeProvider>
           <QueryProvider>
             <Navbar />
-            <main className="flex-1">{children}</main>
+            <main className="flex-1 pb-16 sm:pb-20">{children}</main>
             <FollowXRibbon />
             <footer className="border-t border-card-border py-6 text-center text-xs text-muted">
               <p>

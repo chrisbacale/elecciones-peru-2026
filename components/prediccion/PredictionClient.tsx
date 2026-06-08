@@ -176,7 +176,7 @@ function KpiGrid({ prediction, isFetching }: { prediction: PredictionResponse; i
     {
       label: "Exterior ONPE",
       value: `${prediction.exterior.pendingPct.toFixed(0)}% pendiente`,
-      detail: `${formatVotes(prediction.exterior.actasTotal)} actas exteriores`,
+      detail: `${formatVotes(prediction.exterior.actasTotal)} actas · ${formatVotes(prediction.exterior.validVoteEstimate)} votos válidos est.`,
       tone: "text-encuesta",
       icon: Globe2,
     },
@@ -370,7 +370,7 @@ function ProjectionPanel({ prediction }: { prediction: PredictionResponse }) {
         <CardHeader>
           <div className="flex items-center justify-between gap-3">
             <div>
-              <CardTitle>Proyección probabilística</CardTitle>
+              <CardTitle>Frecuencia simulada del cierre</CardTitle>
               <CardDescription>
                 {projection.modelName} · {projection.modelVersion} ·{" "}
                 {formatVotes(projection.simulations)} simulaciones
@@ -425,6 +425,9 @@ function ProjectionPanel({ prediction }: { prediction: PredictionResponse }) {
           <p className="text-xs leading-relaxed text-muted">
             {projection.methodNote} Seed reproducible:{" "}
             <span className="font-mono text-foreground">{projection.seed}</span>.
+          </p>
+          <p className="text-xs leading-relaxed text-muted">
+            {projection.probabilityNote}
           </p>
           <p className="text-xs leading-relaxed text-muted">
             Peso usado:{" "}
@@ -884,15 +887,41 @@ function ExteriorAndCaveats({ prediction }: { prediction: PredictionResponse }) 
             <p className="mt-2 text-muted">{prediction.exterior.note}</p>
             <p className="mt-2 text-muted">
               Conteo rápido Datum exterior: Keiko{" "}
-              <span className="font-mono text-keiko">
-                {formatPct(prediction.exterior.datumKeikoPct, 2)}
-              </span>{" "}
-              / Sánchez{" "}
+                <span className="font-mono text-keiko">
+                  {formatPct(prediction.exterior.datumKeikoPct, 2)}
+                </span>{" "}
+                / Sánchez{" "}
               <span className="font-mono text-sanchez">
                 {formatPct(prediction.exterior.datumSanchezPct, 2)}
               </span>
               .
             </p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3">
+            <div className="rounded-lg border border-card-border bg-accent/35 p-3">
+              <p className="text-xs text-muted">Votos válidos ext. estimados</p>
+              <p className="mt-1 font-mono text-lg font-semibold tabular-nums">
+                {formatVotes(prediction.exterior.validVoteEstimate)}
+              </p>
+              <p className="mt-1 text-xs text-muted">
+                {formatPct(prediction.exterior.turnoutAssumptionPct, 1)} participación ·{" "}
+                {formatPct(prediction.exterior.validVoteAssumptionPct, 1)} válidos asumidos
+              </p>
+            </div>
+            <div className="rounded-lg border border-card-border bg-accent/35 p-3">
+              <p className="text-xs text-muted">Peso en pendiente est.</p>
+              <p className="mt-1 font-mono text-lg font-semibold tabular-nums text-keiko">
+                {maybePct(prediction.exterior.shareOfPendingValidEstimatePct, 2)}
+              </p>
+              <p className="mt-1 text-xs text-muted">No se usa el padrón completo como voto.</p>
+            </div>
+            <div className="rounded-lg border border-card-border bg-accent/35 p-3">
+              <p className="text-xs text-muted">Mix pendiente ajustado</p>
+              <p className="mt-1 font-mono text-lg font-semibold tabular-nums text-sanchez">
+                {maybePct(prediction.exterior.adjustedPendingSanchezPct, 2)}
+              </p>
+              <p className="mt-1 text-xs text-muted">Doméstico tardío + exterior Datum.</p>
+            </div>
           </div>
         </CardContent>
       </Card>

@@ -86,14 +86,15 @@ export function CurrentRaceSnapshot() {
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="h-72 w-full">
-          <ResponsiveContainer
-            width="100%"
-            height="100%"
-            minHeight={288}
-            initialDimension={{ width: 860, height: 288 }}
-          >
-            <BarChart data={chartData} margin={{ top: 10, right: 12, left: 0, bottom: 42 }}>
+        <div className="overflow-x-auto pb-2">
+          <div className="h-72 min-w-[860px]">
+            <ResponsiveContainer
+              width="100%"
+              height="100%"
+              minHeight={288}
+              initialDimension={{ width: 860, height: 288 }}
+            >
+              <BarChart data={chartData} margin={{ top: 10, right: 12, left: 0, bottom: 42 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" vertical={false} />
               <ReferenceLine y={0} stroke="var(--chart-axis)" />
               <XAxis
@@ -132,8 +133,9 @@ export function CurrentRaceSnapshot() {
                   />
                 ))}
               </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
 
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
