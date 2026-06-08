@@ -558,15 +558,23 @@
       },
       "onpe100": null,
       "onpePartial": {
-        "a": 52.156,
-        "b": 47.844,
+        "a": 51.081,
+        "b": 48.919,
         "labelA": "Keiko",
         "labelB": "Sánchez",
-        "marginPp": 4.312,
+        "marginPp": 2.162,
         "marginLeader": "a",
-        "advancePct": 76.966,
-        "timestamp": "2026-06-08T00:31:00-05:00",
-        "source": "ONPE parcial replicado por El Comercio"
+        "votesA": 8353346,
+        "votesB": 7999800,
+        "advancePct": 85.484,
+        "timestamp": "2026-06-08T02:06:01-05:00",
+        "actasProcesadas": 79300,
+        "actasTotal": 92766,
+        "actasJee": 1450,
+        "actasPendientes": 12016,
+        "actasJeePct": 1.563,
+        "actasPendientesPct": 12.953,
+        "source": "ONPE parcial verificado por endpoints oficiales XHR"
       }
     },
     "participation": {
@@ -609,7 +617,7 @@
       "notes": [
         "ONPE 100% pendiente — JNE estima proclamación mediados julio 2026",
         "ONPE parcial puede variar por orden territorial de actas (Lima primero)",
-        "Al 76.966% ONPE (00:31, 08/06/2026) Keiko 52.156% / Sánchez 47.844% — réplica pública de El Comercio; 71,398 actas contabilizadas de 92,766; votos absolutos por candidato no publicados junto a ese corte"
+        "Al 85.484% ONPE (02:06, 08/06/2026) Keiko 51.081% / Sánchez 48.919% — verificado por endpoints oficiales XHR con idEleccion=10; 79,300 actas contabilizadas de 92,766, 1,450 enviadas al JEE y 12,016 pendientes"
       ]
     }
   }

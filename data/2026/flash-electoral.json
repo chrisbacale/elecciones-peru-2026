@@ -11,38 +11,50 @@
       "name": "ONPE",
       "type": "oficial",
       "instrument": "Escrutinio parcial",
-      "url": "https://elcomercio.pe/elecciones/resultados-onpe-en-vivo-conteo-oficial-de-la-segunda-vuelta-entre-keiko-fujimori-y-roberto-sanchez-de-elecciones-peru-2026-lbposting-noticia/",
-      "publishedAt": "2026-06-08T00:31:00-05:00",
+      "url": "https://resultadosegundavuelta.onpe.gob.pe/main/resumen",
+      "publishedAt": "2026-06-08T02:06:01-05:00",
       "data": {
-        "a": 52.156,
-        "b": 47.844,
+        "a": 51.081,
+        "b": 48.919,
         "labelA": "Keiko",
         "labelB": "Sánchez",
-        "marginPp": 4.312,
+        "marginPp": 2.162,
         "marginLeader": "a",
-        "advancePct": 76.966
+        "votesA": 8353346,
+        "votesB": 7999800,
+        "advancePct": 85.484,
+        "actasProcesadas": 79300,
+        "actasTotal": 92766,
+        "actasPendientes": 12016,
+        "actasJee": 1450,
+        "actasPendientesPct": 12.953,
+        "actasJeePct": 1.563,
+        "actasNote": "Corte primario ONPE verificado por endpoints XHR: resumen-general/totales y participantes con idEleccion=10."
       },
-      "notes": "Snapshot ONPE al 76.966% replicado por El Comercio a las 00:31 del 08/06/2026: 71,398 actas contabilizadas de 92,766. No es muestra aleatoria; sin margen de error estadístico. Votos absolutos por candidato no publicados junto a este corte."
+      "notes": "Corte ONPE al 85.484% verificado el 08/06/2026 02:06 PET: Keiko 51.081% y Sánchez 48.919%. No es muestra aleatoria; sin margen de error estadístico. El bloque no contabilizado incluye actas pendientes y enviadas al JEE."
     },
     {
       "id": "onpe-parcial-prev",
       "name": "ONPE (cross-check)",
       "type": "oficial",
       "instrument": "Escrutinio parcial previo",
-      "url": "https://www.infobae.com/peru/2026/06/07/resultados-onpe-en-vivo-conteo-oficial-de-votos-de-keiko-fujimori-y-roberto-sanchez-en-la-segunda-vuelta-de-elecciones-2026/",
-      "publishedAt": "2026-06-07T22:38:00-05:00",
+      "url": "https://www.infobae.com/peru/2026/06/07/resultados-onpe-en-vivo-conteo-oficial-de-votos-de-keiko-fujimori-y-roberto-sanchez-en-la-segunda-vuelta-de-elecciones-2026/?outputType=amp-type",
+      "publishedAt": "2026-06-08T01:08:00-05:00",
       "data": {
-        "a": 52.681,
-        "b": 47.319,
+        "a": 51.672,
+        "b": 48.328,
         "labelA": "Keiko",
         "labelB": "Sánchez",
-        "marginPp": 5.362,
+        "marginPp": 3.344,
         "marginLeader": "a",
-        "votesA": 6223129,
-        "votesB": 5589817,
-        "advancePct": 60.325
+        "votesA": 8040623,
+        "votesB": 7520293,
+        "advancePct": 80.988,
+        "actasTotal": 92766,
+        "actasPendientesPct": 17.509,
+        "actasJeePct": 1.503
       },
-      "notes": "Infobae replica ONPE al 60.325% de actas (07/06/2026 22:38)"
+      "notes": "Infobae replica ONPE al 80.988% de actas contabilizadas (08/06/2026 01:08), con votos absolutos y 1.503% de actas enviadas al JEE."
     },
     {
       "id": "ipsos-boca",
@@ -90,7 +102,7 @@
       "name": "Ipsos/Transparencia",
       "type": "muestra",
       "instrument": "Conteo rápido 100%",
-      "url": "https://www.ipsos.com/es-pe/conteo-rapido-integral-de-ipsos-peru-por-encargo-de-transparencia-segunda-vuelta-2026",
+      "url": "https://rpp.pe/politica/elecciones/resultados-conteo-rapido-integral-ipsos-transparencia-100-votos-segunda-vuelta-2026-elecciones-noticia-1692002",
       "publishedAt": "2026-06-08T00:00:00-05:00",
       "data": {
         "a": 49.7,
@@ -101,8 +113,10 @@
         "marginLeader": "b",
         "sampleSize": 1037,
         "marginOfError": 1.9,
-        "marginOfErrorNote": "El informe muestra ±1.9 para total nacional y aclara que el margen es variable por candidato",
-        "confidence": 95
+        "marginOfErrorNote": "±1.9 pp reportado por Transparencia en cobertura de La República; ficha primaria pública de segunda vuelta no localizada en esta auditoría",
+        "confidence": 95,
+        "sourceQuality": "secondary",
+        "sourceUrl": "https://larepublica.pe/amp/politica/2026/06/07/conteo-rapido-al-100-roberto-sanchez-con-503-y-keiko-fujimori-con-497-segun-ipsos-hnews-71183"
       },
       "notes": "Empate técnico; 1,037 actas aleatorias en 27 circunscripciones; actas validadas al 99.5%"
     },
@@ -111,7 +125,7 @@
       "name": "Datum",
       "type": "muestra",
       "instrument": "Conteo rápido 100%",
-      "url": "https://www.infobae.com/peru/2026/06/08/roberto-sanchez-cuenta-con-5014-y-keiko-fujimori-con-4986-segun-conteo-rapido-de-datum/",
+      "url": "https://elcomercio.pe/politica/conteo-rapido-de-datum-para-america-television-segunda-vuelta-sigue-aqui-los-resultados-del-conteo-rapido-de-las-elecciones-peru-2026-hoy-07-de-junio-keiko-fujimori-roberto-sanchez-noticia/",
       "publishedAt": "2026-06-07T22:21:00-05:00",
       "data": {
         "a": 49.86,
@@ -120,11 +134,10 @@
         "labelB": "Sánchez",
         "marginPp": 0.28,
         "marginLeader": "b",
-        "sampleSize": 117199,
-        "sampleSizeVerified": false,
         "marginOfError": 1.0,
-        "marginOfErrorNote": "±1 pp reportado por Datum; nivel de confianza no publicado en fuente localizada",
-        "sampleSizeNote": "Muestra no verificada en ficha primaria localizada"
+        "marginOfErrorNote": "±1 pp reportado por Urpi Torrado/Datum en El Comercio; nivel de confianza y tamaño muestral no publicados en la fuente localizada",
+        "sourceQuality": "secondary",
+        "sourceUrl": "https://elcomercio.pe/politica/conteo-rapido-de-datum-para-america-television-segunda-vuelta-sigue-aqui-los-resultados-del-conteo-rapido-de-las-elecciones-peru-2026-hoy-07-de-junio-keiko-fujimori-roberto-sanchez-noticia/"
       },
       "notes": "Empate técnico; Datum/América Multimedia; ±1% según Datum"
     }
@@ -175,7 +188,7 @@
     "null": 5.7,
     "marginOfError": 1.8,
     "source": "Ipsos/Transparencia — conferencia conteo rápido",
-    "url": "https://www.ipsos.com/es-pe/conteo-rapido-integral-de-ipsos-peru-por-encargo-de-transparencia-segunda-vuelta-2026"
+      "url": "https://rpp.pe/politica/elecciones/resultados-conteo-rapido-integral-ipsos-transparencia-100-votos-segunda-vuelta-2026-elecciones-noticia-1692002"
   },
   "territorial": {
     "ipsos": {
@@ -192,6 +205,35 @@
       "centro": { "a": 52.3, "b": 47.7, "leader": "Keiko" },
       "sur": { "a": 26.1, "b": 73.9, "leader": "Sánchez" },
       "oriente": { "a": 43.8, "b": 56.2, "leader": "Sánchez" }
+    },
+    "datum": {
+      "amazonas": { "a": 34.74, "b": 65.26, "leader": "Sánchez" },
+      "ancash": { "a": 43.28, "b": 56.72, "leader": "Sánchez" },
+      "apurimac": { "a": 19.13, "b": 80.87, "leader": "Sánchez" },
+      "arequipa": { "a": 37.26, "b": 62.74, "leader": "Sánchez" },
+      "ayacucho": { "a": 20.65, "b": 79.35, "leader": "Sánchez" },
+      "cajamarca": { "a": 32.02, "b": 67.98, "leader": "Sánchez" },
+      "callao": { "a": 64.13, "b": 35.87, "leader": "Keiko" },
+      "cusco": { "a": 21.52, "b": 78.48, "leader": "Sánchez" },
+      "huancavelica": { "a": 19.4, "b": 80.6, "leader": "Sánchez" },
+      "huanuco": { "a": 35.25, "b": 64.75, "leader": "Sánchez" },
+      "ica": { "a": 53.82, "b": 46.18, "leader": "Keiko" },
+      "junin": { "a": 46.61, "b": 53.39, "leader": "Sánchez" },
+      "la_libertad": { "a": 57.31, "b": 42.69, "leader": "Keiko" },
+      "lambayeque": { "a": 58.92, "b": 41.08, "leader": "Keiko" },
+      "lima_metropolitana": { "a": 64.23, "b": 35.77, "leader": "Keiko" },
+      "lima_provincias": { "a": 56.17, "b": 43.83, "leader": "Keiko" },
+      "loreto": { "a": 55.08, "b": 44.92, "leader": "Keiko" },
+      "madre_de_dios": { "a": 27.04, "b": 72.96, "leader": "Sánchez" },
+      "moquegua": { "a": 33.19, "b": 66.81, "leader": "Sánchez" },
+      "pasco": { "a": 37.3, "b": 62.7, "leader": "Sánchez" },
+      "piura": { "a": 57.24, "b": 42.76, "leader": "Keiko" },
+      "puno": { "a": 12.16, "b": 87.84, "leader": "Sánchez" },
+      "san_martin": { "a": 45.96, "b": 54.04, "leader": "Sánchez" },
+      "tacna": { "a": 25.96, "b": 74.04, "leader": "Sánchez" },
+      "tumbes": { "a": 65.14, "b": 34.86, "leader": "Keiko" },
+      "ucayali": { "a": 53.11, "b": 46.89, "leader": "Keiko" },
+      "extranjero": { "a": 62.67, "b": 37.33, "leader": "Keiko" }
     }
   },
   "movement": [
@@ -201,6 +243,8 @@
     { "stage": "Boca Datum", "marginPp": 1.06, "leader": "Keiko" },
     { "stage": "CR Ipsos", "marginPp": 0.6, "leader": "Sánchez" },
     { "stage": "CR Datum", "marginPp": 0.28, "leader": "Sánchez" },
-    { "stage": "ONPE parcial", "marginPp": 4.312, "leader": "Keiko" }
+    { "stage": "ONPE 80.988%", "marginPp": 3.344, "leader": "Keiko" },
+    { "stage": "ONPE 81.865%", "marginPp": 3.142, "leader": "Keiko" },
+    { "stage": "ONPE 85.484%", "marginPp": 2.162, "leader": "Keiko" }
   ]
 }

@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   Map,
   Scale,
+  TrendingUp,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "./ThemeToggle";
@@ -17,6 +18,7 @@ const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/historial", label: "Historial", icon: History },
   { href: "/estadistica", label: "Estadística", icon: BarChart3 },
+  { href: "/prediccion", label: "Predicción", icon: TrendingUp },
   { href: "/territorial", label: "Territorial", icon: Map },
   { href: "/consistencia", label: "Consistencia", icon: Scale },
   { href: "/metodologia", label: "Metodología", icon: BookOpen },
