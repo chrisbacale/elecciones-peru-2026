@@ -94,7 +94,8 @@ export function buildYearRow(
   const sim = getSimulacroPair(election, provider);
   const boca = getProviderPair(election, "boca", provider);
   const cr = getProviderPair(election, "cr", provider);
-  const onpe = election.instruments.onpe100;
+  const onpe = election.instruments.onpe100 ?? election.instruments.onpePartial ?? null;
+  const onpeLabel = election.instruments.onpe100 ? "ONPE 100%" : "ONPE parcial";
 
   const stages: StageSnapshot[] = [
     pairToSnapshot("simulacro", "Simulacro", sim ?? null),
@@ -102,7 +103,7 @@ export function buildYearRow(
     pairToSnapshot("cr", "Conteo rápido", cr ?? null),
     pairToSnapshot(
       "onpe",
-      "ONPE 100%",
+      onpeLabel,
       onpe,
       { pending: onpe === null }
     ),

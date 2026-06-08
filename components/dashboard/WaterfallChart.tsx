@@ -13,7 +13,6 @@ import {
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ChartTooltip } from "@/components/charts/ChartTooltip";
 import type { FlashElectoral2026 } from "@/lib/types";
-import { formatPp } from "@/lib/format";
 
 export function WaterfallChart({ flash }: { flash: FlashElectoral2026 }) {
   const data = flash.movement.map((m) => ({
@@ -24,16 +23,13 @@ export function WaterfallChart({ flash }: { flash: FlashElectoral2026 }) {
         : -m.marginPp,
     leader: m.leader,
   }));
-  const summary = data
-    .map((item) => `${item.stage}: ${item.leader} ${formatPp(Math.abs(item.margin))}`)
-    .join(" → ");
-
   return (
     <Card className="min-w-0">
       <CardHeader>
         <CardTitle>Giro del margen 2026</CardTitle>
         <CardDescription>
-          {summary}
+          Secuencia de márgenes desde simulacros hasta el último ONPE. Toca o
+          pasa el cursor para ver cada corte.
         </CardDescription>
       </CardHeader>
       <div className="max-w-full overflow-x-auto pb-2">

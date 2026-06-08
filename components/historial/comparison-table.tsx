@@ -102,7 +102,7 @@ export function ComparisonTable({ rows }: ComparisonTableProps) {
               Δ
             </th>
             <th scope="col" className="px-4 py-3 font-semibold text-muted">
-              ONPE 100%
+              ONPE 100% / parcial
             </th>
           </tr>
         </thead>
