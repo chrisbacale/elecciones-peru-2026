@@ -4,9 +4,9 @@
     "onpeAudit": "onpe-rla-analysis/output/sep2026_pending_jee_audit.json",
     "sensitivity": "onpe-rla-analysis/output/sep2026_jee_sensitivity.json",
     "cityForecast": "onpe-rla-analysis/output/sep2026_city_level_forecast.json",
-    "territorial": "https://elecciones-peru-2026-liart.vercel.app/api/onpe/territorial"
+    "territorial": "data/2026/onpe-territorial-snapshot.json"
   },
-  "generatedAt": "2026-06-08T18:35:25.800Z",
+  "generatedAt": "2026-06-08T19:06:02.482Z",
   "cutPeru": "2026-06-08T13:12:00-05:00",
   "cutUtc": "2026-06-08T18:12:00Z",
   "officialCurrent": {
@@ -42,12 +42,25 @@
       "totalVotosValidos": -3115,
       "totalVotosEmitidos": -3391
     },
-    "note": "Los endpoints raiz y hoja de ONPE no siempre cierran al mismo segundo; la tabla por departamento usa hojas territoriales del corte auditado."
+    "note": "El modelo nacional usa la raiz oficial. La tabla por departamento usa snapshot territorial de candidatos reconciliado al total de votos validos Peru del corte raiz; el exterior queda separado como agregado."
   },
   "currentTerritorialSource": {
-    "status": "live",
-    "timestamp": "2026-06-08T18:35:26.644Z",
-    "source": "https://elecciones-peru-2026-liart.vercel.app/api/onpe/territorial"
+    "status": "snapshot",
+    "timestamp": "2026-06-08T18:01:28.750Z",
+    "source": "data/2026/onpe-territorial-snapshot.json",
+    "reconciliation": {
+      "method": "scale_candidate_votes_to_peru_valid_votes",
+      "targetScope": "PERU",
+      "inputKeikoSum": 8785325,
+      "inputSanchezSum": 8789180,
+      "inputCandidateSum": 17574505,
+      "targetValidVotes": 17584055,
+      "scaleFactor": 1.000543,
+      "outputKeikoSum": 8790099,
+      "outputSanchezSum": 8793956,
+      "outputCandidateSum": 17584055,
+      "note": "Los votos candidatos departamentales provienen de un snapshot territorial anterior; se escalan al total de votos validos Peru del corte raiz. El exterior se mantiene separado como agregado."
+    }
   },
   "historicalJeeResolution": {
     "rows": [
@@ -266,379 +279,387 @@
         "seed": 20260608,
         "scenarioKey": "city_weighted",
         "finalMarginKeikoMinusSanchez": {
-          "mean": 47599.4,
-          "median": 47921.7,
-          "p10": 19287.8,
-          "p90": 75649.7,
-          "p025": 3908.2,
-          "p975": 90145.6,
-          "modeledMarginOfError90": 28181,
-          "modeledMarginOfError95": 43118.7,
-          "probabilityKeikoLeads": 0.9836,
-          "probabilitySanchezLeads": 0.0164,
-          "probabilityWithin20000Votes": 0.10415
+          "mean": 48157.5,
+          "median": 48246.9,
+          "p025": 7875.9,
+          "p05": 14393.9,
+          "p10": 22168.5,
+          "p90": 74441.2,
+          "p95": 81512.8,
+          "p975": 87491.6,
+          "centralInterval80HalfWidth": 26136.4,
+          "centralInterval90HalfWidth": 33559.5,
+          "centralInterval95HalfWidth": 39807.9,
+          "probabilityKeikoLeads": 0.99015,
+          "probabilitySanchezLeads": 0.00985,
+          "probabilityWithin20000Votes": 0.0822
         },
         "peruOnlyMarginKeikoMinusSanchez": {
-          "mean": -28319.3,
-          "median": -28335.1,
-          "p10": -46029.1,
-          "p90": -10804.2,
-          "p025": -55428.2,
-          "p975": -1372.5,
-          "modeledMarginOfError90": 17612.5,
-          "modeledMarginOfError95": 27027.9,
-          "probabilityKeikoLeads": 0.02055,
-          "probabilitySanchezLeads": 0.97945,
-          "probabilityWithin20000Votes": 0.2717
+          "mean": -27742.6,
+          "median": -27787.4,
+          "p025": -48456,
+          "p05": -45333,
+          "p10": -41377.3,
+          "p90": -14057.9,
+          "p95": -9898.8,
+          "p975": -6754.3,
+          "centralInterval80HalfWidth": 13659.7,
+          "centralInterval90HalfWidth": 17717.1,
+          "centralInterval95HalfWidth": 20850.9,
+          "probabilityKeikoLeads": 0.00455,
+          "probabilitySanchezLeads": 0.99545,
+          "probabilityWithin20000Votes": 0.23155
         },
         "jeeAdmissionRate": {
-          "mean": 0.855775,
-          "median": 0.855822,
-          "p10": 0.850712,
-          "p90": 0.86084,
-          "p025": 0.84784,
-          "p975": 0.863394,
-          "modeledMarginOfError90": 0.005064,
-          "modeledMarginOfError95": 0.007777,
-          "probabilityKeikoLeads": 1,
-          "probabilitySanchezLeads": 0,
-          "probabilityWithin20000Votes": 1
+          "mean": 0.855764,
+          "median": 0.855541,
+          "p025": 0.835752,
+          "p05": 0.83971,
+          "p10": 0.843008,
+          "p90": 0.868734,
+          "p95": 0.872032,
+          "p975": 0.87467,
+          "centralInterval80HalfWidth": 0.012863,
+          "centralInterval90HalfWidth": 0.016161,
+          "centralInterval95HalfWidth": 0.019459
         },
         "histogram": [
           {
-            "from": -39341.8,
-            "to": -35136.9,
-            "midpoint": -37239.3,
-            "count": 2,
-            "pct": 0.0001,
-            "label": "-39k a -35k"
+            "from": -34262.7,
+            "to": -30361.3,
+            "midpoint": -32312,
+            "count": 1,
+            "pct": 0.00005,
+            "label": "-34k a -30k"
           },
           {
-            "from": -35136.9,
-            "to": -30932,
-            "midpoint": -33034.4,
+            "from": -30361.3,
+            "to": -26459.9,
+            "midpoint": -28410.6,
             "count": 3,
             "pct": 0.00015,
-            "label": "-35k a -31k"
+            "label": "-30k a -26k"
           },
           {
-            "from": -30932,
-            "to": -26727,
-            "midpoint": -28829.5,
-            "count": 3,
-            "pct": 0.00015,
-            "label": "-31k a -27k"
+            "from": -26459.9,
+            "to": -22558.5,
+            "midpoint": -24509.2,
+            "count": 6,
+            "pct": 0.0003,
+            "label": "-26k a -23k"
           },
           {
-            "from": -26727,
-            "to": -22522.1,
-            "midpoint": -24624.6,
+            "from": -22558.5,
+            "to": -18657.1,
+            "midpoint": -20607.8,
             "count": 7,
             "pct": 0.00035,
-            "label": "-27k a -23k"
+            "label": "-23k a -19k"
           },
           {
-            "from": -22522.1,
-            "to": -18317.2,
-            "midpoint": -20419.6,
-            "count": 14,
-            "pct": 0.0007,
-            "label": "-23k a -18k"
+            "from": -18657.1,
+            "to": -14755.6,
+            "midpoint": -16706.3,
+            "count": 11,
+            "pct": 0.00055,
+            "label": "-19k a -15k"
           },
           {
-            "from": -18317.2,
-            "to": -14112.2,
-            "midpoint": -16214.7,
-            "count": 23,
-            "pct": 0.00115,
-            "label": "-18k a -14k"
+            "from": -14755.6,
+            "to": -10854.2,
+            "midpoint": -12804.9,
+            "count": 17,
+            "pct": 0.00085,
+            "label": "-15k a -11k"
           },
           {
-            "from": -14112.2,
-            "to": -9907.3,
-            "midpoint": -12009.8,
-            "count": 35,
-            "pct": 0.00175,
-            "label": "-14k a -10k"
+            "from": -10854.2,
+            "to": -6952.8,
+            "midpoint": -8903.5,
+            "count": 36,
+            "pct": 0.0018,
+            "label": "-11k a -7k"
           },
           {
-            "from": -9907.3,
-            "to": -5702.4,
-            "midpoint": -7804.8,
-            "count": 78,
-            "pct": 0.0039,
-            "label": "-10k a -6k"
+            "from": -6952.8,
+            "to": -3051.4,
+            "midpoint": -5002.1,
+            "count": 48,
+            "pct": 0.0024,
+            "label": "-7k a -3k"
           },
           {
-            "from": -5702.4,
-            "to": -1497.4,
-            "midpoint": -3599.9,
-            "count": 108,
-            "pct": 0.0054,
-            "label": "-6k a -1k"
+            "from": -3051.4,
+            "to": 850,
+            "midpoint": -1100.7,
+            "count": 91,
+            "pct": 0.00455,
+            "label": "-3k a 1k"
           },
           {
-            "from": -1497.4,
-            "to": 2707.5,
-            "midpoint": 605,
-            "count": 170,
-            "pct": 0.0085,
-            "label": "-1k a 3k"
+            "from": 850,
+            "to": 4751.4,
+            "midpoint": 2800.7,
+            "count": 126,
+            "pct": 0.0063,
+            "label": "1k a 5k"
           },
           {
-            "from": 2707.5,
-            "to": 6912.4,
-            "midpoint": 4810,
-            "count": 217,
-            "pct": 0.01085,
-            "label": "3k a 7k"
+            "from": 4751.4,
+            "to": 8652.8,
+            "midpoint": 6702.1,
+            "count": 199,
+            "pct": 0.00995,
+            "label": "5k a 9k"
           },
           {
-            "from": 6912.4,
-            "to": 11117.4,
-            "midpoint": 9014.9,
-            "count": 337,
-            "pct": 0.01685,
-            "label": "7k a 11k"
+            "from": 8652.8,
+            "to": 12554.2,
+            "midpoint": 10603.5,
+            "count": 308,
+            "pct": 0.0154,
+            "label": "9k a 13k"
           },
           {
-            "from": 11117.4,
-            "to": 15322.3,
-            "midpoint": 13219.8,
-            "count": 443,
-            "pct": 0.02215,
-            "label": "11k a 15k"
+            "from": 12554.2,
+            "to": 16455.6,
+            "midpoint": 14504.9,
+            "count": 359,
+            "pct": 0.01795,
+            "label": "13k a 16k"
           },
           {
-            "from": 15322.3,
-            "to": 19527.2,
-            "midpoint": 17424.7,
-            "count": 590,
-            "pct": 0.0295,
-            "label": "15k a 20k"
+            "from": 16455.6,
+            "to": 20357,
+            "midpoint": 18406.3,
+            "count": 516,
+            "pct": 0.0258,
+            "label": "16k a 20k"
           },
           {
-            "from": 19527.2,
-            "to": 23732.1,
-            "midpoint": 21629.7,
-            "count": 792,
-            "pct": 0.0396,
+            "from": 20357,
+            "to": 24258.4,
+            "midpoint": 22307.7,
+            "count": 666,
+            "pct": 0.0333,
             "label": "20k a 24k"
           },
           {
-            "from": 23732.1,
-            "to": 27937.1,
-            "midpoint": 25834.6,
-            "count": 876,
-            "pct": 0.0438,
+            "from": 24258.4,
+            "to": 28159.8,
+            "midpoint": 26209.1,
+            "count": 849,
+            "pct": 0.04245,
             "label": "24k a 28k"
           },
           {
-            "from": 27937.1,
-            "to": 32142,
-            "midpoint": 30039.5,
-            "count": 1085,
-            "pct": 0.05425,
+            "from": 28159.8,
+            "to": 32061.3,
+            "midpoint": 30110.6,
+            "count": 1033,
+            "pct": 0.05165,
             "label": "28k a 32k"
           },
           {
-            "from": 32142,
-            "to": 36346.9,
-            "midpoint": 34244.5,
-            "count": 1289,
-            "pct": 0.06445,
+            "from": 32061.3,
+            "to": 35962.7,
+            "midpoint": 34012,
+            "count": 1214,
+            "pct": 0.0607,
             "label": "32k a 36k"
           },
           {
-            "from": 36346.9,
-            "to": 40551.9,
-            "midpoint": 38449.4,
-            "count": 1410,
-            "pct": 0.0705,
-            "label": "36k a 41k"
+            "from": 35962.7,
+            "to": 39864.1,
+            "midpoint": 37913.4,
+            "count": 1336,
+            "pct": 0.0668,
+            "label": "36k a 40k"
           },
           {
-            "from": 40551.9,
-            "to": 44756.8,
-            "midpoint": 42654.3,
-            "count": 1368,
-            "pct": 0.0684,
-            "label": "41k a 45k"
+            "from": 39864.1,
+            "to": 43765.5,
+            "midpoint": 41814.8,
+            "count": 1424,
+            "pct": 0.0712,
+            "label": "40k a 44k"
           },
           {
-            "from": 44756.8,
-            "to": 48961.7,
-            "midpoint": 46859.3,
-            "count": 1536,
-            "pct": 0.0768,
-            "label": "45k a 49k"
+            "from": 43765.5,
+            "to": 47666.9,
+            "midpoint": 45716.2,
+            "count": 1541,
+            "pct": 0.07705,
+            "label": "44k a 48k"
           },
           {
-            "from": 48961.7,
-            "to": 53166.7,
-            "midpoint": 51064.2,
-            "count": 1503,
-            "pct": 0.07515,
-            "label": "49k a 53k"
+            "from": 47666.9,
+            "to": 51568.3,
+            "midpoint": 49617.6,
+            "count": 1539,
+            "pct": 0.07695,
+            "label": "48k a 52k"
           },
           {
-            "from": 53166.7,
-            "to": 57371.6,
-            "midpoint": 55269.1,
-            "count": 1566,
-            "pct": 0.0783,
-            "label": "53k a 57k"
+            "from": 51568.3,
+            "to": 55469.7,
+            "midpoint": 53519,
+            "count": 1434,
+            "pct": 0.0717,
+            "label": "52k a 55k"
           },
           {
-            "from": 57371.6,
-            "to": 61576.5,
-            "midpoint": 59474,
-            "count": 1314,
-            "pct": 0.0657,
-            "label": "57k a 62k"
+            "from": 55469.7,
+            "to": 59371.1,
+            "midpoint": 57420.4,
+            "count": 1350,
+            "pct": 0.0675,
+            "label": "55k a 59k"
           },
           {
-            "from": 61576.5,
-            "to": 65781.4,
-            "midpoint": 63679,
-            "count": 1167,
-            "pct": 0.05835,
-            "label": "62k a 66k"
+            "from": 59371.1,
+            "to": 63272.5,
+            "midpoint": 61321.8,
+            "count": 1261,
+            "pct": 0.06305,
+            "label": "59k a 63k"
           },
           {
-            "from": 65781.4,
-            "to": 69986.4,
-            "midpoint": 67883.9,
-            "count": 1015,
-            "pct": 0.05075,
-            "label": "66k a 70k"
+            "from": 63272.5,
+            "to": 67173.9,
+            "midpoint": 65223.2,
+            "count": 1132,
+            "pct": 0.0566,
+            "label": "63k a 67k"
           },
           {
-            "from": 69986.4,
-            "to": 74191.3,
-            "midpoint": 72088.8,
-            "count": 806,
-            "pct": 0.0403,
-            "label": "70k a 74k"
+            "from": 67173.9,
+            "to": 71075.3,
+            "midpoint": 69124.6,
+            "count": 873,
+            "pct": 0.04365,
+            "label": "67k a 71k"
           },
           {
-            "from": 74191.3,
-            "to": 78396.2,
-            "midpoint": 76293.8,
-            "count": 642,
-            "pct": 0.0321,
-            "label": "74k a 78k"
+            "from": 71075.3,
+            "to": 74976.7,
+            "midpoint": 73026,
+            "count": 708,
+            "pct": 0.0354,
+            "label": "71k a 75k"
           },
           {
-            "from": 78396.2,
-            "to": 82601.2,
-            "midpoint": 80498.7,
-            "count": 507,
-            "pct": 0.02535,
-            "label": "78k a 83k"
+            "from": 74976.7,
+            "to": 78878.2,
+            "midpoint": 76927.5,
+            "count": 591,
+            "pct": 0.02955,
+            "label": "75k a 79k"
           },
           {
-            "from": 82601.2,
-            "to": 86806.1,
-            "midpoint": 84703.6,
-            "count": 362,
-            "pct": 0.0181,
+            "from": 78878.2,
+            "to": 82779.6,
+            "midpoint": 80828.9,
+            "count": 461,
+            "pct": 0.02305,
+            "label": "79k a 83k"
+          },
+          {
+            "from": 82779.6,
+            "to": 86681,
+            "midpoint": 84730.3,
+            "count": 316,
+            "pct": 0.0158,
             "label": "83k a 87k"
           },
           {
-            "from": 86806.1,
-            "to": 91011,
-            "midpoint": 88908.6,
-            "count": 285,
-            "pct": 0.01425,
+            "from": 86681,
+            "to": 90582.4,
+            "midpoint": 88631.7,
+            "count": 190,
+            "pct": 0.0095,
             "label": "87k a 91k"
           },
           {
-            "from": 91011,
-            "to": 95216,
-            "midpoint": 93113.5,
-            "count": 158,
-            "pct": 0.0079,
-            "label": "91k a 95k"
+            "from": 90582.4,
+            "to": 94483.8,
+            "midpoint": 92533.1,
+            "count": 135,
+            "pct": 0.00675,
+            "label": "91k a 94k"
           },
           {
-            "from": 95216,
-            "to": 99420.9,
-            "midpoint": 97318.4,
-            "count": 117,
-            "pct": 0.00585,
-            "label": "95k a 99k"
+            "from": 94483.8,
+            "to": 98385.2,
+            "midpoint": 96434.5,
+            "count": 88,
+            "pct": 0.0044,
+            "label": "94k a 98k"
           },
           {
-            "from": 99420.9,
-            "to": 103625.8,
-            "midpoint": 101523.4,
-            "count": 66,
-            "pct": 0.0033,
-            "label": "99k a 104k"
+            "from": 98385.2,
+            "to": 102286.6,
+            "midpoint": 100335.9,
+            "count": 55,
+            "pct": 0.00275,
+            "label": "98k a 102k"
           },
           {
-            "from": 103625.8,
-            "to": 107830.7,
-            "midpoint": 105728.3,
-            "count": 47,
-            "pct": 0.00235,
-            "label": "104k a 108k"
+            "from": 102286.6,
+            "to": 106188,
+            "midpoint": 104237.3,
+            "count": 46,
+            "pct": 0.0023,
+            "label": "102k a 106k"
           },
           {
-            "from": 107830.7,
-            "to": 112035.7,
-            "midpoint": 109933.2,
-            "count": 23,
-            "pct": 0.00115,
-            "label": "108k a 112k"
+            "from": 106188,
+            "to": 110089.4,
+            "midpoint": 108138.7,
+            "count": 19,
+            "pct": 0.00095,
+            "label": "106k a 110k"
           },
           {
-            "from": 112035.7,
-            "to": 116240.6,
-            "midpoint": 114138.1,
-            "count": 15,
-            "pct": 0.00075,
-            "label": "112k a 116k"
+            "from": 110089.4,
+            "to": 113990.8,
+            "midpoint": 112040.1,
+            "count": 7,
+            "pct": 0.00035,
+            "label": "110k a 114k"
           },
           {
-            "from": 116240.6,
-            "to": 120445.5,
-            "midpoint": 118343.1,
-            "count": 12,
-            "pct": 0.0006,
-            "label": "116k a 120k"
+            "from": 113990.8,
+            "to": 117892.2,
+            "midpoint": 115941.5,
+            "count": 3,
+            "pct": 0.00015,
+            "label": "114k a 118k"
           },
           {
-            "from": 120445.5,
-            "to": 124650.5,
-            "midpoint": 122548,
-            "count": 6,
-            "pct": 0.0003,
-            "label": "120k a 125k"
+            "from": 117892.2,
+            "to": 121793.6,
+            "midpoint": 119842.9,
+            "count": 0,
+            "pct": 0,
+            "label": "118k a 122k"
           },
           {
-            "from": 124650.5,
-            "to": 128855.4,
-            "midpoint": 126752.9,
-            "count": 2,
-            "pct": 0.0001,
-            "label": "125k a 129k"
-          },
-          {
-            "from": 128855.4,
-            "to": 133060.3,
-            "midpoint": 130957.9,
+            "from": 121793.6,
+            "to": 125695.1,
+            "midpoint": 123744.4,
             "count": 1,
             "pct": 0.00005,
-            "label": "129k a 133k"
+            "label": "122k a 126k"
           }
         ],
         "uncertaintyModel": {
           "pendingPeruShareConcentration": 900,
           "foreignShareConcentration": 360,
-          "jeeShareConcentration": 520,
-          "jeeLegalResolutionPrior": "Beta(anuladas+1, contabilizadas+1)"
+          "jeeDepartmentShareConcentrationMin": 45,
+          "jeeDepartmentShareConcentrationMax": 520,
+          "jeeResolutionSampling": "binomial_por_departamento",
+          "jeeLegalResolutionPrior": "Beta(anuladas+1, observadas_contadas+1)"
         }
       }
     },
@@ -712,379 +733,387 @@
         "seed": 20260609,
         "scenarioKey": "foreign_keiko_plus30",
         "finalMarginKeikoMinusSanchez": {
-          "mean": 72367.5,
-          "median": 72559.2,
-          "p10": 43951.2,
-          "p90": 100521.6,
-          "p025": 29641.8,
-          "p975": 114784.7,
-          "modeledMarginOfError90": 28285.2,
-          "modeledMarginOfError95": 42571.5,
-          "probabilityKeikoLeads": 0.9996,
-          "probabilitySanchezLeads": 0.0004,
-          "probabilityWithin20000Votes": 0.0086
+          "mean": 73035.8,
+          "median": 73092,
+          "p025": 33189.9,
+          "p05": 40053.4,
+          "p10": 47366.5,
+          "p90": 98954.9,
+          "p95": 106105,
+          "p975": 111864,
+          "centralInterval80HalfWidth": 25794.2,
+          "centralInterval90HalfWidth": 33025.8,
+          "centralInterval95HalfWidth": 39337,
+          "probabilityKeikoLeads": 0.9998,
+          "probabilitySanchezLeads": 0.0002,
+          "probabilityWithin20000Votes": 0.00495
         },
         "peruOnlyMarginKeikoMinusSanchez": {
-          "mean": -28097.9,
-          "median": -28149,
-          "p10": -45791.8,
-          "p90": -10410.4,
-          "p025": -54975.9,
-          "p975": -1174.1,
-          "modeledMarginOfError90": 17690.7,
-          "modeledMarginOfError95": 26900.9,
-          "probabilityKeikoLeads": 0.02055,
-          "probabilitySanchezLeads": 0.97945,
-          "probabilityWithin20000Votes": 0.27605
+          "mean": -27792.7,
+          "median": -27897.7,
+          "p025": -48655.1,
+          "p05": -45329,
+          "p10": -41471.1,
+          "p90": -14056.3,
+          "p95": -9939.9,
+          "p975": -6897.6,
+          "centralInterval80HalfWidth": 13707.4,
+          "centralInterval90HalfWidth": 17694.5,
+          "centralInterval95HalfWidth": 20878.7,
+          "probabilityKeikoLeads": 0.00425,
+          "probabilitySanchezLeads": 0.99575,
+          "probabilityWithin20000Votes": 0.23135
         },
         "jeeAdmissionRate": {
-          "mean": 0.855725,
-          "median": 0.855802,
-          "p10": 0.850617,
-          "p90": 0.860746,
-          "p025": 0.847884,
-          "p975": 0.863487,
-          "modeledMarginOfError90": 0.005064,
-          "modeledMarginOfError95": 0.007801,
-          "probabilityKeikoLeads": 1,
-          "probabilitySanchezLeads": 0,
-          "probabilityWithin20000Votes": 1
+          "mean": 0.855721,
+          "median": 0.855541,
+          "p025": 0.835752,
+          "p05": 0.83905,
+          "p10": 0.843008,
+          "p90": 0.868734,
+          "p95": 0.872032,
+          "p975": 0.87467,
+          "centralInterval80HalfWidth": 0.012863,
+          "centralInterval90HalfWidth": 0.016491,
+          "centralInterval95HalfWidth": 0.019459
         },
         "histogram": [
           {
-            "from": -11033.1,
-            "to": -6913.1,
-            "midpoint": -8973.1,
+            "from": -4646.7,
+            "to": -919.5,
+            "midpoint": -2783.1,
+            "count": 4,
+            "pct": 0.0002,
+            "label": "-5k a -1k"
+          },
+          {
+            "from": -919.5,
+            "to": 2807.8,
+            "midpoint": 944.2,
             "count": 5,
             "pct": 0.00025,
-            "label": "-11k a -7k"
+            "label": "-1k a 3k"
           },
           {
-            "from": -6913.1,
-            "to": -2793,
-            "midpoint": -4853.1,
-            "count": 2,
-            "pct": 0.0001,
-            "label": "-7k a -3k"
+            "from": 2807.8,
+            "to": 6535,
+            "midpoint": 4671.4,
+            "count": 5,
+            "pct": 0.00025,
+            "label": "3k a 7k"
           },
           {
-            "from": -2793,
-            "to": 1327,
-            "midpoint": -733,
-            "count": 9,
-            "pct": 0.00045,
-            "label": "-3k a 1k"
+            "from": 6535,
+            "to": 10262.2,
+            "midpoint": 8398.6,
+            "count": 11,
+            "pct": 0.00055,
+            "label": "7k a 10k"
           },
           {
-            "from": 1327,
-            "to": 5447.1,
-            "midpoint": 3387,
-            "count": 16,
-            "pct": 0.0008,
-            "label": "1k a 5k"
-          },
-          {
-            "from": 5447.1,
-            "to": 9567.1,
-            "midpoint": 7507.1,
-            "count": 16,
-            "pct": 0.0008,
-            "label": "5k a 10k"
-          },
-          {
-            "from": 9567.1,
-            "to": 13687.2,
-            "midpoint": 11627.1,
-            "count": 32,
-            "pct": 0.0016,
+            "from": 10262.2,
+            "to": 13989.5,
+            "midpoint": 12125.8,
+            "count": 15,
+            "pct": 0.00075,
             "label": "10k a 14k"
           },
           {
-            "from": 13687.2,
-            "to": 17807.2,
-            "midpoint": 15747.2,
-            "count": 40,
-            "pct": 0.002,
+            "from": 13989.5,
+            "to": 17716.7,
+            "midpoint": 15853.1,
+            "count": 28,
+            "pct": 0.0014,
             "label": "14k a 18k"
           },
           {
-            "from": 17807.2,
-            "to": 21927.3,
-            "midpoint": 19867.2,
-            "count": 94,
-            "pct": 0.0047,
-            "label": "18k a 22k"
+            "from": 17716.7,
+            "to": 21443.9,
+            "midpoint": 19580.3,
+            "count": 45,
+            "pct": 0.00225,
+            "label": "18k a 21k"
           },
           {
-            "from": 21927.3,
-            "to": 26047.3,
-            "midpoint": 23987.3,
-            "count": 135,
-            "pct": 0.00675,
-            "label": "22k a 26k"
+            "from": 21443.9,
+            "to": 25171.1,
+            "midpoint": 23307.5,
+            "count": 86,
+            "pct": 0.0043,
+            "label": "21k a 25k"
           },
           {
-            "from": 26047.3,
-            "to": 30167.3,
-            "midpoint": 28107.3,
-            "count": 174,
-            "pct": 0.0087,
-            "label": "26k a 30k"
+            "from": 25171.1,
+            "to": 28898.4,
+            "midpoint": 27034.8,
+            "count": 115,
+            "pct": 0.00575,
+            "label": "25k a 29k"
           },
           {
-            "from": 30167.3,
-            "to": 34287.4,
-            "midpoint": 32227.4,
-            "count": 337,
-            "pct": 0.01685,
-            "label": "30k a 34k"
+            "from": 28898.4,
+            "to": 32625.6,
+            "midpoint": 30762,
+            "count": 157,
+            "pct": 0.00785,
+            "label": "29k a 33k"
           },
           {
-            "from": 34287.4,
-            "to": 38407.4,
-            "midpoint": 36347.4,
-            "count": 375,
-            "pct": 0.01875,
-            "label": "34k a 38k"
+            "from": 32625.6,
+            "to": 36352.8,
+            "midpoint": 34489.2,
+            "count": 238,
+            "pct": 0.0119,
+            "label": "33k a 36k"
           },
           {
-            "from": 38407.4,
-            "to": 42527.5,
-            "midpoint": 40467.5,
-            "count": 534,
-            "pct": 0.0267,
-            "label": "38k a 43k"
+            "from": 36352.8,
+            "to": 40080.1,
+            "midpoint": 38216.4,
+            "count": 294,
+            "pct": 0.0147,
+            "label": "36k a 40k"
           },
           {
-            "from": 42527.5,
-            "to": 46647.5,
-            "midpoint": 44587.5,
-            "count": 647,
-            "pct": 0.03235,
-            "label": "43k a 47k"
+            "from": 40080.1,
+            "to": 43807.3,
+            "midpoint": 41943.7,
+            "count": 463,
+            "pct": 0.02315,
+            "label": "40k a 44k"
           },
           {
-            "from": 46647.5,
-            "to": 50767.6,
-            "midpoint": 48707.6,
-            "count": 859,
-            "pct": 0.04295,
-            "label": "47k a 51k"
+            "from": 43807.3,
+            "to": 47534.5,
+            "midpoint": 45670.9,
+            "count": 564,
+            "pct": 0.0282,
+            "label": "44k a 48k"
           },
           {
-            "from": 50767.6,
-            "to": 54887.6,
-            "midpoint": 52827.6,
-            "count": 967,
-            "pct": 0.04835,
+            "from": 47534.5,
+            "to": 51261.7,
+            "midpoint": 49398.1,
+            "count": 769,
+            "pct": 0.03845,
+            "label": "48k a 51k"
+          },
+          {
+            "from": 51261.7,
+            "to": 54989,
+            "midpoint": 53125.4,
+            "count": 904,
+            "pct": 0.0452,
             "label": "51k a 55k"
           },
           {
-            "from": 54887.6,
-            "to": 59007.7,
-            "midpoint": 56947.7,
-            "count": 1142,
-            "pct": 0.0571,
+            "from": 54989,
+            "to": 58716.2,
+            "midpoint": 56852.6,
+            "count": 1046,
+            "pct": 0.0523,
             "label": "55k a 59k"
           },
           {
-            "from": 59007.7,
-            "to": 63127.7,
-            "midpoint": 61067.7,
-            "count": 1292,
-            "pct": 0.0646,
-            "label": "59k a 63k"
+            "from": 58716.2,
+            "to": 62443.4,
+            "midpoint": 60579.8,
+            "count": 1216,
+            "pct": 0.0608,
+            "label": "59k a 62k"
           },
           {
-            "from": 63127.7,
-            "to": 67247.8,
-            "midpoint": 65187.8,
-            "count": 1416,
-            "pct": 0.0708,
-            "label": "63k a 67k"
+            "from": 62443.4,
+            "to": 66170.7,
+            "midpoint": 64307,
+            "count": 1353,
+            "pct": 0.06765,
+            "label": "62k a 66k"
           },
           {
-            "from": 67247.8,
-            "to": 71367.8,
-            "midpoint": 69307.8,
-            "count": 1479,
-            "pct": 0.07395,
-            "label": "67k a 71k"
+            "from": 66170.7,
+            "to": 69897.9,
+            "midpoint": 68034.3,
+            "count": 1386,
+            "pct": 0.0693,
+            "label": "66k a 70k"
           },
           {
-            "from": 71367.8,
-            "to": 75487.9,
-            "midpoint": 73427.9,
-            "count": 1576,
-            "pct": 0.0788,
-            "label": "71k a 75k"
+            "from": 69897.9,
+            "to": 73625.1,
+            "midpoint": 71761.5,
+            "count": 1520,
+            "pct": 0.076,
+            "label": "70k a 74k"
           },
           {
-            "from": 75487.9,
-            "to": 79607.9,
-            "midpoint": 77547.9,
-            "count": 1449,
-            "pct": 0.07245,
-            "label": "75k a 80k"
+            "from": 73625.1,
+            "to": 77352.3,
+            "midpoint": 75488.7,
+            "count": 1417,
+            "pct": 0.07085,
+            "label": "74k a 77k"
           },
           {
-            "from": 79607.9,
-            "to": 83728,
-            "midpoint": 81668,
-            "count": 1369,
-            "pct": 0.06845,
-            "label": "80k a 84k"
+            "from": 77352.3,
+            "to": 81079.6,
+            "midpoint": 79215.9,
+            "count": 1426,
+            "pct": 0.0713,
+            "label": "77k a 81k"
           },
           {
-            "from": 83728,
-            "to": 87848,
-            "midpoint": 85788,
-            "count": 1226,
-            "pct": 0.0613,
-            "label": "84k a 88k"
+            "from": 81079.6,
+            "to": 84806.8,
+            "midpoint": 82943.2,
+            "count": 1315,
+            "pct": 0.06575,
+            "label": "81k a 85k"
           },
           {
-            "from": 87848,
-            "to": 91968.1,
-            "midpoint": 89908.1,
-            "count": 1074,
-            "pct": 0.0537,
-            "label": "88k a 92k"
+            "from": 84806.8,
+            "to": 88534,
+            "midpoint": 86670.4,
+            "count": 1191,
+            "pct": 0.05955,
+            "label": "85k a 89k"
           },
           {
-            "from": 91968.1,
-            "to": 96088.1,
-            "midpoint": 94028.1,
-            "count": 907,
-            "pct": 0.04535,
+            "from": 88534,
+            "to": 92261.2,
+            "midpoint": 90397.6,
+            "count": 1051,
+            "pct": 0.05255,
+            "label": "89k a 92k"
+          },
+          {
+            "from": 92261.2,
+            "to": 95988.5,
+            "midpoint": 94124.9,
+            "count": 831,
+            "pct": 0.04155,
             "label": "92k a 96k"
           },
           {
-            "from": 96088.1,
-            "to": 100208.2,
-            "midpoint": 98148.2,
-            "count": 778,
-            "pct": 0.0389,
+            "from": 95988.5,
+            "to": 99715.7,
+            "midpoint": 97852.1,
+            "count": 672,
+            "pct": 0.0336,
             "label": "96k a 100k"
           },
           {
-            "from": 100208.2,
-            "to": 104328.2,
-            "midpoint": 102268.2,
-            "count": 617,
-            "pct": 0.03085,
-            "label": "100k a 104k"
+            "from": 99715.7,
+            "to": 103442.9,
+            "midpoint": 101579.3,
+            "count": 534,
+            "pct": 0.0267,
+            "label": "100k a 103k"
           },
           {
-            "from": 104328.2,
-            "to": 108448.3,
-            "midpoint": 106388.3,
-            "count": 442,
-            "pct": 0.0221,
-            "label": "104k a 108k"
+            "from": 103442.9,
+            "to": 107170.2,
+            "midpoint": 105306.5,
+            "count": 458,
+            "pct": 0.0229,
+            "label": "103k a 107k"
           },
           {
-            "from": 108448.3,
-            "to": 112568.3,
-            "midpoint": 110508.3,
-            "count": 355,
-            "pct": 0.01775,
-            "label": "108k a 113k"
+            "from": 107170.2,
+            "to": 110897.4,
+            "midpoint": 109033.8,
+            "count": 312,
+            "pct": 0.0156,
+            "label": "107k a 111k"
           },
           {
-            "from": 112568.3,
-            "to": 116688.4,
-            "midpoint": 114628.4,
-            "count": 235,
-            "pct": 0.01175,
-            "label": "113k a 117k"
+            "from": 110897.4,
+            "to": 114624.6,
+            "midpoint": 112761,
+            "count": 207,
+            "pct": 0.01035,
+            "label": "111k a 115k"
           },
           {
-            "from": 116688.4,
-            "to": 120808.4,
-            "midpoint": 118748.4,
-            "count": 154,
-            "pct": 0.0077,
-            "label": "117k a 121k"
+            "from": 114624.6,
+            "to": 118351.8,
+            "midpoint": 116488.2,
+            "count": 127,
+            "pct": 0.00635,
+            "label": "115k a 118k"
           },
           {
-            "from": 120808.4,
-            "to": 124928.5,
-            "midpoint": 122868.5,
-            "count": 95,
-            "pct": 0.00475,
-            "label": "121k a 125k"
+            "from": 118351.8,
+            "to": 122079.1,
+            "midpoint": 120215.5,
+            "count": 98,
+            "pct": 0.0049,
+            "label": "118k a 122k"
           },
           {
-            "from": 124928.5,
-            "to": 129048.5,
-            "midpoint": 126988.5,
-            "count": 64,
-            "pct": 0.0032,
-            "label": "125k a 129k"
+            "from": 122079.1,
+            "to": 125806.3,
+            "midpoint": 123942.7,
+            "count": 63,
+            "pct": 0.00315,
+            "label": "122k a 126k"
           },
           {
-            "from": 129048.5,
-            "to": 133168.6,
-            "midpoint": 131108.6,
-            "count": 46,
-            "pct": 0.0023,
-            "label": "129k a 133k"
+            "from": 125806.3,
+            "to": 129533.5,
+            "midpoint": 127669.9,
+            "count": 38,
+            "pct": 0.0019,
+            "label": "126k a 130k"
           },
           {
-            "from": 133168.6,
-            "to": 137288.6,
-            "midpoint": 135228.6,
+            "from": 129533.5,
+            "to": 133260.8,
+            "midpoint": 131397.1,
             "count": 20,
             "pct": 0.001,
+            "label": "130k a 133k"
+          },
+          {
+            "from": 133260.8,
+            "to": 136988,
+            "midpoint": 135124.4,
+            "count": 12,
+            "pct": 0.0006,
             "label": "133k a 137k"
           },
           {
-            "from": 137288.6,
-            "to": 141408.7,
-            "midpoint": 139348.6,
-            "count": 13,
-            "pct": 0.00065,
+            "from": 136988,
+            "to": 140715.2,
+            "midpoint": 138851.6,
+            "count": 2,
+            "pct": 0.0001,
             "label": "137k a 141k"
           },
           {
-            "from": 141408.7,
-            "to": 145528.7,
-            "midpoint": 143468.7,
-            "count": 5,
-            "pct": 0.00025,
-            "label": "141k a 146k"
-          },
-          {
-            "from": 145528.7,
-            "to": 149648.8,
-            "midpoint": 147588.7,
-            "count": 2,
-            "pct": 0.0001,
-            "label": "146k a 150k"
-          },
-          {
-            "from": 149648.8,
-            "to": 153768.8,
-            "midpoint": 151708.8,
+            "from": 140715.2,
+            "to": 144442.4,
+            "midpoint": 142578.8,
             "count": 1,
             "pct": 0.00005,
-            "label": "150k a 154k"
+            "label": "141k a 144k"
           },
           {
-            "from": 153768.8,
-            "to": 157888.9,
-            "midpoint": 155828.8,
+            "from": 144442.4,
+            "to": 148169.7,
+            "midpoint": 146306.1,
             "count": 1,
             "pct": 0.00005,
-            "label": "154k a 158k"
+            "label": "144k a 148k"
           }
         ],
         "uncertaintyModel": {
           "pendingPeruShareConcentration": 900,
           "foreignShareConcentration": 360,
-          "jeeShareConcentration": 520,
-          "jeeLegalResolutionPrior": "Beta(anuladas+1, contabilizadas+1)"
+          "jeeDepartmentShareConcentrationMin": 45,
+          "jeeDepartmentShareConcentrationMax": 520,
+          "jeeResolutionSampling": "binomial_por_departamento",
+          "jeeLegalResolutionPrior": "Beta(anuladas+1, observadas_contadas+1)"
         }
       }
     },
@@ -1158,379 +1187,387 @@
         "seed": 20260610,
         "scenarioKey": "foreign_50_50",
         "finalMarginKeikoMinusSanchez": {
-          "mean": -28196.3,
-          "median": -28220.1,
-          "p10": -57027.7,
-          "p90": 375.6,
-          "p025": -71891.4,
-          "p975": 15499,
-          "modeledMarginOfError90": 28701.6,
-          "modeledMarginOfError95": 43695.2,
-          "probabilityKeikoLeads": 0.1034,
-          "probabilitySanchezLeads": 0.8966,
-          "probabilityWithin20000Votes": 0.34295
+          "mean": -27694.2,
+          "median": -27772,
+          "p025": -68598.1,
+          "p05": -61979.1,
+          "p10": -54307.6,
+          "p90": -842.4,
+          "p95": 6906.2,
+          "p975": 12984.9,
+          "centralInterval80HalfWidth": 26732.6,
+          "centralInterval90HalfWidth": 34442.6,
+          "centralInterval95HalfWidth": 40791.5,
+          "probabilityKeikoLeads": 0.093,
+          "probabilitySanchezLeads": 0.907,
+          "probabilityWithin20000Votes": 0.3464
         },
         "peruOnlyMarginKeikoMinusSanchez": {
-          "mean": -28129,
-          "median": -28108.4,
-          "p10": -45999.5,
-          "p90": -10386.4,
-          "p025": -55086.7,
-          "p975": -1275.1,
-          "modeledMarginOfError90": 17806.5,
-          "modeledMarginOfError95": 26905.8,
-          "probabilityKeikoLeads": 0.0204,
-          "probabilitySanchezLeads": 0.9796,
-          "probabilityWithin20000Votes": 0.2784
+          "mean": -27727.8,
+          "median": -27849.8,
+          "p025": -48535,
+          "p05": -45247.1,
+          "p10": -41423.3,
+          "p90": -13917.4,
+          "p95": -9778.9,
+          "p975": -6553,
+          "centralInterval80HalfWidth": 13752.9,
+          "centralInterval90HalfWidth": 17734.1,
+          "centralInterval95HalfWidth": 20991,
+          "probabilityKeikoLeads": 0.0045,
+          "probabilitySanchezLeads": 0.9955,
+          "probabilityWithin20000Votes": 0.23445
         },
         "jeeAdmissionRate": {
-          "mean": 0.855741,
-          "median": 0.855804,
-          "p10": 0.85066,
-          "p90": 0.860803,
-          "p025": 0.847827,
-          "p975": 0.8635,
-          "modeledMarginOfError90": 0.005072,
-          "modeledMarginOfError95": 0.007836,
-          "probabilityKeikoLeads": 1,
-          "probabilitySanchezLeads": 0,
-          "probabilityWithin20000Votes": 1
+          "mean": 0.855733,
+          "median": 0.856201,
+          "p025": 0.835752,
+          "p05": 0.83905,
+          "p10": 0.843008,
+          "p90": 0.868734,
+          "p95": 0.872032,
+          "p975": 0.87467,
+          "centralInterval80HalfWidth": 0.012863,
+          "centralInterval90HalfWidth": 0.016491,
+          "centralInterval95HalfWidth": 0.019459
         },
         "histogram": [
           {
-            "from": -110654.1,
-            "to": -106647.7,
-            "midpoint": -108650.9,
+            "from": -109404.1,
+            "to": -105390,
+            "midpoint": -107397,
+            "count": 2,
+            "pct": 0.0001,
+            "label": "-109k a -105k"
+          },
+          {
+            "from": -105390,
+            "to": -101375.9,
+            "midpoint": -103382.9,
             "count": 3,
             "pct": 0.00015,
-            "label": "-111k a -107k"
+            "label": "-105k a -101k"
           },
           {
-            "from": -106647.7,
-            "to": -102641.3,
-            "midpoint": -104644.5,
-            "count": 0,
-            "pct": 0,
-            "label": "-107k a -103k"
-          },
-          {
-            "from": -102641.3,
-            "to": -98635,
-            "midpoint": -100638.1,
-            "count": 9,
-            "pct": 0.00045,
-            "label": "-103k a -99k"
-          },
-          {
-            "from": -98635,
-            "to": -94628.6,
-            "midpoint": -96631.8,
-            "count": 21,
-            "pct": 0.00105,
-            "label": "-99k a -95k"
-          },
-          {
-            "from": -94628.6,
-            "to": -90622.2,
-            "midpoint": -92625.4,
-            "count": 28,
-            "pct": 0.0014,
-            "label": "-95k a -91k"
-          },
-          {
-            "from": -90622.2,
-            "to": -86615.9,
-            "midpoint": -88619,
-            "count": 36,
-            "pct": 0.0018,
-            "label": "-91k a -87k"
-          },
-          {
-            "from": -86615.9,
-            "to": -82609.5,
-            "midpoint": -84612.7,
-            "count": 62,
-            "pct": 0.0031,
-            "label": "-87k a -83k"
-          },
-          {
-            "from": -82609.5,
-            "to": -78603.1,
-            "midpoint": -80606.3,
-            "count": 101,
-            "pct": 0.00505,
-            "label": "-83k a -79k"
-          },
-          {
-            "from": -78603.1,
-            "to": -74596.8,
-            "midpoint": -76600,
-            "count": 109,
-            "pct": 0.00545,
-            "label": "-79k a -75k"
-          },
-          {
-            "from": -74596.8,
-            "to": -70590.4,
-            "midpoint": -72593.6,
-            "count": 206,
-            "pct": 0.0103,
-            "label": "-75k a -71k"
-          },
-          {
-            "from": -70590.4,
-            "to": -66584,
-            "midpoint": -68587.2,
-            "count": 265,
-            "pct": 0.01325,
-            "label": "-71k a -67k"
-          },
-          {
-            "from": -66584,
-            "to": -62577.7,
-            "midpoint": -64580.9,
-            "count": 378,
-            "pct": 0.0189,
-            "label": "-67k a -63k"
-          },
-          {
-            "from": -62577.7,
-            "to": -58571.3,
-            "midpoint": -60574.5,
-            "count": 520,
-            "pct": 0.026,
-            "label": "-63k a -59k"
-          },
-          {
-            "from": -58571.3,
-            "to": -54564.9,
-            "midpoint": -56568.1,
-            "count": 659,
-            "pct": 0.03295,
-            "label": "-59k a -55k"
-          },
-          {
-            "from": -54564.9,
-            "to": -50558.6,
-            "midpoint": -52561.8,
-            "count": 801,
-            "pct": 0.04005,
-            "label": "-55k a -51k"
-          },
-          {
-            "from": -50558.6,
-            "to": -46552.2,
-            "midpoint": -48555.4,
-            "count": 957,
-            "pct": 0.04785,
-            "label": "-51k a -47k"
-          },
-          {
-            "from": -46552.2,
-            "to": -42545.8,
-            "midpoint": -44549,
-            "count": 1099,
-            "pct": 0.05495,
-            "label": "-47k a -43k"
-          },
-          {
-            "from": -42545.8,
-            "to": -38539.5,
-            "midpoint": -40542.7,
-            "count": 1209,
-            "pct": 0.06045,
-            "label": "-43k a -39k"
-          },
-          {
-            "from": -38539.5,
-            "to": -34533.1,
-            "midpoint": -36536.3,
-            "count": 1307,
-            "pct": 0.06535,
-            "label": "-39k a -35k"
-          },
-          {
-            "from": -34533.1,
-            "to": -30526.7,
-            "midpoint": -32529.9,
-            "count": 1448,
-            "pct": 0.0724,
-            "label": "-35k a -31k"
-          },
-          {
-            "from": -30526.7,
-            "to": -26520.4,
-            "midpoint": -28523.6,
-            "count": 1385,
-            "pct": 0.06925,
-            "label": "-31k a -27k"
-          },
-          {
-            "from": -26520.4,
-            "to": -22514,
-            "midpoint": -24517.2,
-            "count": 1361,
-            "pct": 0.06805,
-            "label": "-27k a -23k"
-          },
-          {
-            "from": -22514,
-            "to": -18507.7,
-            "midpoint": -20510.8,
-            "count": 1334,
-            "pct": 0.0667,
-            "label": "-23k a -19k"
-          },
-          {
-            "from": -18507.7,
-            "to": -14501.3,
-            "midpoint": -16504.5,
-            "count": 1252,
-            "pct": 0.0626,
-            "label": "-19k a -15k"
-          },
-          {
-            "from": -14501.3,
-            "to": -10494.9,
-            "midpoint": -12498.1,
-            "count": 1096,
-            "pct": 0.0548,
-            "label": "-15k a -10k"
-          },
-          {
-            "from": -10494.9,
-            "to": -6488.6,
-            "midpoint": -8491.7,
-            "count": 1036,
-            "pct": 0.0518,
-            "label": "-10k a -6k"
-          },
-          {
-            "from": -6488.6,
-            "to": -2482.2,
-            "midpoint": -4485.4,
-            "count": 830,
-            "pct": 0.0415,
-            "label": "-6k a -2k"
-          },
-          {
-            "from": -2482.2,
-            "to": 1524.2,
-            "midpoint": -479,
-            "count": 663,
-            "pct": 0.03315,
-            "label": "-2k a 2k"
-          },
-          {
-            "from": 1524.2,
-            "to": 5530.5,
-            "midpoint": 3527.4,
-            "count": 502,
-            "pct": 0.0251,
-            "label": "2k a 6k"
-          },
-          {
-            "from": 5530.5,
-            "to": 9536.9,
-            "midpoint": 7533.7,
-            "count": 398,
-            "pct": 0.0199,
-            "label": "6k a 10k"
-          },
-          {
-            "from": 9536.9,
-            "to": 13543.3,
-            "midpoint": 11540.1,
-            "count": 304,
-            "pct": 0.0152,
-            "label": "10k a 14k"
-          },
-          {
-            "from": 13543.3,
-            "to": 17549.6,
-            "midpoint": 15546.5,
-            "count": 207,
-            "pct": 0.01035,
-            "label": "14k a 18k"
-          },
-          {
-            "from": 17549.6,
-            "to": 21556,
-            "midpoint": 19552.8,
-            "count": 150,
-            "pct": 0.0075,
-            "label": "18k a 22k"
-          },
-          {
-            "from": 21556,
-            "to": 25562.4,
-            "midpoint": 23559.2,
-            "count": 107,
-            "pct": 0.00535,
-            "label": "22k a 26k"
-          },
-          {
-            "from": 25562.4,
-            "to": 29568.7,
-            "midpoint": 27565.6,
-            "count": 57,
-            "pct": 0.00285,
-            "label": "26k a 30k"
-          },
-          {
-            "from": 29568.7,
-            "to": 33575.1,
-            "midpoint": 31571.9,
-            "count": 38,
-            "pct": 0.0019,
-            "label": "30k a 34k"
-          },
-          {
-            "from": 33575.1,
-            "to": 37581.5,
-            "midpoint": 35578.3,
-            "count": 26,
-            "pct": 0.0013,
-            "label": "34k a 38k"
-          },
-          {
-            "from": 37581.5,
-            "to": 41587.8,
-            "midpoint": 39584.7,
-            "count": 19,
-            "pct": 0.00095,
-            "label": "38k a 42k"
-          },
-          {
-            "from": 41587.8,
-            "to": 45594.2,
-            "midpoint": 43591,
-            "count": 10,
-            "pct": 0.0005,
-            "label": "42k a 46k"
-          },
-          {
-            "from": 45594.2,
-            "to": 49600.6,
-            "midpoint": 47597.4,
+            "from": -101375.9,
+            "to": -97361.8,
+            "midpoint": -99368.8,
             "count": 4,
             "pct": 0.0002,
-            "label": "46k a 50k"
+            "label": "-101k a -97k"
           },
           {
-            "from": 49600.6,
-            "to": 53606.9,
-            "midpoint": 51603.7,
-            "count": 3,
-            "pct": 0.00015,
-            "label": "50k a 54k"
+            "from": -97361.8,
+            "to": -93347.7,
+            "midpoint": -95354.7,
+            "count": 10,
+            "pct": 0.0005,
+            "label": "-97k a -93k"
+          },
+          {
+            "from": -93347.7,
+            "to": -89333.6,
+            "midpoint": -91340.7,
+            "count": 11,
+            "pct": 0.00055,
+            "label": "-93k a -89k"
+          },
+          {
+            "from": -89333.6,
+            "to": -85319.5,
+            "midpoint": -87326.6,
+            "count": 29,
+            "pct": 0.00145,
+            "label": "-89k a -85k"
+          },
+          {
+            "from": -85319.5,
+            "to": -81305.4,
+            "midpoint": -83312.5,
+            "count": 42,
+            "pct": 0.0021,
+            "label": "-85k a -81k"
+          },
+          {
+            "from": -81305.4,
+            "to": -77291.3,
+            "midpoint": -79298.4,
+            "count": 69,
+            "pct": 0.00345,
+            "label": "-81k a -77k"
+          },
+          {
+            "from": -77291.3,
+            "to": -73277.3,
+            "midpoint": -75284.3,
+            "count": 111,
+            "pct": 0.00555,
+            "label": "-77k a -73k"
+          },
+          {
+            "from": -73277.3,
+            "to": -69263.2,
+            "midpoint": -71270.2,
+            "count": 181,
+            "pct": 0.00905,
+            "label": "-73k a -69k"
+          },
+          {
+            "from": -69263.2,
+            "to": -65249.1,
+            "midpoint": -67256.1,
+            "count": 263,
+            "pct": 0.01315,
+            "label": "-69k a -65k"
+          },
+          {
+            "from": -65249.1,
+            "to": -61235,
+            "midpoint": -63242,
+            "count": 342,
+            "pct": 0.0171,
+            "label": "-65k a -61k"
+          },
+          {
+            "from": -61235,
+            "to": -57220.9,
+            "midpoint": -59227.9,
+            "count": 482,
+            "pct": 0.0241,
+            "label": "-61k a -57k"
+          },
+          {
+            "from": -57220.9,
+            "to": -53206.8,
+            "midpoint": -55213.9,
+            "count": 651,
+            "pct": 0.03255,
+            "label": "-57k a -53k"
+          },
+          {
+            "from": -53206.8,
+            "to": -49192.7,
+            "midpoint": -51199.8,
+            "count": 781,
+            "pct": 0.03905,
+            "label": "-53k a -49k"
+          },
+          {
+            "from": -49192.7,
+            "to": -45178.6,
+            "midpoint": -47185.7,
+            "count": 1002,
+            "pct": 0.0501,
+            "label": "-49k a -45k"
+          },
+          {
+            "from": -45178.6,
+            "to": -41164.5,
+            "midpoint": -43171.6,
+            "count": 1212,
+            "pct": 0.0606,
+            "label": "-45k a -41k"
+          },
+          {
+            "from": -41164.5,
+            "to": -37150.4,
+            "midpoint": -39157.5,
+            "count": 1334,
+            "pct": 0.0667,
+            "label": "-41k a -37k"
+          },
+          {
+            "from": -37150.4,
+            "to": -33136.4,
+            "midpoint": -35143.4,
+            "count": 1470,
+            "pct": 0.0735,
+            "label": "-37k a -33k"
+          },
+          {
+            "from": -33136.4,
+            "to": -29122.3,
+            "midpoint": -31129.3,
+            "count": 1489,
+            "pct": 0.07445,
+            "label": "-33k a -29k"
+          },
+          {
+            "from": -29122.3,
+            "to": -25108.2,
+            "midpoint": -27115.2,
+            "count": 1489,
+            "pct": 0.07445,
+            "label": "-29k a -25k"
+          },
+          {
+            "from": -25108.2,
+            "to": -21094.1,
+            "midpoint": -23101.1,
+            "count": 1510,
+            "pct": 0.0755,
+            "label": "-25k a -21k"
+          },
+          {
+            "from": -21094.1,
+            "to": -17080,
+            "midpoint": -19087,
+            "count": 1388,
+            "pct": 0.0694,
+            "label": "-21k a -17k"
+          },
+          {
+            "from": -17080,
+            "to": -13065.9,
+            "midpoint": -15073,
+            "count": 1310,
+            "pct": 0.0655,
+            "label": "-17k a -13k"
+          },
+          {
+            "from": -13065.9,
+            "to": -9051.8,
+            "midpoint": -11058.9,
+            "count": 1133,
+            "pct": 0.05665,
+            "label": "-13k a -9k"
+          },
+          {
+            "from": -9051.8,
+            "to": -5037.7,
+            "midpoint": -7044.8,
+            "count": 894,
+            "pct": 0.0447,
+            "label": "-9k a -5k"
+          },
+          {
+            "from": -5037.7,
+            "to": -1023.6,
+            "midpoint": -3030.7,
+            "count": 759,
+            "pct": 0.03795,
+            "label": "-5k a -1k"
+          },
+          {
+            "from": -1023.6,
+            "to": 2990.5,
+            "midpoint": 983.4,
+            "count": 612,
+            "pct": 0.0306,
+            "label": "-1k a 3k"
+          },
+          {
+            "from": 2990.5,
+            "to": 7004.5,
+            "midpoint": 4997.5,
+            "count": 430,
+            "pct": 0.0215,
+            "label": "3k a 7k"
+          },
+          {
+            "from": 7004.5,
+            "to": 11018.6,
+            "midpoint": 9011.6,
+            "count": 357,
+            "pct": 0.01785,
+            "label": "7k a 11k"
+          },
+          {
+            "from": 11018.6,
+            "to": 15032.7,
+            "midpoint": 13025.7,
+            "count": 248,
+            "pct": 0.0124,
+            "label": "11k a 15k"
+          },
+          {
+            "from": 15032.7,
+            "to": 19046.8,
+            "midpoint": 17039.8,
+            "count": 146,
+            "pct": 0.0073,
+            "label": "15k a 19k"
+          },
+          {
+            "from": 19046.8,
+            "to": 23060.9,
+            "midpoint": 21053.9,
+            "count": 85,
+            "pct": 0.00425,
+            "label": "19k a 23k"
+          },
+          {
+            "from": 23060.9,
+            "to": 27075,
+            "midpoint": 25067.9,
+            "count": 67,
+            "pct": 0.00335,
+            "label": "23k a 27k"
+          },
+          {
+            "from": 27075,
+            "to": 31089.1,
+            "midpoint": 29082,
+            "count": 39,
+            "pct": 0.00195,
+            "label": "27k a 31k"
+          },
+          {
+            "from": 31089.1,
+            "to": 35103.2,
+            "midpoint": 33096.1,
+            "count": 25,
+            "pct": 0.00125,
+            "label": "31k a 35k"
+          },
+          {
+            "from": 35103.2,
+            "to": 39117.3,
+            "midpoint": 37110.2,
+            "count": 12,
+            "pct": 0.0006,
+            "label": "35k a 39k"
+          },
+          {
+            "from": 39117.3,
+            "to": 43131.3,
+            "midpoint": 41124.3,
+            "count": 6,
+            "pct": 0.0003,
+            "label": "39k a 43k"
+          },
+          {
+            "from": 43131.3,
+            "to": 47145.4,
+            "midpoint": 45138.4,
+            "count": 1,
+            "pct": 0.00005,
+            "label": "43k a 47k"
+          },
+          {
+            "from": 47145.4,
+            "to": 51159.5,
+            "midpoint": 49152.5,
+            "count": 0,
+            "pct": 0,
+            "label": "47k a 51k"
+          },
+          {
+            "from": 51159.5,
+            "to": 55173.6,
+            "midpoint": 53166.6,
+            "count": 1,
+            "pct": 0.00005,
+            "label": "51k a 55k"
           }
         ],
         "uncertaintyModel": {
           "pendingPeruShareConcentration": 900,
           "foreignShareConcentration": 360,
-          "jeeShareConcentration": 520,
-          "jeeLegalResolutionPrior": "Beta(anuladas+1, contabilizadas+1)"
+          "jeeDepartmentShareConcentrationMin": 45,
+          "jeeDepartmentShareConcentrationMax": 520,
+          "jeeResolutionSampling": "binomial_por_departamento",
+          "jeeLegalResolutionPrior": "Beta(anuladas+1, observadas_contadas+1)"
         }
       }
     }
@@ -1539,9 +1576,9 @@
     {
       "department": "LIMA",
       "currentLeader": "Keiko",
-      "currentKeikoVotes": 3943082,
-      "currentSanchezVotes": 2266534,
-      "currentGapKeikoMinusSanchez": 1676548,
+      "currentKeikoVotes": 3945225,
+      "currentSanchezVotes": 2267766,
+      "currentGapKeikoMinusSanchez": 1677459,
       "actas": {
         "total": 29247,
         "counted": 28323,
@@ -1567,18 +1604,18 @@
         "expectedJeeCountedActas": 790.8
       },
       "projection": {
-        "keikoVotes": 4054208.2,
-        "sanchezVotes": 2329416.4,
-        "gapKeikoMinusSanchez": 1724791.8,
+        "keikoVotes": 4056351.2,
+        "sanchezVotes": 2330648.4,
+        "gapKeikoMinusSanchez": 1725702.8,
         "leader": "Keiko"
       }
     },
     {
       "department": "CUSCO",
       "currentLeader": "Sanchez",
-      "currentKeikoVotes": 156667,
-      "currentSanchezVotes": 549829,
-      "currentGapKeikoMinusSanchez": -393162,
+      "currentKeikoVotes": 156752,
+      "currentSanchezVotes": 550128,
+      "currentGapKeikoMinusSanchez": -393376,
       "actas": {
         "total": 3983,
         "counted": 3636,
@@ -1604,18 +1641,18 @@
         "expectedJeeCountedActas": 36.800664
       },
       "projection": {
-        "keikoVotes": 165896.6,
-        "sanchezVotes": 596201.5,
-        "gapKeikoMinusSanchez": -430304.9,
+        "keikoVotes": 165981.6,
+        "sanchezVotes": 596500.5,
+        "gapKeikoMinusSanchez": -430518.9,
         "leader": "Sanchez"
       }
     },
     {
       "department": "AYACUCHO",
       "currentLeader": "Sanchez",
-      "currentKeikoVotes": 64421,
-      "currentSanchezVotes": 244520,
-      "currentGapKeikoMinusSanchez": -180099,
+      "currentKeikoVotes": 62733,
+      "currentSanchezVotes": 238340,
+      "currentGapKeikoMinusSanchez": -175607,
       "actas": {
         "total": 1900,
         "counted": 1747,
@@ -1641,18 +1678,18 @@
         "expectedJeeCountedActas": 14.5491
       },
       "projection": {
-        "keikoVotes": 68455.8,
-        "sanchezVotes": 262437.8,
-        "gapKeikoMinusSanchez": -193982,
+        "keikoVotes": 66767.8,
+        "sanchezVotes": 256257.8,
+        "gapKeikoMinusSanchez": -189490,
         "leader": "Sanchez"
       }
     },
     {
       "department": "AMAZONAS",
       "currentLeader": "Sanchez",
-      "currentKeikoVotes": 67948,
-      "currentSanchezVotes": 114502,
-      "currentGapKeikoMinusSanchez": -46554,
+      "currentKeikoVotes": 67985,
+      "currentSanchezVotes": 114564,
+      "currentGapKeikoMinusSanchez": -46579,
       "actas": {
         "total": 1278,
         "counted": 1162,
@@ -1678,18 +1715,18 @@
         "expectedJeeCountedActas": 11.125782
       },
       "projection": {
-        "keikoVotes": 70343.9,
-        "sanchezVotes": 126589.9,
-        "gapKeikoMinusSanchez": -56246,
+        "keikoVotes": 70380.9,
+        "sanchezVotes": 126651.9,
+        "gapKeikoMinusSanchez": -56271,
         "leader": "Sanchez"
       }
     },
     {
       "department": "CALLAO",
       "currentLeader": "Keiko",
-      "currentKeikoVotes": 394407,
-      "currentSanchezVotes": 206765,
-      "currentGapKeikoMinusSanchez": 187642,
+      "currentKeikoVotes": 394621,
+      "currentSanchezVotes": 206877,
+      "currentGapKeikoMinusSanchez": 187744,
       "actas": {
         "total": 2898,
         "counted": 2829,
@@ -1715,18 +1752,18 @@
         "expectedJeeCountedActas": 59.052228
       },
       "projection": {
-        "keikoVotes": 402568.4,
-        "sanchezVotes": 211140.9,
-        "gapKeikoMinusSanchez": 191427.6,
+        "keikoVotes": 402782.4,
+        "sanchezVotes": 211252.9,
+        "gapKeikoMinusSanchez": 191529.6,
         "leader": "Keiko"
       }
     },
     {
       "department": "UCAYALI",
       "currentLeader": "Keiko",
-      "currentKeikoVotes": 136005,
-      "currentSanchezVotes": 119419,
-      "currentGapKeikoMinusSanchez": 16586,
+      "currentKeikoVotes": 136079,
+      "currentSanchezVotes": 119484,
+      "currentGapKeikoMinusSanchez": 16595,
       "actas": {
         "total": 1564,
         "counted": 1417,
@@ -1752,18 +1789,18 @@
         "expectedJeeCountedActas": 27.386541
       },
       "projection": {
-        "keikoVotes": 145346.3,
-        "sanchezVotes": 131126.5,
-        "gapKeikoMinusSanchez": 14219.8,
+        "keikoVotes": 145420.3,
+        "sanchezVotes": 131191.5,
+        "gapKeikoMinusSanchez": 14228.8,
         "leader": "Keiko"
       }
     },
     {
       "department": "JUNÍN",
       "currentLeader": "Sanchez",
-      "currentKeikoVotes": 317670,
-      "currentSanchezVotes": 386933,
-      "currentGapKeikoMinusSanchez": -69263,
+      "currentKeikoVotes": 317843,
+      "currentSanchezVotes": 387143,
+      "currentGapKeikoMinusSanchez": -69300,
       "actas": {
         "total": 3691,
         "counted": 3599,
@@ -1789,18 +1826,18 @@
         "expectedJeeCountedActas": 27.386541
       },
       "projection": {
-        "keikoVotes": 322453,
-        "sanchezVotes": 394787.1,
-        "gapKeikoMinusSanchez": -72334.1,
+        "keikoVotes": 322626,
+        "sanchezVotes": 394997.1,
+        "gapKeikoMinusSanchez": -72371.1,
         "leader": "Sanchez"
       }
     },
     {
       "department": "PUNO",
       "currentLeader": "Sanchez",
-      "currentKeikoVotes": 95674,
-      "currentSanchezVotes": 608930,
-      "currentGapKeikoMinusSanchez": -513256,
+      "currentKeikoVotes": 95474,
+      "currentSanchezVotes": 608254,
+      "currentGapKeikoMinusSanchez": -512780,
       "actas": {
         "total": 3397,
         "counted": 3373,
@@ -1826,18 +1863,18 @@
         "expectedJeeCountedActas": 20.539906
       },
       "projection": {
-        "keikoVotes": 96439.2,
-        "sanchezVotes": 612699.7,
-        "gapKeikoMinusSanchez": -516260.5,
+        "keikoVotes": 96239.2,
+        "sanchezVotes": 612023.7,
+        "gapKeikoMinusSanchez": -515784.5,
         "leader": "Sanchez"
       }
     },
     {
       "department": "PIURA",
       "currentLeader": "Keiko",
-      "currentKeikoVotes": 581730,
-      "currentSanchezVotes": 439700,
-      "currentGapKeikoMinusSanchez": 142030,
+      "currentKeikoVotes": 582046,
+      "currentSanchezVotes": 439939,
+      "currentGapKeikoMinusSanchez": 142107,
       "actas": {
         "total": 5281,
         "counted": 5213,
@@ -1863,18 +1900,18 @@
         "expectedJeeCountedActas": 58.196399
       },
       "projection": {
-        "keikoVotes": 588924.6,
-        "sanchezVotes": 444338.9,
-        "gapKeikoMinusSanchez": 144585.7,
+        "keikoVotes": 589240.6,
+        "sanchezVotes": 444577.9,
+        "gapKeikoMinusSanchez": 144662.7,
         "leader": "Keiko"
       }
     },
     {
       "department": "MADRE DE DIOS",
       "currentLeader": "Sanchez",
-      "currentKeikoVotes": 28625,
-      "currentSanchezVotes": 63171,
-      "currentGapKeikoMinusSanchez": -34546,
+      "currentKeikoVotes": 28641,
+      "currentSanchezVotes": 63205,
+      "currentGapKeikoMinusSanchez": -34564,
       "actas": {
         "total": 507,
         "counted": 481,
@@ -1900,18 +1937,18 @@
         "expectedJeeCountedActas": 3.423318
       },
       "projection": {
-        "keikoVotes": 29554.4,
-        "sanchezVotes": 66510.7,
-        "gapKeikoMinusSanchez": -36956.3,
+        "keikoVotes": 29570.4,
+        "sanchezVotes": 66544.7,
+        "gapKeikoMinusSanchez": -36974.3,
         "leader": "Sanchez"
       }
     },
     {
       "department": "HUÁNUCO",
       "currentLeader": "Sanchez",
-      "currentKeikoVotes": 137640,
-      "currentSanchezVotes": 246103,
-      "currentGapKeikoMinusSanchez": -108463,
+      "currentKeikoVotes": 137715,
+      "currentSanchezVotes": 246237,
+      "currentGapKeikoMinusSanchez": -108522,
       "actas": {
         "total": 2341,
         "counted": 2280,
@@ -1937,18 +1974,18 @@
         "expectedJeeCountedActas": 17.116588
       },
       "projection": {
-        "keikoVotes": 140588.6,
-        "sanchezVotes": 251331.4,
-        "gapKeikoMinusSanchez": -110742.8,
+        "keikoVotes": 140663.6,
+        "sanchezVotes": 251465.4,
+        "gapKeikoMinusSanchez": -110801.8,
         "leader": "Sanchez"
       }
     },
     {
       "department": "LA LIBERTAD",
       "currentLeader": "Keiko",
-      "currentKeikoVotes": 599711,
-      "currentSanchezVotes": 442641,
-      "currentGapKeikoMinusSanchez": 157070,
+      "currentKeikoVotes": 600037,
+      "currentSanchezVotes": 442882,
+      "currentGapKeikoMinusSanchez": 157155,
       "actas": {
         "total": 5302,
         "counted": 5264,
@@ -1974,18 +2011,18 @@
         "expectedJeeCountedActas": 32.521517
       },
       "projection": {
-        "keikoVotes": 603752.3,
-        "sanchezVotes": 445121.4,
-        "gapKeikoMinusSanchez": 158630.9,
+        "keikoVotes": 604078.3,
+        "sanchezVotes": 445362.4,
+        "gapKeikoMinusSanchez": 158715.9,
         "leader": "Keiko"
       }
     },
     {
       "department": "LORETO",
       "currentLeader": "Keiko",
-      "currentKeikoVotes": 180141,
-      "currentSanchezVotes": 147912,
-      "currentGapKeikoMinusSanchez": 32229,
+      "currentKeikoVotes": 176117,
+      "currentSanchezVotes": 141798,
+      "currentGapKeikoMinusSanchez": 34319,
       "actas": {
         "total": 2697,
         "counted": 1937,
@@ -2011,18 +2048,18 @@
         "expectedJeeCountedActas": 23.107394
       },
       "projection": {
-        "keikoVotes": 238180.8,
-        "sanchezVotes": 204525.6,
-        "gapKeikoMinusSanchez": 33655.2,
+        "keikoVotes": 234156.8,
+        "sanchezVotes": 198411.6,
+        "gapKeikoMinusSanchez": 35745.2,
         "leader": "Keiko"
       }
     },
     {
       "department": "CAJAMARCA",
       "currentLeader": "Sanchez",
-      "currentKeikoVotes": 244352,
-      "currentSanchezVotes": 490702,
-      "currentGapKeikoMinusSanchez": -246350,
+      "currentKeikoVotes": 244485,
+      "currentSanchezVotes": 490969,
+      "currentGapKeikoMinusSanchez": -246484,
       "actas": {
         "total": 4240,
         "counted": 4210,
@@ -2048,18 +2085,18 @@
         "expectedJeeCountedActas": 25.674882
       },
       "projection": {
-        "keikoVotes": 245859.8,
-        "sanchezVotes": 493584.9,
-        "gapKeikoMinusSanchez": -247725.1,
+        "keikoVotes": 245992.8,
+        "sanchezVotes": 493851.9,
+        "gapKeikoMinusSanchez": -247859.1,
         "leader": "Sanchez"
       }
     },
     {
       "department": "AREQUIPA",
       "currentLeader": "Sanchez",
-      "currentKeikoVotes": 332307,
-      "currentSanchezVotes": 580500,
-      "currentGapKeikoMinusSanchez": -248193,
+      "currentKeikoVotes": 332484,
+      "currentSanchezVotes": 580711,
+      "currentGapKeikoMinusSanchez": -248227,
       "actas": {
         "total": 4215,
         "counted": 4189,
@@ -2085,18 +2122,18 @@
         "expectedJeeCountedActas": 21.395735
       },
       "projection": {
-        "keikoVotes": 333950.9,
-        "sanchezVotes": 583485.6,
-        "gapKeikoMinusSanchez": -249534.8,
+        "keikoVotes": 334127.9,
+        "sanchezVotes": 583696.6,
+        "gapKeikoMinusSanchez": -249568.8,
         "leader": "Sanchez"
       }
     },
     {
       "department": "ÁNCASH",
       "currentLeader": "Sanchez",
-      "currentKeikoVotes": 267408,
-      "currentSanchezVotes": 348735,
-      "currentGapKeikoMinusSanchez": -81327,
+      "currentKeikoVotes": 267553,
+      "currentSanchezVotes": 348925,
+      "currentGapKeikoMinusSanchez": -81372,
       "actas": {
         "total": 3472,
         "counted": 3425,
@@ -2122,18 +2159,18 @@
         "expectedJeeCountedActas": 40.223982
       },
       "projection": {
-        "keikoVotes": 270456.3,
-        "sanchezVotes": 352906.3,
-        "gapKeikoMinusSanchez": -82450,
+        "keikoVotes": 270601.3,
+        "sanchezVotes": 353096.3,
+        "gapKeikoMinusSanchez": -82495,
         "leader": "Sanchez"
       }
     },
     {
       "department": "TACNA",
       "currentLeader": "Sanchez",
-      "currentKeikoVotes": 65388,
-      "currentSanchezVotes": 162820,
-      "currentGapKeikoMinusSanchez": -97432,
+      "currentKeikoVotes": 65423,
+      "currentSanchezVotes": 162908,
+      "currentGapKeikoMinusSanchez": -97485,
       "actas": {
         "total": 1041,
         "counted": 1027,
@@ -2159,18 +2196,18 @@
         "expectedJeeCountedActas": 11.981612
       },
       "projection": {
-        "keikoVotes": 66225.2,
-        "sanchezVotes": 164705.5,
-        "gapKeikoMinusSanchez": -98480.3,
+        "keikoVotes": 66260.2,
+        "sanchezVotes": 164793.5,
+        "gapKeikoMinusSanchez": -98533.3,
         "leader": "Sanchez"
       }
     },
     {
       "department": "APURÍMAC",
       "currentLeader": "Sanchez",
-      "currentKeikoVotes": 43132,
-      "currentSanchezVotes": 185825,
-      "currentGapKeikoMinusSanchez": -142693,
+      "currentKeikoVotes": 43127,
+      "currentSanchezVotes": 185780,
+      "currentGapKeikoMinusSanchez": -142653,
       "actas": {
         "total": 1317,
         "counted": 1307,
@@ -2196,18 +2233,18 @@
         "expectedJeeCountedActas": 8.558294
       },
       "projection": {
-        "keikoVotes": 43401,
-        "sanchezVotes": 187073.7,
-        "gapKeikoMinusSanchez": -143672.8,
+        "keikoVotes": 43396,
+        "sanchezVotes": 187028.7,
+        "gapKeikoMinusSanchez": -143632.8,
         "leader": "Sanchez"
       }
     },
     {
       "department": "HUANCAVELICA",
       "currentLeader": "Sanchez",
-      "currentKeikoVotes": 36707,
-      "currentSanchezVotes": 160659,
-      "currentGapKeikoMinusSanchez": -123952,
+      "currentKeikoVotes": 36727,
+      "currentSanchezVotes": 160746,
+      "currentGapKeikoMinusSanchez": -124019,
       "actas": {
         "total": 1273,
         "counted": 1262,
@@ -2233,18 +2270,18 @@
         "expectedJeeCountedActas": 9.414123
       },
       "projection": {
-        "keikoVotes": 36961.4,
-        "sanchezVotes": 161885.8,
-        "gapKeikoMinusSanchez": -124924.3,
+        "keikoVotes": 36981.4,
+        "sanchezVotes": 161972.8,
+        "gapKeikoMinusSanchez": -124991.3,
         "leader": "Sanchez"
       }
     },
     {
       "department": "LAMBAYEQUE",
       "currentLeader": "Keiko",
-      "currentKeikoVotes": 435552,
-      "currentSanchezVotes": 304561,
-      "currentGapKeikoMinusSanchez": 130991,
+      "currentKeikoVotes": 435789,
+      "currentSanchezVotes": 304726,
+      "currentGapKeikoMinusSanchez": 131063,
       "actas": {
         "total": 3590,
         "counted": 3575,
@@ -2270,18 +2307,18 @@
         "expectedJeeCountedActas": 12.837441
       },
       "projection": {
-        "keikoVotes": 437113.5,
-        "sanchezVotes": 305643.4,
-        "gapKeikoMinusSanchez": 131470.2,
+        "keikoVotes": 437350.5,
+        "sanchezVotes": 305808.4,
+        "gapKeikoMinusSanchez": 131542.2,
         "leader": "Keiko"
       }
     },
     {
       "department": "ICA",
       "currentLeader": "Keiko",
-      "currentKeikoVotes": 279728,
-      "currentSanchezVotes": 259131,
-      "currentGapKeikoMinusSanchez": 20597,
+      "currentKeikoVotes": 279880,
+      "currentSanchezVotes": 259272,
+      "currentGapKeikoMinusSanchez": 20608,
       "actas": {
         "total": 2443,
         "counted": 2421,
@@ -2307,18 +2344,18 @@
         "expectedJeeCountedActas": 18.828247
       },
       "projection": {
-        "keikoVotes": 282036.9,
-        "sanchezVotes": 261043.5,
-        "gapKeikoMinusSanchez": 20993.4,
+        "keikoVotes": 282188.9,
+        "sanchezVotes": 261184.5,
+        "gapKeikoMinusSanchez": 21004.4,
         "leader": "Keiko"
       }
     },
     {
       "department": "PASCO",
       "currentLeader": "Sanchez",
-      "currentKeikoVotes": 50699,
-      "currentSanchezVotes": 78518,
-      "currentGapKeikoMinusSanchez": -27819,
+      "currentKeikoVotes": 50726,
+      "currentSanchezVotes": 78561,
+      "currentGapKeikoMinusSanchez": -27835,
       "actas": {
         "total": 802,
         "counted": 788,
@@ -2344,18 +2381,18 @@
         "expectedJeeCountedActas": 11.981612
       },
       "projection": {
-        "keikoVotes": 51539.8,
-        "sanchezVotes": 79722.2,
-        "gapKeikoMinusSanchez": -28182.5,
+        "keikoVotes": 51566.8,
+        "sanchezVotes": 79765.2,
+        "gapKeikoMinusSanchez": -28198.5,
         "leader": "Sanchez"
       }
     },
     {
       "department": "SAN MARTÍN",
       "currentLeader": "Sanchez",
-      "currentKeikoVotes": 217956,
-      "currentSanchezVotes": 262206,
-      "currentGapKeikoMinusSanchez": -44250,
+      "currentKeikoVotes": 217262,
+      "currentSanchezVotes": 261006,
+      "currentGapKeikoMinusSanchez": -43744,
       "actas": {
         "total": 2534,
         "counted": 2516,
@@ -2381,18 +2418,18 @@
         "expectedJeeCountedActas": 11.125782
       },
       "projection": {
-        "keikoVotes": 219195,
-        "sanchezVotes": 263762.9,
-        "gapKeikoMinusSanchez": -44567.9,
+        "keikoVotes": 218501,
+        "sanchezVotes": 262562.9,
+        "gapKeikoMinusSanchez": -44061.9,
         "leader": "Sanchez"
       }
     },
     {
       "department": "TUMBES",
       "currentLeader": "Keiko",
-      "currentKeikoVotes": 81960,
-      "currentSanchezVotes": 45427,
-      "currentGapKeikoMinusSanchez": 36533,
+      "currentKeikoVotes": 82004,
+      "currentSanchezVotes": 45452,
+      "currentGapKeikoMinusSanchez": 36552,
       "actas": {
         "total": 632,
         "counted": 630,
@@ -2418,18 +2455,18 @@
         "expectedJeeCountedActas": 1.711659
       },
       "projection": {
-        "keikoVotes": 82216.8,
-        "sanchezVotes": 45511.9,
-        "gapKeikoMinusSanchez": 36704.9,
+        "keikoVotes": 82260.8,
+        "sanchezVotes": 45536.9,
+        "gapKeikoMinusSanchez": 36723.9,
         "leader": "Keiko"
       }
     },
     {
       "department": "MOQUEGUA",
       "currentLeader": "Sanchez",
-      "currentKeikoVotes": 33353,
-      "currentSanchezVotes": 88235,
-      "currentGapKeikoMinusSanchez": -54882,
+      "currentKeikoVotes": 33371,
+      "currentSanchezVotes": 88283,
+      "currentGapKeikoMinusSanchez": -54912,
       "actas": {
         "total": 578,
         "counted": 576,
@@ -2455,9 +2492,9 @@
         "expectedJeeCountedActas": 1.711659
       },
       "projection": {
-        "keikoVotes": 33466.7,
-        "sanchezVotes": 88491.3,
-        "gapKeikoMinusSanchez": -55024.6,
+        "keikoVotes": 33484.7,
+        "sanchezVotes": 88539.3,
+        "gapKeikoMinusSanchez": -55054.6,
         "leader": "Sanchez"
       }
     }
@@ -2505,7 +2542,9 @@
     "El prior historico usa segundas vueltas 2011, 2016 y 2021: anuladas / observadas = probabilidad base de que un acta observada no termine contando.",
     "Por departamento, los votos dentro de actas JEE se estiman por patron territorial/distrital; no son los votos reales de esas actas observadas.",
     "El exterior se mantiene solo como agregado total; este dataset publico no expone paises ni ciudades del voto extranjero.",
-    "La simulacion Monte Carlo mide incertidumbre estadistica del modelo; no es proclamacion oficial ni reemplaza resoluciones JEE/JNE."
+    "La simulacion Monte Carlo mide incertidumbre estadistica del modelo; no es proclamacion oficial ni reemplaza resoluciones JEE/JNE.",
+    "Los parametros de dispersion Monte Carlo se publican en uncertaintyModel: controlan variacion de shares por componente y no son MOE de encuesta.",
+    "La tabla departamental usa votos de candidato de un snapshot territorial local reconciliado al total de votos validos Peru del corte raiz; no inyecta voto extranjero en departamentos."
   ],
   "privacyNote": "El voto extranjero se publica solo como total agregado en este modelo; no se incluyen paises ni ciudades."
 }

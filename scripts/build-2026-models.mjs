@@ -23,9 +23,11 @@ const TERRITORIAL_FALLBACK = path.join(
   PUBLIC_DATA_DIR,
   "onpe-territorial-snapshot.json",
 );
+const DEFAULT_TERRITORIAL_LIVE_URL =
+  "https://elecciones-peru-2026-liart.vercel.app/api/onpe/territorial";
 const TERRITORIAL_LIVE_URL =
   process.env.TERRITORIAL_LIVE_URL ??
-  "https://elecciones-peru-2026-liart.vercel.app/api/onpe/territorial";
+  (process.env.USE_LIVE_TERRITORIAL === "1" ? DEFAULT_TERRITORIAL_LIVE_URL : null);
 const PUBLIC_SOURCE_LABELS = {
   cityForecast: "onpe-rla-analysis/output/sep2026_city_level_forecast.json",
   jeeAudit: "onpe-rla-analysis/output/sep2026_pending_jee_audit.json",
@@ -102,6 +104,8 @@ const METHOD_NOTES = [
   "Por departamento, los votos dentro de actas JEE se estiman por patron territorial/distrital; no son los votos reales de esas actas observadas.",
   "El exterior se mantiene solo como agregado total; este dataset publico no expone paises ni ciudades del voto extranjero.",
   "La simulacion Monte Carlo mide incertidumbre estadistica del modelo; no es proclamacion oficial ni reemplaza resoluciones JEE/JNE.",
+  "Los parametros de dispersion Monte Carlo se publican en uncertaintyModel: controlan variacion de shares por componente y no son MOE de encuesta.",
+  "La tabla departamental usa votos de candidato de un snapshot territorial local reconciliado al total de votos validos Peru del corte raiz; no inyecta voto extranjero en departamentos.",
 ];
 
 function round(value, decimals = 1) {
@@ -144,23 +148,25 @@ async function readJson(file) {
 }
 
 async function loadTerritorial() {
-  try {
-    const res = await fetch(TERRITORIAL_LIVE_URL, {
-      headers: { Accept: "application/json" },
-      cache: "no-store",
-    });
-    if (res.ok) {
-      const data = await res.json();
-      if (Array.isArray(data.departments) && data.departments.length >= 20) {
-        return {
-          ...data,
-          source: TERRITORIAL_LIVE_URL,
-          status: data.status ?? "live",
-        };
+  if (TERRITORIAL_LIVE_URL) {
+    try {
+      const res = await fetch(TERRITORIAL_LIVE_URL, {
+        headers: { Accept: "application/json" },
+        cache: "no-store",
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data.departments) && data.departments.length >= 20) {
+          return {
+            ...data,
+            source: TERRITORIAL_LIVE_URL,
+            status: data.status ?? "live",
+          };
+        }
       }
+    } catch {
+      // Fall through to the committed fallback.
     }
-  } catch {
-    // Fall through to the committed fallback.
   }
 
   const fallback = await readJson(TERRITORIAL_FALLBACK);
@@ -168,6 +174,111 @@ async function loadTerritorial() {
     ...fallback,
     source: "data/2026/onpe-territorial-snapshot.json",
     status: "snapshot",
+  };
+}
+
+function apportionScaledVotes(rows, field, targetTotal) {
+  const sourceTotal = rows.reduce((acc, row) => acc + Number(row[field] ?? 0), 0);
+  if (!sourceTotal || !Number.isFinite(targetTotal)) {
+    return rows.map((row) => Math.round(Number(row[field] ?? 0)));
+  }
+
+  const factor = targetTotal / sourceTotal;
+  const scaled = rows.map((row, index) => {
+    const value = Number(row[field] ?? 0) * factor;
+    const floor = Math.floor(value);
+    return {
+      index,
+      floor,
+      fraction: value - floor,
+    };
+  });
+  const roundedTarget = Math.round(targetTotal);
+  const remaining = roundedTarget - scaled.reduce((acc, row) => acc + row.floor, 0);
+  const order = [...scaled].sort((a, b) => b.fraction - a.fraction);
+  const values = scaled.map((row) => row.floor);
+
+  for (let i = 0; i < Math.abs(remaining); i += 1) {
+    const target = order[i % order.length];
+    values[target.index] += remaining > 0 ? 1 : -1;
+  }
+
+  return values;
+}
+
+function reconcileTerritorialToPeruAudit(territorial, audit) {
+  const peruScope = audit.by_scope.find((row) => row.scope_label === "PERU");
+  const targetValidVotes = Number(peruScope?.valid_votes_counted ?? 0);
+  const departments = Array.isArray(territorial.departments)
+    ? territorial.departments.filter((row) => normalizeName(row.name) !== "EXTRANJERO")
+    : [];
+
+  if (!departments.length || !targetValidVotes) return territorial;
+
+  const inputKeikoSum = departments.reduce(
+    (acc, row) => acc + Number(row.votesKeiko ?? 0),
+    0,
+  );
+  const inputSanchezSum = departments.reduce(
+    (acc, row) => acc + Number(row.votesSanchez ?? 0),
+    0,
+  );
+  const inputCandidateSum = inputKeikoSum + inputSanchezSum;
+  const scaleFactor = inputCandidateSum > 0 ? targetValidVotes / inputCandidateSum : 1;
+  const keikoVotes = apportionScaledVotes(
+    departments,
+    "votesKeiko",
+    inputKeikoSum * scaleFactor,
+  );
+  const sanchezVotes = apportionScaledVotes(
+    departments,
+    "votesSanchez",
+    inputSanchezSum * scaleFactor,
+  );
+
+  const reconciledDepartments = departments.map((row, index) => {
+    const votesKeiko = keikoVotes[index];
+    const votesSanchez = sanchezVotes[index];
+    const validVotes = votesKeiko + votesSanchez;
+
+    return {
+      ...row,
+      votesKeiko,
+      votesSanchez,
+      validVotes,
+      keikoPct: ratioPct(votesKeiko, validVotes) * 100,
+      sanchezPct: ratioPct(votesSanchez, validVotes) * 100,
+      leader: votesKeiko >= votesSanchez ? "Keiko" : "Sánchez",
+      currentVotesReconciledToPeruValid: true,
+    };
+  });
+
+  const outputKeikoSum = reconciledDepartments.reduce(
+    (acc, row) => acc + Number(row.votesKeiko ?? 0),
+    0,
+  );
+  const outputSanchezSum = reconciledDepartments.reduce(
+    (acc, row) => acc + Number(row.votesSanchez ?? 0),
+    0,
+  );
+
+  return {
+    ...territorial,
+    departments: reconciledDepartments,
+    reconciliation: {
+      method: "scale_candidate_votes_to_peru_valid_votes",
+      targetScope: "PERU",
+      inputKeikoSum,
+      inputSanchezSum,
+      inputCandidateSum,
+      targetValidVotes,
+      scaleFactor,
+      outputKeikoSum,
+      outputSanchezSum,
+      outputCandidateSum: outputKeikoSum + outputSanchezSum,
+      note:
+        "Los votos candidatos departamentales provienen de un snapshot territorial anterior; se escalan al total de votos validos Peru del corte raiz. El exterior se mantiene separado como agregado.",
+    },
   };
 }
 
@@ -193,7 +304,7 @@ function compactCityForecast(raw) {
     },
     topDepartmentsPeru: raw.top_departments_city_weighted
       .filter((row) => row.scope_label === "PERU")
-      .slice(0, 18),
+      .slice(0, 25),
     topProvincesPeru: raw.top_provinces_city_weighted
       .filter((row) => row.scope_label === "PERU")
       .slice(0, 24),
@@ -440,27 +551,40 @@ function quantile(sorted, p) {
   return sorted[lo] + (sorted[hi] - sorted[lo]) * (index - lo);
 }
 
-function summarizeMargins(values) {
+function summarizeDistribution(values) {
   const sorted = [...values].sort((a, b) => a - b);
   const mean = values.reduce((acc, value) => acc + value, 0) / values.length;
+  const p05 = quantile(sorted, 0.05);
   const p10 = quantile(sorted, 0.1);
   const p90 = quantile(sorted, 0.9);
+  const p95 = quantile(sorted, 0.95);
   const p025 = quantile(sorted, 0.025);
   const p975 = quantile(sorted, 0.975);
+
+  return {
+    mean,
+    median: quantile(sorted, 0.5),
+    p025,
+    p05,
+    p10,
+    p90,
+    p95,
+    p975,
+    centralInterval80HalfWidth: (p90 - p10) / 2,
+    centralInterval90HalfWidth: (p95 - p05) / 2,
+    centralInterval95HalfWidth: (p975 - p025) / 2,
+  };
+}
+
+function summarizeMargins(values) {
+  const base = summarizeDistribution(values);
   const keiko = values.filter((value) => value > 0).length / values.length;
   const sanchez = values.filter((value) => value < 0).length / values.length;
   const nearTie = values.filter((value) => Math.abs(value) <= 20000).length /
     values.length;
 
   return {
-    mean,
-    median: quantile(sorted, 0.5),
-    p10,
-    p90,
-    p025,
-    p975,
-    modeledMarginOfError90: (p90 - p10) / 2,
-    modeledMarginOfError95: (p975 - p025) / 2,
+    ...base,
     probabilityKeikoLeads: keiko,
     probabilitySanchezLeads: sanchez,
     probabilityWithin20000Votes: nearTie,
@@ -505,6 +629,50 @@ function sampleShare(random, share, concentration) {
   );
 }
 
+function binomial(random, trials, probability) {
+  const n = Math.max(0, Math.round(trials));
+  const p = Math.min(1, Math.max(0, probability));
+  let count = 0;
+
+  for (let i = 0; i < n; i += 1) {
+    if (random() < p) count += 1;
+  }
+
+  return count;
+}
+
+function sampleJeeMarginByDepartment({ random, rows, admissionProbability }) {
+  if (!Array.isArray(rows) || rows.length === 0) {
+    return { margin: 0, sampledAdmissionRate: admissionProbability };
+  }
+
+  let margin = 0;
+  let sampledCountedActas = 0;
+  let totalActas = 0;
+
+  for (const row of rows) {
+    const actas = Math.max(0, Math.round(row.jee_actas ?? 0));
+    const valid = Number(row.valid_votes_at_risk ?? 0);
+    if (!actas || !valid) continue;
+
+    const countedActas = binomial(random, actas, admissionProbability);
+    const countedRatio = countedActas / actas;
+    const keikoShare = ratioPct(Number(row.keiko_votes_at_risk ?? 0), valid);
+    const concentration = Math.max(45, Math.min(520, valid / 120));
+    const sampledShare = sampleShare(random, keikoShare, concentration);
+
+    margin += valid * countedRatio * (2 * sampledShare - 1);
+    sampledCountedActas += countedActas;
+    totalActas += actas;
+  }
+
+  return {
+    margin,
+    sampledAdmissionRate:
+      totalActas > 0 ? sampledCountedActas / totalActas : admissionProbability,
+  };
+}
+
 function runMonteCarlo({ sensitivity, historical, scenarioKey, seed }) {
   const scenario = sensitivity.scenarios[scenarioKey];
   const random = mulberry32(seed);
@@ -512,6 +680,9 @@ function runMonteCarlo({ sensitivity, historical, scenarioKey, seed }) {
   const finalMargins = [];
   const peruOnlyMargins = [];
   const jeeAdmissionRates = [];
+  const jeeRows = (scenario.top_jee_risk_departments ?? []).filter(
+    (row) => row.scope_label === "PERU",
+  );
 
   for (let i = 0; i < iterations; i += 1) {
     const pending = scenario.components.pending_peru;
@@ -519,7 +690,6 @@ function runMonteCarlo({ sensitivity, historical, scenarioKey, seed }) {
     const jee = scenario.components.jee_at_risk;
     const pendingShare = sampleShare(random, pending.keiko / pending.valid, 900);
     const foreignShare = sampleShare(random, foreign.keiko / foreign.valid, 360);
-    const jeeShare = sampleShare(random, jee.keiko / jee.valid, 520);
     const annulRate = beta(
       random,
       historical.pooled.betaPrior.annulledAlpha,
@@ -528,7 +698,15 @@ function runMonteCarlo({ sensitivity, historical, scenarioKey, seed }) {
     const admissionRate = 1 - annulRate;
     const pendingMargin = pending.valid * (2 * pendingShare - 1);
     const foreignMargin = foreign.valid * (2 * foreignShare - 1);
-    const jeeMargin = jee.valid * admissionRate * (2 * jeeShare - 1);
+    const jeeSample = sampleJeeMarginByDepartment({
+      random,
+      rows: jeeRows,
+      admissionProbability: admissionRate,
+    });
+    const jeeMargin = jeeRows.length
+      ? jeeSample.margin
+      : jee.valid * admissionRate *
+        (2 * sampleShare(random, jee.keiko / jee.valid, 520) - 1);
     const peruOnlyMargin =
       sensitivity.official_current.margin_keiko_minus_roberto +
       pendingMargin +
@@ -537,7 +715,7 @@ function runMonteCarlo({ sensitivity, historical, scenarioKey, seed }) {
 
     peruOnlyMargins.push(peruOnlyMargin);
     finalMargins.push(finalMargin);
-    jeeAdmissionRates.push(admissionRate);
+    jeeAdmissionRates.push(jeeRows.length ? jeeSample.sampledAdmissionRate : admissionRate);
   }
 
   return {
@@ -546,13 +724,16 @@ function runMonteCarlo({ sensitivity, historical, scenarioKey, seed }) {
     scenarioKey,
     finalMarginKeikoMinusSanchez: summarizeMargins(finalMargins),
     peruOnlyMarginKeikoMinusSanchez: summarizeMargins(peruOnlyMargins),
-    jeeAdmissionRate: summarizeMargins(jeeAdmissionRates),
+    jeeAdmissionRate: summarizeDistribution(jeeAdmissionRates),
     histogram: buildHistogram(finalMargins),
     uncertaintyModel: {
       pendingPeruShareConcentration: 900,
       foreignShareConcentration: 360,
-      jeeShareConcentration: 520,
-      jeeLegalResolutionPrior: "Beta(anuladas+1, contabilizadas+1)",
+      jeeDepartmentShareConcentrationMin: 45,
+      jeeDepartmentShareConcentrationMax: 520,
+      jeeResolutionSampling: "binomial_por_departamento",
+      jeeLegalResolutionPrior:
+        "Beta(anuladas+1, observadas_contadas+1)",
     },
   };
 }
@@ -572,6 +753,7 @@ function mapSensitivityRows(rows) {
 
 function buildJeeModel({ audit, city, sensitivity, territorial }) {
   const historical = buildHistoricalModel();
+  const reconciledTerritorial = reconcileTerritorialToPeruAudit(territorial, audit);
   const admissionRate = historical.pooled.countedRateOfObserved;
   const annulmentRate = historical.pooled.annulledRateOfObserved;
   const primary = sensitivity.scenarios.city_weighted;
@@ -604,7 +786,7 @@ function buildJeeModel({ audit, city, sensitivity, territorial }) {
       onpeAudit: PUBLIC_SOURCE_LABELS.jeeAudit,
       sensitivity: PUBLIC_SOURCE_LABELS.jeeSensitivity,
       cityForecast: PUBLIC_SOURCE_LABELS.cityForecast,
-      territorial: territorial.source,
+      territorial: reconciledTerritorial.source,
     },
     generatedAt: new Date().toISOString(),
     cutPeru: audit.cut_peru,
@@ -618,12 +800,13 @@ function buildJeeModel({ audit, city, sensitivity, territorial }) {
     reconciliation: {
       rootTotals: audit.rootTotals,
       rootMinusLeafTotals: audit.root_minus_leaf_totals,
-      note: "Los endpoints raiz y hoja de ONPE no siempre cierran al mismo segundo; la tabla por departamento usa hojas territoriales del corte auditado.",
+      note: "El modelo nacional usa la raiz oficial. La tabla por departamento usa snapshot territorial de candidatos reconciliado al total de votos validos Peru del corte raiz; el exterior queda separado como agregado.",
     },
     currentTerritorialSource: {
-      status: territorial.status,
-      timestamp: territorial.timestamp,
-      source: territorial.source,
+      status: reconciledTerritorial.status,
+      timestamp: reconciledTerritorial.timestamp,
+      source: reconciledTerritorial.source,
+      reconciliation: reconciledTerritorial.reconciliation,
     },
     historicalJeeResolution: historical,
     currentUnresolved: {
@@ -685,7 +868,7 @@ function buildJeeModel({ audit, city, sensitivity, territorial }) {
       audit,
       city,
       sensitivity,
-      territorial,
+      territorial: reconciledTerritorial,
       historical,
     }),
     sources: SOURCES,

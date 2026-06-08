@@ -36,6 +36,11 @@ function gapClass(gap: number | null | undefined) {
   return gap > 0 ? "text-keiko" : "text-sanchez";
 }
 
+function toneFromGap(gap: number | null | undefined): "keiko" | "sanchez" | undefined {
+  if (gap == null || gap === 0) return undefined;
+  return gap > 0 ? "keiko" : "sanchez";
+}
+
 function leaderGap(gap: number | null | undefined) {
   if (gap == null) return "Sin datos";
   if (Math.abs(gap) < 0.5) return "Empate";
@@ -141,7 +146,7 @@ const departmentColumns: ResponsiveColumn<JeeDepartmentRow>[] = [
   },
   {
     key: "projection",
-    header: "Proyección 100%",
+    header: "Proyección modelada",
     render: (row) => (
       <span className={cn("font-mono font-semibold tabular-nums", gapClass(row.projection.gapKeikoMinusSanchez))}>
         {leaderGap(row.projection.gapKeikoMinusSanchez)}
@@ -240,25 +245,25 @@ function SummaryTab({ model }: { model: JeeResolutionModel }) {
           label="ONPE actual"
           value={leaderGap(model.officialCurrent.marginKeikoMinusSanchez)}
           detail={`${formatVotes(model.officialCurrent.keikoVotes)} Keiko · ${formatVotes(model.officialCurrent.sanchezVotes)} Sánchez`}
-          tone={model.officialCurrent.marginKeikoMinusSanchez > 0 ? "keiko" : "sanchez"}
+          tone={toneFromGap(model.officialCurrent.marginKeikoMinusSanchez)}
         />
         <Tile
           label="Pendiente Perú"
           value={leaderGap(model.components.pendingPeru.margin_keiko_minus_roberto)}
           detail={`${formatVotes(model.components.pendingPeru.actas)} actas · ${formatVotes(model.components.pendingPeru.valid)} votos est.`}
-          tone="sanchez"
+          tone={toneFromGap(model.components.pendingPeru.margin_keiko_minus_roberto)}
         />
         <Tile
-          label="JEE at-risk"
+          label="Actas JEE en riesgo"
           value={leaderGap(model.components.jeeAtRisk.margin_keiko_minus_roberto)}
           detail={`${formatVotes(model.components.jeeAtRisk.actas)} actas · ${formatVotes(model.components.jeeAtRisk.valid)} votos est.`}
-          tone="keiko"
+          tone={toneFromGap(model.components.jeeAtRisk.margin_keiko_minus_roberto)}
         />
         <Tile
           label="Exterior agregado"
           value={leaderGap(model.components.foreignPendingAggregate.margin_keiko_minus_roberto)}
-          detail={`${formatVotes(model.components.foreignPendingAggregate.actas)} actas, sin paises/ciudades`}
-          tone="keiko"
+          detail={`${formatVotes(model.components.foreignPendingAggregate.actas)} actas, sin países ni ciudades`}
+          tone={toneFromGap(model.components.foreignPendingAggregate.margin_keiko_minus_roberto)}
         />
         <Tile
           label="JEE que contaría"
@@ -277,7 +282,7 @@ function SummaryTab({ model }: { model: JeeResolutionModel }) {
             {leaderGap(mc.median)}
           </p>
           <p className="mt-2 text-xs text-muted">
-            Intervalo 90%: {leaderGap(mc.p10)} a {leaderGap(mc.p90)}.
+            Intervalo central 90%: {leaderGap(mc.p05)} a {leaderGap(mc.p95)}.
           </p>
         </div>
         <div className="rounded-lg border border-card-border bg-accent/35 p-4">
@@ -293,13 +298,13 @@ function SummaryTab({ model }: { model: JeeResolutionModel }) {
         </div>
         <div className="rounded-lg border border-card-border bg-accent/35 p-4">
           <p className="text-xs font-medium uppercase tracking-wider text-muted">
-            Margen de error modelado
+            Incertidumbre modelada 90%
           </p>
           <p className="mt-2 font-mono text-xl font-semibold tabular-nums text-onpe">
-            ±{formatVotes(mc.modeledMarginOfError90)}
+            ±{formatVotes(mc.centralInterval90HalfWidth)}
           </p>
           <p className="mt-2 text-xs text-muted">
-            Semiancho p10-p90; p2.5-p97.5: ±{formatVotes(mc.modeledMarginOfError95)}.
+            Semiancho p05-p95; intervalo 95%: ±{formatVotes(mc.centralInterval95HalfWidth)}.
           </p>
         </div>
       </div>
@@ -318,6 +323,7 @@ function SummaryTab({ model }: { model: JeeResolutionModel }) {
           data={scenario.sensitivityByJeeAdmissionRate}
           keyExtractor={(row) => String(row.jeeAdmissionRate)}
           columns={sensitivityColumns}
+          caption="Sensibilidad JEE por tasa de actas que terminan contabilizadas"
         />
       </div>
     </div>
@@ -332,14 +338,16 @@ function DepartmentsTab({ model }: { model: JeeResolutionModel }) {
           Departamentos ordenados por impacto pendiente/JEE
         </h3>
         <p className="text-xs text-muted">
-          La proyección suma votos actuales, actas pendientes operativas y JEE
-          esperadas como contabilizadas según el prior histórico.
+          La proyección suma snapshot territorial reconciliado a Perú, actas
+          pendientes operativas y JEE esperadas como contabilizadas según el
+          prior histórico.
         </p>
       </div>
       <ResponsiveTable
         data={model.departmentRows}
         keyExtractor={(row) => row.department}
         columns={departmentColumns}
+        caption="Proyección departamental de actas pendientes y JEE"
       />
     </div>
   );
@@ -371,8 +379,8 @@ function MonteCarloTab({ model }: { model: JeeResolutionModel }) {
               </p>
               <p className="mt-2 text-xs leading-relaxed text-muted">
                 Keiko lidera en {ratioPct(stats.probabilityKeikoLeads, 1)} de
-                simulaciones; ±{formatVotes(stats.modeledMarginOfError90)} votos
-                como MOE modelado 90%.
+                simulaciones; ±{formatVotes(stats.centralInterval90HalfWidth)} votos
+                como intervalo central 90%.
               </p>
             </div>
           );
@@ -458,6 +466,7 @@ function MethodTab({ model }: { model: JeeResolutionModel }) {
         data={model.historicalJeeResolution.rows}
         keyExtractor={(row) => String(row.year)}
         columns={historicalColumns}
+        caption="Histórico de actas observadas y anuladas en segundas vueltas"
       />
 
       <div className="rounded-lg border border-alerta/30 bg-alerta-muted p-4">
@@ -472,6 +481,12 @@ function MethodTab({ model }: { model: JeeResolutionModel }) {
               raíz-hojas: {formatVotes(model.reconciliation.rootMinusLeafTotals.contabilizadas)} actas contabilizadas y{" "}
               {formatVotes(model.reconciliation.rootMinusLeafTotals.totalVotosValidos)} votos válidos.
             </p>
+            {model.currentTerritorialSource.reconciliation && (
+              <p>
+                Tabla departamental: {model.currentTerritorialSource.reconciliation.note} Total Perú reconciliado:{" "}
+                {formatVotes(model.currentTerritorialSource.reconciliation.outputCandidateSum)} votos válidos.
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -510,7 +525,7 @@ export function JeeMonteCarloSection({ model }: { model: JeeResolutionModel }) {
             </p>
             <CardTitle className="mt-1 flex items-center gap-2 text-xl">
               <Scale className="h-5 w-5 text-onpe" aria-hidden="true" />
-              Modelo estadístico 100% por componentes
+              Modelo por componentes hacia 100%
             </CardTitle>
             <CardDescription className="mt-2 max-w-3xl">
               Corte ONPE {formatDateTime(model.cutPeru)}. Se separa voto
@@ -526,7 +541,7 @@ export function JeeMonteCarloSection({ model }: { model: JeeResolutionModel }) {
             <Badge variant="warning">
               <span className="inline-flex items-center gap-1">
                 <Gavel className="h-3.5 w-3.5" aria-hidden="true" />
-                JEE at-risk
+                JEE en riesgo
               </span>
             </Badge>
             <Badge variant="live">
@@ -541,7 +556,7 @@ export function JeeMonteCarloSection({ model }: { model: JeeResolutionModel }) {
       <CardContent className="space-y-5">
         <div className="grid gap-3 md:grid-cols-4">
           <Tile
-            label="Actas raíz ONPE"
+            label="Avance ONPE nacional"
             value={`${formatPct(Number(root.actasContabilizadas), 3)}`}
             detail={`${formatVotes(Number(root.contabilizadas))} de ${formatVotes(Number(root.totalActas))} contabilizadas`}
             tone="onpe"
@@ -553,7 +568,7 @@ export function JeeMonteCarloSection({ model }: { model: JeeResolutionModel }) {
             tone="alerta"
           />
           <Tile
-            label="Pendientes raíz"
+            label="Actas pendientes nacionales"
             value={formatVotes(Number(root.pendientesJee))}
             detail="Incluye Perú operativo y exterior agregado pendiente."
           />
