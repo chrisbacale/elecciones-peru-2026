@@ -208,8 +208,10 @@ function StatusPanel({
               Escenarios de cierre ONPE 2026
             </h1>
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
-              {prediction.headline} El sistema combina el corte ONPE parcial,
-              conteos rápidos y sensibilidad territorial sin proclamar ganador.
+              Lectura principal: separar Perú interior, actas JEE/observadas y
+              exterior agregado. La simulación por regímenes queda como lectura
+              secundaria; no sustituye la aritmética por componentes ni proclama
+              ganador.
             </p>
           </div>
           <p className="text-xs text-muted">
@@ -628,21 +630,79 @@ function HowTo100Panel({
       gap: thirtyPpCombinedGap,
     },
   ];
+  const cleanRead =
+    interiorProjection == null
+      ? null
+      : {
+          peruOnly: interiorProjection.projectedNetKeikoVotes,
+          exterior30: thirtyPpExteriorGap,
+          peruPlusExterior30: thirtyPpCombinedGap,
+          datum: datumCombinedGap,
+          exitPoll: exitPollCombinedGap,
+        };
 
   return (
     <Card className="border-onpe/30">
       <CardHeader>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <CardTitle>Cómo se llega al 100%</CardTitle>
+            <CardTitle>Lectura principal por componentes hacia 100%</CardTitle>
             <CardDescription>
               Separación matemática entre Perú interior, JEE/observadas y exterior agregado.
             </CardDescription>
           </div>
-          <Badge variant="warning">No oficial</Badge>
+          <Badge variant="warning">Aritmética auditada</Badge>
         </div>
       </CardHeader>
       <CardContent className="space-y-5">
+        {cleanRead && (
+          <div className="rounded-xl border border-onpe/30 bg-onpe-muted p-4">
+            <div className="grid gap-3 lg:grid-cols-[1fr_1fr_1fr]">
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wider text-muted">
+                  Solo Perú proyectado
+                </p>
+                <p className={cn("mt-2 font-mono text-2xl font-semibold tabular-nums", gapToneClass(cleanRead.peruOnly))}>
+                  {cleanRead.peruOnly >= 0 ? "Keiko" : "Sánchez"} +{formatVotes(Math.abs(cleanRead.peruOnly))}
+                </p>
+                <p className="mt-1 text-xs text-muted">
+                  Perú interior con actas operativas pendientes; JEE no forzado.
+                </p>
+              </div>
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wider text-muted">
+                  Exterior +30 pp
+                </p>
+                <p className="mt-2 font-mono text-2xl font-semibold text-keiko tabular-nums">
+                  {formatSignedVotes(cleanRead.exterior30)}
+                </p>
+                <p className="mt-1 text-xs text-muted">
+                  Hipótesis: Keiko 65% / Sánchez 35% del voto exterior válido estimado.
+                </p>
+              </div>
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wider text-muted">
+                  Perú + exterior +30 pp
+                </p>
+                <p className={cn("mt-2 font-mono text-2xl font-semibold tabular-nums", gapToneClass(cleanRead.peruPlusExterior30))}>
+                  {cleanRead.peruPlusExterior30 == null
+                    ? "No disponible"
+                    : `${cleanRead.peruPlusExterior30 >= 0 ? "Keiko" : "Sánchez"} +${formatVotes(Math.abs(cleanRead.peruPlusExterior30))}`}
+                </p>
+                <p className="mt-1 text-xs text-muted">
+                  Esta es la cuenta que explica la reversión matemática por exterior.
+                </p>
+              </div>
+            </div>
+            <p className="mt-4 text-sm leading-relaxed text-foreground/85">
+              No hay contradicción matemática: sin exterior, el Perú proyectado puede
+              seguir favoreciendo a Sánchez; con un exterior de +30 pp para Keiko, el
+              exterior supera esa brecha y revierte el cierre. Las actas JEE se
+              mantienen separadas porque legalmente no son votos ya contabilizados.
+            </p>
+          </div>
+        )}
+
         <div className="grid gap-3 md:grid-cols-3">
           <div className="rounded-lg border border-card-border bg-accent/35 p-4">
             <p className="text-xs font-medium uppercase tracking-wider text-muted">
@@ -865,10 +925,10 @@ function ProjectionPanel({ prediction }: { prediction: PredictionResponse }) {
         <CardHeader>
           <div className="flex items-center justify-between gap-3">
             <div>
-              <CardTitle>Frecuencia simulada del cierre</CardTitle>
+              <CardTitle>Simulación secundaria por regímenes</CardTitle>
               <CardDescription>
-                {projection.modelName} · {projection.modelVersion} ·{" "}
-                {formatVotes(projection.simulations)} simulaciones
+                No es la lectura principal. {projection.modelName} ·{" "}
+                {projection.modelVersion} · {formatVotes(projection.simulations)} simulaciones
               </CardDescription>
             </div>
             <Sigma className="h-5 w-5 text-onpe" aria-hidden="true" />
@@ -877,7 +937,7 @@ function ProjectionPanel({ prediction }: { prediction: PredictionResponse }) {
         <CardContent className="space-y-4">
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="rounded-lg border border-card-border bg-accent/35 p-4">
-              <p className="text-xs text-muted">Mediana del modelo</p>
+              <p className="text-xs text-muted">Mediana del modelo secundario</p>
               <p className={cn("mt-1 font-mono text-2xl font-semibold tabular-nums", leaderTone)}>
                 {leaderLabel}
               </p>
@@ -936,9 +996,10 @@ function ProjectionPanel({ prediction }: { prediction: PredictionResponse }) {
 
       <Card className="min-w-0">
         <CardHeader>
-          <CardTitle>Distribución del margen simulado</CardTitle>
+          <CardTitle>Distribución del margen del modelo secundario</CardTitle>
           <CardDescription>
             Margen firmado: valores positivos favorecen a Keiko; negativos favorecen a Sánchez.
+            Contrasta con la lectura principal por componentes antes de sacar conclusiones.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -1602,16 +1663,16 @@ export function PredictionClient({ initialPrediction }: { initialPrediction: Pre
       )}
 
       <KpiGrid prediction={data} isFetching={isFetching} />
+      <HowTo100Panel
+        prediction={data}
+        territorial={territorialQuery.data}
+        isLoading={territorialQuery.isLoading}
+      />
       <TrendSignalsPanel rows={data.trendSignals} />
       <PendingTerritoryPanel
         prediction={data}
         territorial={territorialQuery.data}
         isFetching={territorialQuery.isFetching}
-        isLoading={territorialQuery.isLoading}
-      />
-      <HowTo100Panel
-        prediction={data}
-        territorial={territorialQuery.data}
         isLoading={territorialQuery.isLoading}
       />
       <CityForecastPanel />
