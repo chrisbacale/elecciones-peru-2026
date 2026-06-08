@@ -12,26 +12,26 @@
       "type": "oficial",
       "instrument": "Escrutinio parcial",
       "url": "https://resultadosegundavuelta.onpe.gob.pe/main/resumen",
-      "publishedAt": "2026-06-08T11:22:00.151-05:00",
+      "publishedAt": "2026-06-08T11:56:00.321-05:00",
       "data": {
-        "a": 50.017,
-        "b": 49.983,
+        "a": 50.016,
+        "b": 49.984,
         "labelA": "Keiko",
         "labelB": "Sánchez",
         "marginPp": 0.03,
         "marginLeader": "a",
-        "votesA": 8774506,
-        "votesB": 8768500,
-        "advancePct": 93.617,
-        "actasProcesadas": 86845,
+        "votesA": 8779917,
+        "votesB": 8774253,
+        "advancePct": 93.727,
+        "actasProcesadas": 86947,
         "actasTotal": 92766,
-        "actasPendientes": 4407,
-        "actasJee": 1514,
-        "actasPendientesPct": 4.751,
-        "actasJeePct": 1.632,
+        "actasPendientes": 4304,
+        "actasJee": 1515,
+        "actasPendientesPct": 4.64,
+        "actasJeePct": 1.633,
         "actasNote": "Corte primario ONPE verificado por endpoints XHR: resumen-general/totales y participantes con idEleccion=10."
       },
-      "notes": "Corte ONPE al 93.617% verificado el 08/06/2026 11:22 PET: Keiko 50.017% y Sánchez 49.983%. No es muestra aleatoria; sin margen de error estadístico. El bloque no contabilizado incluye 1,514 actas enviadas al JEE y 4,407 pendientes."
+      "notes": "Corte ONPE al 93.727% verificado el 08/06/2026 11:56 PET: Keiko 50.016% y Sánchez 49.984%. No es muestra aleatoria; sin margen de error estadístico. El bloque no contabilizado incluye 1,515 actas enviadas al JEE y 4,304 pendientes."
     },
     {
       "id": "onpe-parcial-prev",
@@ -280,18 +280,28 @@
       "sourceQuality": "secondary"
     },
     "officialOnpeExteriorResults": {
-      "status": "not_verified",
-      "actasTotal": null,
-      "actasContabilizadas": null,
-      "votesA": null,
-      "votesB": null,
-      "source": "ONPE exterior desagregado no incorporado al cliente de la app",
-      "note": "No usar Datum exterior como resultado ONPE. Es sensibilidad estadística hasta verificar un endpoint exterior oficial reproducible."
+      "status": "snapshot",
+      "actasTotal": 2543,
+      "actasContabilizadas": 12,
+      "actasPendientes": 2531,
+      "advancePct": 0.472,
+      "votesA": 1164,
+      "votesB": 881,
+      "a": 56.919,
+      "b": 43.081,
+      "validVotes": 2045,
+      "marginPp": 13.838,
+      "marginLeader": "a",
+      "source": "ONPE exterior oficial parcial",
+      "sourceUrl": "https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/eleccion-presidencial/participantes-ubicacion-geografica-nombre?tipoFiltro=ambito_geografico&idEleccion=10&idAmbitoGeografico=2",
+      "note": "Resultado oficial parcial del ámbito exterior agregado. No desagrega países en la app y no sustituye el cierre ONPE/JNE."
     },
     "assumptions": {
       "turnoutPct": 34,
+      "turnoutPctRange": [25, 45],
       "validVotePct": 94,
-      "note": "Hipótesis de volumen para sensibilidad; no es resultado oficial ni participación exterior final."
+      "validVotePctRange": [90, 97],
+      "note": "Hipótesis de volumen para sensibilidad; no es resultado oficial ni participación exterior final. El rango evita tratar el volumen exterior como punto observado."
     }
   },
   "movement": [
@@ -314,6 +324,9 @@
     { "stage": "ONPE 93.502%", "marginPp": 0.06, "leader": "Keiko" },
     { "stage": "ONPE 93.556%", "marginPp": 0.04, "leader": "Keiko" },
     { "stage": "ONPE 93.599%", "marginPp": 0.04, "leader": "Keiko" },
-    { "stage": "ONPE 93.617%", "marginPp": 0.03, "leader": "Keiko" }
+    { "stage": "ONPE 93.617%", "marginPp": 0.03, "leader": "Keiko" },
+    { "stage": "ONPE 93.623%", "marginPp": 0.03, "leader": "Keiko" },
+    { "stage": "ONPE 93.698%", "marginPp": 0.04, "leader": "Keiko" },
+    { "stage": "ONPE 93.727%", "marginPp": 0.03, "leader": "Keiko" }
   ]
 }

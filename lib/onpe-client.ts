@@ -1,6 +1,12 @@
 import flash2026 from "@/data/2026/flash-electoral.json";
 import electionsData from "@/data/historical/segunda-vuelta.json";
-import type { ElectionRecord, OnpeResumen, OnpeTerritorial, OnpeStatus } from "./types";
+import type {
+  ElectionRecord,
+  OnpeExteriorResumen,
+  OnpeResumen,
+  OnpeTerritorial,
+  OnpeStatus,
+} from "./types";
 
 export const ONPE_BASES = [
   "https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend",
@@ -39,6 +45,8 @@ const DEPARTMENTS: Record<string, string> = {
   "230000": "Tumbes",
   "250000": "Ucayali",
 };
+
+const EXTERIOR_AMBITO_GEOGRAFICO_ID = 2;
 
 let lastResolvedElectionId: number | null = null;
 let lastResolvedBase: string | null = null;
@@ -195,6 +203,45 @@ export function getKnownOnpeSnapshot(): OnpeResumen {
   };
 }
 
+export function getKnownOnpeExteriorSnapshot(): OnpeExteriorResumen {
+  const exterior = flash2026.exterior?.officialOnpeExteriorResults;
+  const keikoPct = exterior?.a ?? null;
+  const sanchezPct = exterior?.b ?? null;
+  const status =
+    exterior?.status === "live" ||
+    exterior?.status === "snapshot" ||
+    exterior?.status === "not_verified"
+      ? exterior.status
+      : "not_verified";
+  return {
+    status,
+    timestamp: getKnownOnpeSnapshot().timestamp,
+    advancePct: exterior?.advancePct ?? null,
+    actasContabilizadas: exterior?.actasContabilizadas ?? null,
+    actasTotal: exterior?.actasTotal ?? null,
+    actasPendientes: exterior?.actasPendientes ?? null,
+    candidates: {
+      keiko: { votes: exterior?.votesA ?? null, pct: keikoPct },
+      sanchez: { votes: exterior?.votesB ?? null, pct: sanchezPct },
+    },
+    validVotes: exterior?.validVotes ?? null,
+    marginPp:
+      exterior?.marginPp ??
+      (keikoPct != null && sanchezPct != null ? Math.abs(keikoPct - sanchezPct) : null),
+    marginLeader:
+      exterior?.marginLeader === "b"
+        ? "Roberto Sánchez"
+        : exterior?.marginLeader === "a"
+          ? "Keiko Fujimori"
+          : null,
+    source: exterior?.sourceUrl ?? null,
+    message:
+      exterior?.status === "not_verified"
+        ? "Sin snapshot oficial exterior verificado"
+        : "API ONPE exterior intermitente — mostrando snapshot exterior agregado",
+  };
+}
+
 async function tryFetchNational(): Promise<{
   votes: VoteRow[];
   actas: ActasData | null;
@@ -249,6 +296,61 @@ async function tryFetchNational(): Promise<{
   return null;
 }
 
+async function tryFetchExterior(): Promise<{
+  votes: VoteRow[];
+  actas: ActasData | null;
+  source: string;
+  electionId: number;
+} | null> {
+  const electionIds = lastResolvedElectionId
+    ? [lastResolvedElectionId, ...ONPE_ELECTION_IDS.filter((id) => id !== lastResolvedElectionId)]
+    : [...ONPE_ELECTION_IDS];
+
+  for (const base of ONPE_BASES) {
+    for (const electionId of electionIds) {
+      const actasUrl = buildUrl(base, "/resumen-general/totales", {
+        idEleccion: electionId,
+        tipoFiltro: "ambito_geografico",
+        idAmbitoGeografico: EXTERIOR_AMBITO_GEOGRAFICO_ID,
+      });
+
+      const votesUrl = buildUrl(
+        base,
+        "/eleccion-presidencial/participantes-ubicacion-geografica-nombre",
+        {
+          tipoFiltro: "ambito_geografico",
+          idEleccion: electionId,
+          idAmbitoGeografico: EXTERIOR_AMBITO_GEOGRAFICO_ID,
+        },
+      );
+
+      const [actasJson, votesJson] = await Promise.all([
+        fetchJson(actasUrl),
+        fetchJson(votesUrl),
+      ]);
+
+      if (!votesJson) continue;
+
+      const votesData = (votesJson as { data?: VoteRow[] }).data ?? [];
+      const actasData = (actasJson as { data?: ActasData })?.data ?? null;
+      const hasKeiko = votesData.some((v) =>
+        matchesCandidate(v.nombreCandidato ?? "", KEIKO_NAMES),
+      );
+      const hasSanchez = votesData.some((v) =>
+        matchesCandidate(v.nombreCandidato ?? "", SANCHEZ_NAMES),
+      );
+
+      if (hasKeiko && hasSanchez) {
+        lastResolvedElectionId = electionId;
+        lastResolvedBase = base;
+        return { votes: votesData, actas: actasData, source: base, electionId };
+      }
+    }
+  }
+
+  return null;
+}
+
 function extractCandidateVotes(
   votes: VoteRow[],
   patterns: string[]
@@ -263,7 +365,14 @@ function extractCandidateVotes(
 }
 
 function getActasAdvance(actas: ActasData | null | undefined): number {
-  return actas?.actasContabilizadas ?? actas?.porcentajeActasContabilizadas ?? 0;
+  const pct = actas?.porcentajeActasContabilizadas ?? actas?.actasContabilizadas;
+  if (pct != null && pct <= 100) return pct;
+  const counted = getActasContabilizadas(actas);
+  const total = actas?.totalActas ?? null;
+  if (counted != null && total != null && total > 0) {
+    return Math.round((counted / total) * 1000) / 10;
+  }
+  return 0;
 }
 
 function getActasContabilizadas(actas: ActasData | null | undefined): number | null {
@@ -328,6 +437,61 @@ export async function fetchOnpeResumen(
   };
 }
 
+export async function fetchOnpeExterior(
+  snapshot: Partial<OnpeExteriorResumen> = getKnownOnpeExteriorSnapshot(),
+): Promise<OnpeExteriorResumen> {
+  const result = await tryFetchExterior();
+
+  if (!result) {
+    return {
+      ...getKnownOnpeExteriorSnapshot(),
+      ...snapshot,
+      status: snapshot.status ?? getKnownOnpeExteriorSnapshot().status,
+      source: snapshot.source ?? getKnownOnpeExteriorSnapshot().source,
+      message:
+        snapshot.message ??
+        "API ONPE exterior intermitente — mostrando snapshot exterior agregado",
+    };
+  }
+
+  const keiko = extractCandidateVotes(result.votes, KEIKO_NAMES);
+  const sanchez = extractCandidateVotes(result.votes, SANCHEZ_NAMES);
+  const validVotes = keiko.votes + sanchez.votes;
+  const keikoPct =
+    keiko.pct || (validVotes > 0 ? (keiko.votes / validVotes) * 100 : 0);
+  const sanchezPct =
+    sanchez.pct || (validVotes > 0 ? (sanchez.votes / validVotes) * 100 : 0);
+  const marginPp = Math.abs(keikoPct - sanchezPct);
+  const actasContabilizadas = getActasContabilizadas(result.actas);
+  const actasTotal = result.actas?.totalActas ?? null;
+
+  return {
+    status: "live",
+    timestamp: getActasTimestamp(result.actas),
+    advancePct: getActasAdvance(result.actas),
+    actasContabilizadas,
+    actasTotal,
+    actasPendientes:
+      actasTotal != null && actasContabilizadas != null
+        ? Math.max(0, actasTotal - actasContabilizadas)
+        : null,
+    candidates: {
+      keiko: {
+        votes: keiko.votes,
+        pct: Math.round(keikoPct * 1000) / 1000,
+      },
+      sanchez: {
+        votes: sanchez.votes,
+        pct: Math.round(sanchezPct * 1000) / 1000,
+      },
+    },
+    validVotes: result.actas?.totalVotosValidos ?? validVotes,
+    marginPp: Math.round(marginPp * 1000) / 1000,
+    marginLeader: keikoPct >= sanchezPct ? "Keiko Fujimori" : "Roberto Sánchez",
+    source: result.source,
+  };
+}
+
 export async function fetchOnpeTerritorial(): Promise<OnpeTerritorial> {
   const departments: OnpeTerritorial["departments"] = [];
   let anyLive = false;
@@ -381,6 +545,13 @@ export async function fetchOnpeTerritorial(): Promise<OnpeTerritorial> {
         const keiko = extractCandidateVotes(votesData, KEIKO_NAMES);
         const sanchez = extractCandidateVotes(votesData, SANCHEZ_NAMES);
         const total = keiko.votes + sanchez.votes;
+        const actasData = (actasJson as { data?: ActasData })?.data ?? null;
+        const actasContabilizadas = getActasContabilizadas(actasData);
+        const actasTotal = actasData?.totalActas ?? null;
+        const actasPendientes =
+          actasTotal != null && actasContabilizadas != null
+            ? Math.max(0, actasTotal - actasContabilizadas)
+            : null;
         const keikoPct =
           keiko.pct || (total > 0 ? (keiko.votes / total) * 100 : 0);
         const sanchezPct =
@@ -394,9 +565,14 @@ export async function fetchOnpeTerritorial(): Promise<OnpeTerritorial> {
             keikoPct: Math.round(keikoPct * 10) / 10,
             sanchezPct: Math.round(sanchezPct * 10) / 10,
             leader: keikoPct >= sanchezPct ? "Keiko" : "Sánchez",
-            advancePct:
-              (actasJson as { data?: ActasData })?.data
-                ?.porcentajeActasContabilizadas ?? 0,
+            advancePct: getActasAdvance(actasData),
+            actasContabilizadas,
+            actasTotal,
+            actasPendientes,
+            pendingPct:
+              actasTotal != null && actasTotal > 0 && actasPendientes != null
+                ? Math.round((actasPendientes / actasTotal) * 1000) / 10
+                : null,
           });
         }
         break;

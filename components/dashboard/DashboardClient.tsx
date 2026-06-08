@@ -64,6 +64,29 @@ export function DashboardClient() {
   const onpeMargin = onpe?.marginPp ?? onpeSnapshot?.data.marginPp ?? 4.312;
   const timestamp = onpe?.timestamp ?? onpeSnapshot?.publishedAt ?? "2026-06-08T00:31:00-05:00";
   const onpeStatus = onpe?.status ?? "snapshot";
+  const liveFlashElectoral = useMemo(() => {
+    if (!onpe) return flashElectoral;
+
+    const leader = onpe.marginLeader.toLowerCase().includes("sánchez")
+      ? "Sánchez"
+      : "Keiko";
+    const stage = `ONPE ${onpe.advancePct.toFixed(3)}%`;
+    const livePoint = {
+      stage,
+      marginPp: onpe.marginPp,
+      leader,
+    };
+    const movement = [...flashElectoral.movement];
+    const existingIndex = movement.findIndex((item) => item.stage === stage);
+
+    if (existingIndex >= 0) {
+      movement[existingIndex] = livePoint;
+    } else {
+      movement.push(livePoint);
+    }
+
+    return { ...flashElectoral, movement };
+  }, [onpe]);
   const liveSources = useMemo(
     () =>
       flashElectoral.sources.map((source) => {
@@ -299,7 +322,7 @@ export function DashboardClient() {
 
       {/* Waterfall + Participación */}
       <section className="grid gap-4 lg:grid-cols-2">
-        <WaterfallChart flash={flashElectoral} />
+        <WaterfallChart flash={liveFlashElectoral} />
 
         <Card>
           <CardHeader>

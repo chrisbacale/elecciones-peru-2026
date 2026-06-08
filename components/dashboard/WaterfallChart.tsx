@@ -29,14 +29,14 @@ export function WaterfallChart({ flash }: { flash: FlashElectoral2026 }) {
     .join(" → ");
 
   return (
-    <Card>
+    <Card className="min-w-0">
       <CardHeader>
         <CardTitle>Giro del margen 2026</CardTitle>
         <CardDescription>
           {summary}
         </CardDescription>
       </CardHeader>
-      <div className="overflow-x-auto pb-2">
+      <div className="max-w-full overflow-x-auto pb-2">
         <div className="h-64 min-w-[720px]">
           <ResponsiveContainer
             width="100%"

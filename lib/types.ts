@@ -122,6 +122,24 @@ export type OnpeResumen = {
   message?: string;
 };
 
+export type OnpeExteriorResumen = {
+  status: OnpeStatus | "not_verified";
+  timestamp: string;
+  advancePct: number | null;
+  actasContabilizadas: number | null;
+  actasTotal: number | null;
+  actasPendientes: number | null;
+  candidates: {
+    keiko: { votes: number | null; pct: number | null };
+    sanchez: { votes: number | null; pct: number | null };
+  };
+  validVotes: number | null;
+  marginPp: number | null;
+  marginLeader: string | null;
+  source: string | null;
+  message?: string;
+};
+
 export type OnpeTerritorial = {
   status: OnpeStatus;
   timestamp: string;
@@ -132,6 +150,10 @@ export type OnpeTerritorial = {
     sanchezPct: number;
     leader: string;
     advancePct: number;
+    actasContabilizadas?: number | null;
+    actasTotal?: number | null;
+    actasPendientes?: number | null;
+    pendingPct?: number | null;
   }>;
   message?: string;
 };
@@ -207,12 +229,22 @@ export type FlashElectoral2026 = {
       actasContabilizadas: number | null;
       votesA: number | null;
       votesB: number | null;
+      a?: number | null;
+      b?: number | null;
+      validVotes?: number | null;
+      advancePct?: number | null;
+      actasPendientes?: number | null;
+      marginPp?: number | null;
+      marginLeader?: string | null;
       source: string;
+      sourceUrl?: string | null;
       note: string;
     };
     assumptions: {
       turnoutPct: number;
+      turnoutPctRange?: number[];
       validVotePct: number;
+      validVotePctRange?: number[];
       note: string;
     };
   };

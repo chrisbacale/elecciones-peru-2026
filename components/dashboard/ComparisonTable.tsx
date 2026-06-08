@@ -29,7 +29,7 @@ type Row = {
 
 export function ComparisonTable({ rows }: { rows: Row[] }) {
   return (
-    <div className="overflow-x-auto rounded-xl border border-card-border">
+    <div className="max-w-full overflow-x-auto rounded-xl border border-card-border">
       <Table className="min-w-[760px]">
         <TableCaption className="sr-only">
           Comparación de ONPE parcial, boca de urna y conteos rápidos 2026.

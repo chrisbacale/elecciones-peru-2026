@@ -55,7 +55,7 @@ export function MarginGauge({
                 width: `${width}%`,
                 backgroundColor: band.color,
               }}
-              title={`${band.label}: ≤ ${band.max} pp`}
+              aria-hidden="true"
             />
           );
         })}

@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/card";
 import { ResponsiveTable, type ResponsiveColumn } from "@/components/ui/responsive-table";
 import { formatDateTime, formatPct, formatPp, formatVotes } from "@/lib/format";
+import { useOnpeTerritorial } from "@/hooks/useOnpeTerritorial";
 import type {
   CriticalDriverRow,
   ErrorBudgetRow,
@@ -31,6 +32,7 @@ import type {
   ScenarioRow,
   TrendSignalRow,
 } from "@/lib/prediction";
+import type { OnpeTerritorial } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 type PredictionResponse = PredictionSnapshot & {
@@ -53,6 +55,24 @@ function maybeVotes(value: number | null) {
 
 function maybePct(value: number | null | undefined, decimals = 2) {
   return value == null ? "No disponible" : formatPct(value, decimals);
+}
+
+function maybePctRange(value: [number, number] | null | undefined, decimals = 2) {
+  return value == null
+    ? "No disponible"
+    : `${formatPct(value[0], decimals)} a ${formatPct(value[1], decimals)}`;
+}
+
+function formatVotesRange(value: [number, number]) {
+  return `${formatVotes(value[0])} a ${formatVotes(value[1])}`;
+}
+
+function formatActasProgress(
+  counted: number | null | undefined,
+  total: number | null | undefined,
+) {
+  if (counted == null || total == null) return "Actas n/d";
+  return `${formatVotes(counted)} / ${formatVotes(total)} actas`;
 }
 
 function formatProbability(value: number) {
@@ -178,11 +198,14 @@ function KpiGrid({ prediction, isFetching }: { prediction: PredictionResponse; i
       value:
         prediction.exterior.pendingPct == null
           ? "ONPE n/d"
-          : `${prediction.exterior.pendingPct.toFixed(0)}% pendiente`,
+          : `${prediction.exterior.pendingPct.toFixed(1)}% pendiente`,
       detail:
         prediction.exterior.actasTotal == null
           ? `${formatVotes(prediction.exterior.validVoteEstimate)} votos válidos hipotéticos`
-          : `${formatVotes(prediction.exterior.actasTotal)} actas · ${formatVotes(prediction.exterior.validVoteEstimate)} votos válidos est.`,
+          : `${formatActasProgress(
+              prediction.exterior.actasContabilizadas,
+              prediction.exterior.actasTotal,
+            )} · ${maybeVotes(prediction.exterior.actasPendientes)} pendientes`,
       tone: "text-encuesta",
       icon: Globe2,
     },
@@ -250,6 +273,167 @@ function TrendSignalsPanel({ rows }: { rows: TrendSignalRow[] }) {
             </div>
           ))}
         </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function PendingTerritoryPanel({
+  prediction,
+  territorial,
+  isFetching,
+  isLoading,
+}: {
+  prediction: PredictionResponse;
+  territorial?: OnpeTerritorial;
+  isFetching: boolean;
+  isLoading: boolean;
+}) {
+  const departments = useMemo(() => {
+    return [...(territorial?.departments ?? [])]
+      .filter(
+        (dept) =>
+          dept.actasPendientes != null ||
+          dept.pendingPct != null ||
+          dept.advancePct > 0,
+      )
+      .sort((a, b) => {
+        const pendingA = a.actasPendientes ?? -1;
+        const pendingB = b.actasPendientes ?? -1;
+        if (pendingA !== pendingB) return pendingB - pendingA;
+        return (b.pendingPct ?? 0) - (a.pendingPct ?? 0);
+      })
+      .slice(0, 8);
+  }, [territorial?.departments]);
+
+  const columns: ResponsiveColumn<OnpeTerritorial["departments"][number]>[] = [
+    {
+      key: "territory",
+      header: "Territorio",
+      render: (row) => (
+        <div>
+          <p className="font-medium text-foreground">{row.name}</p>
+          <p className="text-xs text-muted">Departamento ONPE</p>
+        </div>
+      ),
+    },
+    {
+      key: "pending",
+      header: "Actas faltantes",
+      className: "text-right",
+      render: (row) => (
+        <span className="font-mono tabular-nums text-alerta">
+          {row.actasPendientes == null ? "n/d" : formatVotes(row.actasPendientes)}
+        </span>
+      ),
+    },
+    {
+      key: "progress",
+      header: "Avance",
+      className: "text-right",
+      render: (row) => (
+        <span className="font-mono tabular-nums text-muted">
+          {row.advancePct > 0 ? formatPct(row.advancePct, 1) : "n/d"}
+        </span>
+      ),
+    },
+    {
+      key: "leader",
+      header: "Líder",
+      className: "text-right",
+      render: (row) => (
+        <span className={cn("font-medium", toneClass(row.leader === "Keiko" ? "keiko" : "sanchez"))}>
+          {row.leader}
+        </span>
+      ),
+    },
+  ];
+
+  return (
+    <Card className="border-onpe/25">
+      <CardHeader>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <CardTitle>Actas pendientes por territorio</CardTitle>
+            <CardDescription>
+              ONPE vivo por departamento, exterior agregado y actas en JEE.
+            </CardDescription>
+          </div>
+          <Badge variant={territorial?.status === "live" ? "live" : "snapshot"}>
+            {isFetching ? "Actualizando" : territorial?.status ?? "snapshot"}
+          </Badge>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid gap-3 md:grid-cols-3">
+          <div className="rounded-lg border border-card-border bg-accent/35 p-4">
+            <p className="text-xs font-medium uppercase tracking-wider text-muted">
+              Nacional no contabilizadas
+            </p>
+            <p className="mt-2 font-mono text-2xl font-semibold text-alerta tabular-nums">
+              {prediction.onpe.actasNoContabilizadas == null
+                ? "n/d"
+                : formatVotes(prediction.onpe.actasNoContabilizadas)}
+            </p>
+            <p className="mt-2 text-xs text-muted">
+              {formatActasProgress(
+                prediction.onpe.actasContabilizadas,
+                prediction.onpe.actasTotal,
+              )}
+            </p>
+          </div>
+          <div className="rounded-lg border border-card-border bg-accent/35 p-4">
+            <p className="text-xs font-medium uppercase tracking-wider text-muted">
+              Enviadas / pendientes JEE
+            </p>
+            <p className="mt-2 font-mono text-2xl font-semibold text-onpe tabular-nums">
+              {maybeVotes(prediction.onpe.actasEnviadasJee)}
+            </p>
+            <p className="mt-2 text-xs text-muted">
+              Pendientes: {maybeVotes(prediction.onpe.actasPendientesJee)} (
+              {maybePct(prediction.onpe.actasPendientesJeePct, 3)})
+            </p>
+          </div>
+          <div className="rounded-lg border border-card-border bg-accent/35 p-4">
+            <p className="text-xs font-medium uppercase tracking-wider text-muted">
+              Exterior agregado
+            </p>
+            <p className="mt-2 font-mono text-2xl font-semibold text-keiko tabular-nums">
+              {maybeVotes(prediction.exterior.actasPendientes)}
+            </p>
+            <p className="mt-2 text-xs text-muted">
+              {formatActasProgress(
+                prediction.exterior.actasContabilizadas,
+                prediction.exterior.actasTotal,
+              )}{" "}
+              · sin países
+            </p>
+          </div>
+        </div>
+
+        {isLoading && departments.length === 0 ? (
+          <p className="py-5 text-center text-sm text-muted">
+            Consultando desglose territorial ONPE…
+          </p>
+        ) : departments.length === 0 ? (
+          <p className="rounded-lg border border-card-border bg-card p-4 text-sm text-muted">
+            ONPE no devolvió todavía actas absolutas por distrito/ciudad en un endpoint
+            reproducible desde esta app. Se mantiene el agregado nacional, JEE y exterior
+            auditado para evitar publicar una tabla territorial inventada.
+          </p>
+        ) : (
+          <ResponsiveTable
+            data={departments}
+            columns={columns}
+            keyExtractor={(row) => row.code}
+            caption="Departamentos con más actas pendientes ONPE"
+          />
+        )}
+        <p className="text-xs leading-relaxed text-muted">
+          Granularidad auditada: departamento para Perú y agregado único para exterior.
+          Cuando ONPE exponga distrito/ciudad con el mismo contrato verificable, esta
+          sección puede bajar a ese nivel sin cambiar el modelo.
+        </p>
       </CardContent>
     </Card>
   );
@@ -371,7 +555,7 @@ function ProjectionPanel({ prediction }: { prediction: PredictionResponse }) {
   const histogramMax = Math.max(1, ...projection.histogram.map((entry) => entry.pct));
 
   return (
-    <section className="grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
+    <section className="grid min-w-0 gap-4 xl:grid-cols-[0.95fr_1.05fr]">
       <Card className="border-onpe/30">
         <CardHeader>
           <div className="flex items-center justify-between gap-3">
@@ -445,7 +629,7 @@ function ProjectionPanel({ prediction }: { prediction: PredictionResponse }) {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="min-w-0">
         <CardHeader>
           <CardTitle>Distribución del margen simulado</CardTitle>
           <CardDescription>
@@ -453,7 +637,7 @@ function ProjectionPanel({ prediction }: { prediction: PredictionResponse }) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto pb-2">
+          <div className="max-w-full overflow-x-auto pb-2">
             <div className="min-w-[720px]">
               <div className="flex h-72 items-end gap-2 border-b border-l border-card-border px-3 pt-3">
                 {projection.histogram.map((entry) => {
@@ -893,15 +1077,44 @@ function ExteriorAndCaveats({ prediction }: { prediction: PredictionResponse }) 
             <p className="font-medium text-foreground">Lectura actual</p>
             <p className="mt-2 text-muted">{prediction.exterior.note}</p>
             <p className="mt-2 text-xs text-muted">
-              Estado ONPE exterior desagregado:{" "}
+              Estado ONPE exterior agregado:{" "}
               <span className="font-mono text-foreground">
                 {prediction.exterior.officialResultsStatus}
               </span>
               {prediction.exterior.actasTotal == null
                 ? " · actas exteriores oficiales no verificadas por endpoint"
-                : ` · ${formatVotes(prediction.exterior.actasTotal)} actas`}
+                : ` · ${formatActasProgress(
+                    prediction.exterior.actasContabilizadas,
+                    prediction.exterior.actasTotal,
+                  )} · ${maybeVotes(prediction.exterior.actasPendientes)} pendientes`}
               .
             </p>
+            {prediction.exterior.officialKeikoPct != null &&
+              prediction.exterior.officialSanchezPct != null && (
+                <p className="mt-2 text-muted">
+                  ONPE exterior parcial: Keiko{" "}
+                  <span className="font-mono text-keiko">
+                    {formatPct(prediction.exterior.officialKeikoPct, 3)}
+                  </span>{" "}
+                  ({maybeVotes(prediction.exterior.officialVotesKeiko)}) / Sánchez{" "}
+                  <span className="font-mono text-sanchez">
+                    {formatPct(prediction.exterior.officialSanchezPct, 3)}
+                  </span>{" "}
+                  ({maybeVotes(prediction.exterior.officialVotesSanchez)}).
+                </p>
+              )}
+            {prediction.exterior.officialAdvancePct != null && (
+              <p className="mt-2 text-xs text-muted">
+                Avance oficial exterior:{" "}
+                <span className="font-mono text-foreground">
+                  {formatPct(prediction.exterior.officialAdvancePct, 3)}
+                </span>
+                {prediction.exterior.officialValidVotes == null
+                  ? ""
+                  : ` · ${formatVotes(prediction.exterior.officialValidVotes)} votos válidos contabilizados`}
+                . No se muestran países.
+              </p>
+            )}
             <p className="mt-2 text-muted">
               Conteo rápido Datum exterior: Keiko{" "}
                 <span className="font-mono text-keiko">
@@ -924,6 +1137,9 @@ function ExteriorAndCaveats({ prediction }: { prediction: PredictionResponse }) 
                 {formatPct(prediction.exterior.turnoutAssumptionPct, 1)} participación ·{" "}
                 {formatPct(prediction.exterior.validVoteAssumptionPct, 1)} válidos asumidos
               </p>
+              <p className="mt-1 text-xs text-muted">
+                Rango: {formatVotesRange(prediction.exterior.validVoteEstimateRange)}
+              </p>
             </div>
             <div className="rounded-lg border border-card-border bg-accent/35 p-3">
               <p className="text-xs text-muted">Peso en pendiente est.</p>
@@ -931,6 +1147,9 @@ function ExteriorAndCaveats({ prediction }: { prediction: PredictionResponse }) 
                 {maybePct(prediction.exterior.shareOfPendingValidEstimatePct, 2)}
               </p>
               <p className="mt-1 text-xs text-muted">No se usa el padrón completo como voto.</p>
+              <p className="mt-1 text-xs text-muted">
+                Rango: {maybePctRange(prediction.exterior.shareOfPendingValidEstimateRangePct, 2)}
+              </p>
             </div>
             <div className="rounded-lg border border-card-border bg-accent/35 p-3">
               <p className="text-xs text-muted">Mix pendiente ajustado</p>
@@ -938,6 +1157,9 @@ function ExteriorAndCaveats({ prediction }: { prediction: PredictionResponse }) 
                 {maybePct(prediction.exterior.adjustedPendingSanchezPct, 2)}
               </p>
               <p className="mt-1 text-xs text-muted">Doméstico tardío + exterior Datum.</p>
+              <p className="mt-1 text-xs text-muted">
+                Rango: {maybePctRange(prediction.exterior.adjustedPendingSanchezRangePct, 2)}
+              </p>
             </div>
           </div>
         </CardContent>
@@ -1030,6 +1252,7 @@ export function PredictionClient({ initialPrediction }: { initialPrediction: Pre
     refetchInterval: ONPE_POLL_INTERVAL_MS,
     staleTime: ONPE_POLL_INTERVAL_MS,
   });
+  const territorialQuery = useOnpeTerritorial();
 
   const scenariosForTable = useMemo(() => data.scenarios, [data.scenarios]);
 
@@ -1047,6 +1270,12 @@ export function PredictionClient({ initialPrediction }: { initialPrediction: Pre
 
       <KpiGrid prediction={data} isFetching={isFetching} />
       <TrendSignalsPanel rows={data.trendSignals} />
+      <PendingTerritoryPanel
+        prediction={data}
+        territorial={territorialQuery.data}
+        isFetching={territorialQuery.isFetching}
+        isLoading={territorialQuery.isLoading}
+      />
       <ProjectionPanel prediction={data} />
       <OnpeVsQuickCounts prediction={data} />
 
