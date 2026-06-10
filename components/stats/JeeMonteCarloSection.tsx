@@ -340,7 +340,7 @@ function DepartmentsTab({ model }: { model: JeeResolutionModel }) {
         <p className="text-xs text-muted">
           La proyección suma snapshot territorial reconciliado a Perú, actas
           pendientes operativas y JEE esperadas como contabilizadas según el
-          prior histórico.
+          prior del régimen 2026 (Res. 0180-2025-JNE: recuento sobre anulación).
         </p>
       </div>
       <ResponsiveTable
@@ -444,7 +444,7 @@ function MethodTab({ model }: { model: JeeResolutionModel }) {
 
   return (
     <div className="space-y-5">
-      <div className="grid gap-3 md:grid-cols-3">
+      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
         <Tile
           label="Histórico observado"
           value={formatVotes(pooled.observedActas)}
@@ -457,9 +457,14 @@ function MethodTab({ model }: { model: JeeResolutionModel }) {
           tone="alerta"
         />
         <Tile
-          label="Prior de conteo"
+          label="Conteo histórico"
           value={ratioPct(pooled.countedRateOfObserved, 2)}
-          detail="Observadas que terminaron entrando al cómputo como proxy nacional."
+          detail="Observadas que entraron al cómputo en 2011/2016/2021; sensibilidad conservadora."
+        />
+        <Tile
+          label="Prior 2026 (recuento)"
+          value={ratioPct(1 - pooled.regime2026Prior.mean, 2)}
+          detail="Res. 0180-2025-JNE prioriza recuento sobre anulación; prior usado por el Monte Carlo."
           tone="onpe"
         />
       </div>

@@ -349,8 +349,12 @@ export type JeeDepartmentRow = {
     pendingOnlySanchezVotes: number;
     pendingOnlyGapKeikoMinusSanchez: number;
     jeeValidVotesAtRisk: number;
+    jeeKeikoVotesAtRisk: number;
+    jeeSanchezVotesAtRisk: number;
     expectedJeeCountedValidVotes: number;
     expectedJeeNotCountedValidVotes: number;
+    expectedJeeCountedKeikoVotes: number;
+    expectedJeeCountedSanchezVotes: number;
     expectedJeeCountedGapKeikoMinusSanchez: number;
     expectedJeeAnnulledActas: number;
     expectedJeeCountedActas: number;
@@ -408,7 +412,24 @@ export type JeeResolutionModel = {
       annulledRateOfTotal: number;
       annulledRateOfObserved: number;
       countedRateOfObserved: number;
-      betaPrior: Record<string, number>;
+      betaPrior: Record<string, number | string>;
+      hierarchicalBetaPrior: {
+        annulledAlpha: number;
+        annulledBeta: number;
+        mean: number;
+        betweenElectionSd: number;
+        effectiveSampleSize: number;
+        yearlyRates: Array<{ year: number; annulledRateOfObserved: number }>;
+        note: string;
+      };
+      regime2026Prior: {
+        annulledAlpha: number;
+        annulledBeta: number;
+        mean: number;
+        ci80: number[];
+        basis: string;
+        note: string;
+      };
     };
   };
   currentUnresolved: {

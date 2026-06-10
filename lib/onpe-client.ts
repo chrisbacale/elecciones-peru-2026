@@ -165,14 +165,17 @@ export function getKnownOnpeSnapshot(): OnpeResumen {
 
   const data = onpeSource?.data;
   const timestamp =
-    onpePartial?.timestamp ?? "2026-06-07T23:00:00-05:00";
+    onpePartial?.timestamp ?? "2026-06-10T00:15:19-05:00";
+
+  const keikoPct = data?.a ?? onpePartial?.a ?? 49.912;
+  const sanchezPct = data?.b ?? onpePartial?.b ?? 50.088;
 
   return {
     status: "snapshot",
     timestamp,
-    advancePct: data?.advancePct ?? onpePartial?.advancePct ?? 76.966,
+    advancePct: data?.advancePct ?? onpePartial?.advancePct ?? 96.879,
     actasProcesadas:
-      data?.actasProcesadas ?? onpePartial?.actasProcesadas ?? 71398,
+      data?.actasProcesadas ?? onpePartial?.actasProcesadas ?? 89870,
     actasTotal: data?.actasTotal ?? onpePartial?.actasTotal ?? 92766,
     actasEnviadasJee: data?.actasJee ?? null,
     actasPendientesJee: data?.actasPendientes ?? null,
@@ -181,11 +184,11 @@ export function getKnownOnpeSnapshot(): OnpeResumen {
     candidates: {
       keiko: {
         votes: data?.votesA ?? onpePartial?.votesA ?? null,
-        pct: data?.a ?? onpePartial?.a ?? 52.156,
+        pct: keikoPct,
       },
       sanchez: {
         votes: data?.votesB ?? onpePartial?.votesB ?? null,
-        pct: data?.b ?? onpePartial?.b ?? 47.844,
+        pct: sanchezPct,
       },
     },
     validVotes:
@@ -196,8 +199,8 @@ export function getKnownOnpeSnapshot(): OnpeResumen {
           : null,
     blankVotes: null,
     nullVotes: null,
-    marginPp: data?.marginPp ?? onpePartial?.marginPp ?? 4.312,
-    marginLeader: "Keiko Fujimori",
+    marginPp: data?.marginPp ?? onpePartial?.marginPp ?? 0.175,
+    marginLeader: keikoPct >= sanchezPct ? "Keiko Fujimori" : "Roberto Sánchez",
     source: "data/2026/flash-electoral.json",
     message:
       "API ONPE intermitente — mostrando último snapshot conocido",

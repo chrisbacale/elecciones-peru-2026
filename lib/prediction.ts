@@ -64,18 +64,26 @@ export type ProjectionSummary = {
   methodNote: string;
   probabilityNote: string;
   modelParameters: {
-    regimeWeights: {
-      quickCountAnchor: number;
-      lateOnpeDelta: number;
-      exteriorAdjusted: number;
-      domesticLate: number;
-      statusQuo: number;
+    componentInputs: {
+      officialGapKeikoMinusSanchezVotes: number;
+      countedValidVotes: number;
+      domesticPendingActas: number;
+      domesticJeeActas: number;
+      exteriorPendingActas: number;
+      exteriorJeeActas: number;
+      exteriorObservedKeikoSharePct: number;
+      exteriorValidVotesPerActa: number;
+      domesticPendingKeikoSharePct: number;
+      jeeModelCutPeru: string;
     };
-    blendWeights: {
-      selectedRegime: number;
-      quickCountAnchor: number;
-      exteriorAdjusted: number;
-      statusQuo: number;
+    priors: {
+      jeeAnnulmentAlpha: number;
+      jeeAnnulmentBeta: number;
+      jeeAnnulmentMean: number;
+      systematicLeanBiasSdPp: number;
+      domesticPendingShareConcentration: number;
+      exteriorShareConcentration: number;
+      votesPerActaSdPct: number;
     };
     note: string;
   };
@@ -244,10 +252,12 @@ const HISTORICAL_CUTS: CompletionCut[] = [
   { advancePct: 81.865, timestamp: "2026-06-08T01:16:00-05:00" },
   { advancePct: 85.484, timestamp: "2026-06-08T02:02:01-05:00" },
   { advancePct: 90.488, timestamp: "2026-06-08T04:16:00-05:00" },
+  { advancePct: 93.87, timestamp: "2026-06-08T12:52:00-05:00" },
+  { advancePct: 96.879, timestamp: "2026-06-10T00:15:19-05:00" },
 ];
 
 const SIMULATION_COUNT = 20_000;
-const MODEL_VERSION = "prediction-v2.7";
+const MODEL_VERSION = "prediction-v3.0";
 const PRACTICAL_TIE_EPSILON_PP = 0.1;
 const FALLBACK_EXTERIOR_ROSTER = {
   eligibleVoters: 1_194_172,
@@ -359,8 +369,8 @@ function getFallbackOnpe(): OnpeResumen {
   const data = source.data;
   return {
     status: "snapshot",
-    timestamp: source.publishedAt ?? "2026-06-08T02:06:01-05:00",
-    advancePct: data.advancePct ?? 85.484,
+    timestamp: source.publishedAt ?? "2026-06-10T00:15:19-05:00",
+    advancePct: data.advancePct ?? 96.879,
     actasProcesadas: data.actasProcesadas ?? null,
     actasTotal: data.actasTotal ?? null,
     actasEnviadasJee: data.actasJee ?? null,
@@ -1026,72 +1036,171 @@ function formatExteriorShare(value: number | null): string {
   return value == null ? "peso no estimable" : `${round(value * 100, 1)}%`;
 }
 
-function normalizeWeights<T extends Record<string, number>>(weights: T): T {
-  const total = Object.values(weights).reduce((sum, value) => sum + value, 0);
-  if (total <= 0) return weights;
-  return Object.fromEntries(
-    Object.entries(weights).map(([key, value]) => [key, round(value / total, 4)]),
-  ) as T;
+function gammaSample(rand: () => number, shape: number): number {
+  if (shape < 1) {
+    const u = Math.max(rand(), Number.EPSILON);
+    return gammaSample(rand, shape + 1) * u ** (1 / shape);
+  }
+  const d = shape - 1 / 3;
+  const c = 1 / Math.sqrt(9 * d);
+  for (;;) {
+    let x = 0;
+    let v = 0;
+    do {
+      x = normal(rand, 0, 1);
+      v = 1 + c * x;
+    } while (v <= 0);
+    v = v ** 3;
+    const u = rand();
+    if (u < 1 - 0.0331 * x ** 4) return d * v;
+    if (Math.log(u) < 0.5 * x * x + d * (1 - v + Math.log(v))) return d * v;
+  }
 }
 
-function quickCountInfluenceFactor(advancePct: number): number {
-  if (advancePct <= 90) return 1;
-  if (advancePct >= 95) return 0;
-  return clamp((95 - advancePct) / 5, 0, 1);
+function betaSample(rand: () => number, alpha: number, betaParam: number): number {
+  const x = gammaSample(rand, alpha);
+  const y = gammaSample(rand, betaParam);
+  return x / (x + y);
 }
 
-function lateOnpeDeltaInfluenceFactor(lateDelta: LateOnpeDelta | null): number {
-  if (lateDelta?.advanceDeltaPct == null) return 0.45;
-  if (lateDelta.advanceDeltaPct <= 2) return 1;
-  return clamp(2 / lateDelta.advanceDeltaPct, 0.12, 1);
+function betaAroundShare(rand: () => number, share: number, concentration: number): number {
+  const safe = clamp(share, 0.005, 0.995);
+  return betaSample(rand, 1 + safe * concentration, 1 + (1 - safe) * concentration);
 }
 
-function buildProjectionWeights(onpe: OnpeResumen, lateDelta: LateOnpeDelta | null) {
-  const quickFactor = quickCountInfluenceFactor(onpe.advancePct);
-  const lateFactor = lateOnpeDeltaInfluenceFactor(lateDelta);
-  const quickCountAnchor = 0.05 + 0.25 * quickFactor;
-  const lateOnpeDelta = 0.25 * lateFactor;
-  const exteriorAdjusted = 0.23;
-  const domesticLate = onpe.advancePct >= 90 ? 0.16 : 0.12;
-  const statusQuo = Math.max(
-    0.1,
-    1 - quickCountAnchor - lateOnpeDelta - exteriorAdjusted - domesticLate,
+function binomialSample(rand: () => number, trials: number, probability: number): number {
+  const n = Math.max(0, Math.round(trials));
+  const p = clamp(probability, 0, 1);
+  if (n === 0 || p === 0) return 0;
+  if (p === 1) return n;
+  if (n > 30) {
+    const mean = n * p;
+    const sd = Math.sqrt(n * p * (1 - p));
+    return clamp(Math.round(normal(rand, mean, sd)), 0, n);
+  }
+  let count = 0;
+  for (let i = 0; i < n; i += 1) {
+    if (rand() < p) count += 1;
+  }
+  return count;
+}
+
+const SYSTEMATIC_LEAN_BIAS_SD_SHARE = 0.02;
+const DOMESTIC_PENDING_SHARE_CONCENTRATION = 900;
+const EXTERIOR_SHARE_CONCENTRATION = 360;
+const VOTES_PER_ACTA_SD_PCT = 12;
+
+type ComponentInputs = {
+  officialGapVotes: number;
+  countedValidVotes: number;
+  domesticPendingActas: number;
+  domesticJeeActas: number;
+  exteriorPendingActas: number;
+  exteriorJeeActas: number;
+  exteriorKeikoShare: number;
+  exteriorValidVotesPerActa: number;
+  domesticPendingKeikoShare: number;
+  domesticPendingValidVotesPerActa: number;
+  jeeDepartmentRows: Array<{
+    actas: number;
+    validVotes: number;
+    keikoShare: number;
+  }>;
+  jeeActasScale: number;
+};
+
+function buildComponentInputs(
+  onpe: OnpeResumen,
+  exteriorOfficial: ExteriorOfficialResults | null,
+): ComponentInputs {
+  const countedValidVotes =
+    (onpe.candidates.keiko.votes ?? 0) + (onpe.candidates.sanchez.votes ?? 0);
+  const officialGapVotes =
+    (onpe.candidates.keiko.votes ?? 0) - (onpe.candidates.sanchez.votes ?? 0);
+
+  const foreignModel = jeeResolutionModel.currentUnresolved.foreignAggregate;
+  const exteriorJeeActas = foreignModel?.enviadas_jee_observadas ?? 0;
+  const exteriorUnresolved =
+    exteriorOfficial?.actasTotal != null && exteriorOfficial.actasContabilizadas != null
+      ? Math.max(0, exteriorOfficial.actasTotal - exteriorOfficial.actasContabilizadas)
+      : (foreignModel?.pendientes ?? 0) + exteriorJeeActas;
+  const exteriorPendingActas = Math.max(0, exteriorUnresolved - exteriorJeeActas);
+
+  const nationalPending = onpe.actasPendientesJee ?? null;
+  const nationalJee = onpe.actasEnviadasJee ?? null;
+  const peruModel = jeeResolutionModel.currentUnresolved.peru;
+  const domesticPendingActas =
+    nationalPending != null
+      ? Math.max(0, nationalPending - exteriorPendingActas)
+      : peruModel.pendientes;
+  const domesticJeeActas =
+    nationalJee != null
+      ? Math.max(0, nationalJee - exteriorJeeActas)
+      : peruModel.enviadas_jee_observadas;
+
+  const exteriorValid = exteriorOfficial?.validVotes ?? null;
+  const exteriorCounted = exteriorOfficial?.actasContabilizadas ?? null;
+  const exteriorValidVotesPerActa =
+    exteriorValid != null && exteriorCounted != null && exteriorCounted > 0
+      ? exteriorValid / exteriorCounted
+      : 123;
+  const exteriorKeikoShare =
+    exteriorOfficial?.a != null && exteriorOfficial.b != null
+      ? exteriorOfficial.a / (exteriorOfficial.a + exteriorOfficial.b)
+      : getExteriorDatumKeikoPct() / 100;
+
+  const pendingPeruComponent = jeeResolutionModel.components.pendingPeru;
+  const domesticPendingKeikoShare =
+    pendingPeruComponent.valid > 0
+      ? pendingPeruComponent.keiko / pendingPeruComponent.valid
+      : 0.45;
+  const domesticPendingValidVotesPerActa =
+    pendingPeruComponent.actas > 0
+      ? pendingPeruComponent.valid / pendingPeruComponent.actas
+      : 150;
+
+  const jeeDepartmentRows = jeeResolutionModel.departmentRows
+    .map((row) => ({
+      actas: row.actas.sentToJee ?? 0,
+      validVotes: row.estimates.jeeValidVotesAtRisk ?? 0,
+      keikoShare:
+        (row.estimates.jeeValidVotesAtRisk ?? 0) > 0
+          ? (row.estimates.jeeKeikoVotesAtRisk ?? 0) /
+            (row.estimates.jeeValidVotesAtRisk ?? 1)
+          : 0.5,
+    }))
+    .filter((row) => row.actas > 0 && row.validVotes > 0);
+  const modelDomesticJeeActas = jeeDepartmentRows.reduce(
+    (sum, row) => sum + row.actas,
+    0,
   );
-  const regimeWeights = normalizeWeights({
-    quickCountAnchor,
-    lateOnpeDelta,
-    exteriorAdjusted,
-    domesticLate,
-    statusQuo,
-  });
-  const quickBlend = 0.02 + 0.08 * quickFactor;
-  const blendWeights = {
-    quickCountAnchor: round(quickBlend, 4),
-    exteriorAdjusted: 0.05,
-    statusQuo: 0.03,
-    selectedRegime: round(1 - quickBlend - 0.05 - 0.03, 4),
+  const jeeActasScale =
+    modelDomesticJeeActas > 0 ? domesticJeeActas / modelDomesticJeeActas : 1;
+
+  return {
+    officialGapVotes,
+    countedValidVotes,
+    domesticPendingActas,
+    domesticJeeActas,
+    exteriorPendingActas,
+    exteriorJeeActas,
+    exteriorKeikoShare,
+    exteriorValidVotesPerActa,
+    domesticPendingKeikoShare,
+    domesticPendingValidVotesPerActa,
+    jeeDepartmentRows,
+    jeeActasScale,
   };
-  return { regimeWeights, blendWeights };
 }
 
-function buildProjection(onpe: OnpeResumen): ProjectionSummary {
-  const metrics = getValidatedErrorMetrics();
-  const ipsos = quickCountRow("ipsos-cr");
-  const datum = quickCountRow("datum-cr");
-  const exteriorVoteWeight = estimateExteriorShareOfPending(onpe) ?? 0.16;
-  const exteriorMean = getExteriorDatumSanchezPct();
-  const domesticMean = getLateDomesticMean();
-  const lateDelta = getLateOnpeDelta(onpe);
-  const lateDeltaMean = lateDelta?.sanchezPct ?? domesticMean;
-  const exteriorAdjustedMean =
-    buildExteriorAdjustedPendingSanchezPct(onpe) ??
-    (exteriorVoteWeight * exteriorMean + (1 - exteriorVoteWeight) * domesticMean);
-  const historicalSigma = Math.max(0.25, metrics.conteoRapido.candidateError.mean);
-  const ipsosSigma = Math.sqrt(((ipsos.marginOfError ?? 1.9) / 1.96) ** 2 + historicalSigma ** 2);
-  const datumSigma = Math.sqrt(((datum.marginOfError ?? 1.0) / 1.96) ** 2 + historicalSigma ** 2);
-  const ipsosWeight = 1 / ipsosSigma ** 2;
-  const datumWeight = 1 / datumSigma ** 2;
-  const { regimeWeights, blendWeights } = buildProjectionWeights(onpe, lateDelta);
+function buildProjection(
+  onpe: OnpeResumen,
+  exteriorOfficial: ExteriorOfficialResults | null,
+): ProjectionSummary {
+  const inputs = buildComponentInputs(onpe, exteriorOfficial);
+  const prior =
+    jeeResolutionModel.historicalJeeResolution.pooled.regime2026Prior ??
+    jeeResolutionModel.historicalJeeResolution.pooled.hierarchicalBetaPrior;
   const seed = hashSeed(
     [
       MODEL_VERSION,
@@ -1102,59 +1211,100 @@ function buildProjection(onpe: OnpeResumen): ProjectionSummary {
       onpe.actasPendientesJee,
       onpe.candidates.keiko.votes,
       onpe.candidates.sanchez.votes,
+      inputs.exteriorPendingActas,
     ].join("|"),
   );
   const rand = seededRandom(seed);
   const sanchezShares: number[] = [];
   const signedMargins: number[] = [];
+  const vpaSdFactor = VOTES_PER_ACTA_SD_PCT / 100;
 
   for (let i = 0; i < SIMULATION_COUNT; i += 1) {
-    const ipsosDraw = clamp(normal(rand, ipsos.sanchezPct, ipsosSigma), 45, 55);
-    const datumDraw = clamp(normal(rand, datum.sanchezPct, datumSigma), 45, 55);
-    const quickFinal =
-      (ipsosDraw * ipsosWeight + datumDraw * datumWeight) /
-      (ipsosWeight + datumWeight);
-    const quickPendingTarget =
-      requiredPendingShare(onpe.advancePct, onpe.candidates.sanchez.pct, quickFinal) ??
-      quickFinal;
-    const exteriorAdjustedDraw = normal(rand, exteriorAdjustedMean, 4.3);
-    const domesticDraw = normal(rand, domesticMean, 5.1);
-    const lateDeltaDraw = normal(rand, lateDeltaMean, 3.4);
-    const statusQuoDraw = normal(rand, onpe.candidates.sanchez.pct, 1.4);
-    const regimeRoll = rand();
-    const regimeDraw =
-      regimeRoll < regimeWeights.quickCountAnchor
-        ? quickPendingTarget
-        : regimeRoll < regimeWeights.quickCountAnchor + regimeWeights.lateOnpeDelta
-          ? lateDeltaDraw
-          : regimeRoll <
-              regimeWeights.quickCountAnchor +
-                regimeWeights.lateOnpeDelta +
-                regimeWeights.exteriorAdjusted
-            ? exteriorAdjustedDraw
-            : regimeRoll <
-                regimeWeights.quickCountAnchor +
-                  regimeWeights.lateOnpeDelta +
-                  regimeWeights.exteriorAdjusted +
-                  regimeWeights.domesticLate
-              ? domesticDraw
-              : statusQuoDraw;
-    const pendingSanchezPct = clamp(
-      blendWeights.selectedRegime * regimeDraw +
-        blendWeights.quickCountAnchor * quickPendingTarget +
-        blendWeights.exteriorAdjusted * exteriorAdjustedDraw +
-        blendWeights.statusQuo * statusQuoDraw +
-        normal(rand, 0, 0.9),
-      30,
-      75,
+    // Sesgo sistemático compartido: los shares de los bloques sin resolver son
+    // estimaciones territoriales, no contenido real de actas; su error está
+    // correlacionado entre componentes.
+    const leanBias = normal(rand, 0, SYSTEMATIC_LEAN_BIAS_SD_SHARE);
+    const annulRate = betaSample(rand, prior.annulledAlpha, prior.annulledBeta);
+    const admissionRate = 1 - annulRate;
+
+    // Pendiente doméstico (operativo, sin riesgo legal).
+    const domesticPendingValid =
+      inputs.domesticPendingActas *
+      Math.max(
+        20,
+        normal(
+          rand,
+          inputs.domesticPendingValidVotesPerActa,
+          inputs.domesticPendingValidVotesPerActa * vpaSdFactor,
+        ),
+      );
+    const domesticPendingShare = betaAroundShare(
+      rand,
+      inputs.domesticPendingKeikoShare + leanBias,
+      DOMESTIC_PENDING_SHARE_CONCENTRATION,
     );
-    const projected = projectFinalFromPendingShare(
-      onpe.advancePct,
-      onpe.candidates.sanchez.pct,
-      pendingSanchezPct,
+    const domesticPendingMargin = domesticPendingValid * (2 * domesticPendingShare - 1);
+    const domesticPendingSanchezVotes = domesticPendingValid * (1 - domesticPendingShare);
+
+    // Actas JEE domésticas: binomial por departamento con prior jerárquico de anulación.
+    let jeeMargin = 0;
+    let jeeValidCounted = 0;
+    let jeeSanchezVotes = 0;
+    for (const row of inputs.jeeDepartmentRows) {
+      const scaledActas = Math.max(0, Math.round(row.actas * inputs.jeeActasScale));
+      if (scaledActas === 0) continue;
+      const countedActas = binomialSample(rand, scaledActas, admissionRate);
+      if (countedActas === 0) continue;
+      const countedRatio = countedActas / scaledActas;
+      const validAtRisk = row.validVotes * inputs.jeeActasScale;
+      const concentration = clamp(validAtRisk / 120, 45, 520);
+      const share = betaAroundShare(rand, row.keikoShare + leanBias, concentration);
+      const validCounted = validAtRisk * countedRatio;
+      jeeMargin += validCounted * (2 * share - 1);
+      jeeValidCounted += validCounted;
+      jeeSanchezVotes += validCounted * (1 - share);
+    }
+
+    // Exterior: pendientes + JEE exterior, anclado al share oficial observado
+    // (62.5/37.5 sobre la mitad de actas exteriores ya contabilizadas).
+    const exteriorVpa = Math.max(
+      20,
+      normal(
+        rand,
+        inputs.exteriorValidVotesPerActa,
+        inputs.exteriorValidVotesPerActa * vpaSdFactor,
+      ),
     );
-    sanchezShares.push(projected.sanchezPct);
-    signedMargins.push(round(projected.keikoPct - projected.sanchezPct, 3));
+    const exteriorCountableActas =
+      inputs.exteriorPendingActas + inputs.exteriorJeeActas * admissionRate;
+    const exteriorValid = exteriorCountableActas * exteriorVpa;
+    const exteriorShare = betaAroundShare(
+      rand,
+      inputs.exteriorKeikoShare + leanBias,
+      EXTERIOR_SHARE_CONCENTRATION,
+    );
+    const exteriorMargin = exteriorValid * (2 * exteriorShare - 1);
+    const exteriorSanchezVotes = exteriorValid * (1 - exteriorShare);
+
+    const finalMarginVotes =
+      inputs.officialGapVotes + domesticPendingMargin + jeeMargin + exteriorMargin;
+    const finalValidVotes =
+      inputs.countedValidVotes +
+      domesticPendingValid +
+      jeeValidCounted +
+      exteriorValid;
+    const finalSanchezVotes =
+      (onpe.candidates.sanchez.votes ?? 0) +
+      domesticPendingSanchezVotes +
+      jeeSanchezVotes +
+      exteriorSanchezVotes;
+    const sanchezPct =
+      finalValidVotes > 0 ? (finalSanchezVotes / finalValidVotes) * 100 : 50;
+    const signedMarginPp =
+      finalValidVotes > 0 ? (finalMarginVotes / finalValidVotes) * 100 : 0;
+
+    sanchezShares.push(round(sanchezPct, 4));
+    signedMargins.push(round(signedMarginPp, 4));
   }
 
   const sanchezMedian = percentile(sanchezShares, 0.5);
@@ -1197,12 +1347,12 @@ function buildProjection(onpe: OnpeResumen): ProjectionSummary {
 
   return {
     modelVersion: MODEL_VERSION,
-    modelName: "Modelo secundario por regímenes ONPE + CR",
+    modelName: "Modelo por componentes: ONPE contabilizado + pendiente Perú + JEE + exterior",
     seed,
     simulations: SIMULATION_COUNT,
     countedWeightPct: round(onpe.advancePct, 3),
     weightingNote:
-      "El peso observado usa actas contabilizadas como proxy del peso de votos válidos porque ONPE publica avance de actas, no un denominador final de votos válidos. Es una fuente explícita de riesgo del modelo.",
+      "El modelo trabaja en espacio de votos: parte de la brecha oficial contabilizada y simula los tres bloques sin resolver (pendiente doméstico, actas JEE con riesgo legal de anulación, exterior). El denominador final de votos válidos es resultado de la simulación, no un supuesto.",
     leader:
       Math.abs(signedMarginMedian) < 0.005
         ? "Empate"
@@ -1227,14 +1377,33 @@ function buildProjection(onpe: OnpeResumen): ProjectionSummary {
     currentLeaderNonHoldRisk: round(currentLeaderNonHoldRisk * 100, 2),
     noCallReason,
     methodNote:
-      "Simulación determinística por regímenes alternativos: ancla de conteos rápidos, delta ONPE tardío, mix pendiente con exterior, composición doméstica y status quo. Es lectura secundaria; la aritmética principal separa Perú, JEE y exterior agregado.",
+      "Monte Carlo por componentes en espacio de votos: brecha oficial fija + pendiente doméstico (share Beta), actas JEE por departamento (binomial con prior Beta de anulación del régimen 2026 — la Res. 0180-2025-JNE favorece recuento sobre anulación; media 5%, CI80 0.6-11.4%) y exterior anclado al resultado oficial exterior observado, con sesgo sistemático compartido N(0, 2pp) entre componentes. Sustituye al modelo de regímenes: a 96.9% de avance los conteos rápidos ya no aportan señal sobre lo no resuelto.",
     probabilityNote:
-      "La frecuencia se calcula dentro de esta familia de escenarios auditables. No debe leerse como certeza legal, probabilidad bayesiana, proclamación ni sustituto del cierre por componentes Perú + exterior.",
+      "La frecuencia se calcula dentro de esta familia de supuestos auditables (publicados en modelParameters). No debe leerse como certeza legal, proclamación ni sustituto de las resoluciones JEE/JNE.",
     modelParameters: {
-      regimeWeights,
-      blendWeights,
+      componentInputs: {
+        officialGapKeikoMinusSanchezVotes: inputs.officialGapVotes,
+        countedValidVotes: inputs.countedValidVotes,
+        domesticPendingActas: inputs.domesticPendingActas,
+        domesticJeeActas: inputs.domesticJeeActas,
+        exteriorPendingActas: inputs.exteriorPendingActas,
+        exteriorJeeActas: inputs.exteriorJeeActas,
+        exteriorObservedKeikoSharePct: round(inputs.exteriorKeikoShare * 100, 3),
+        exteriorValidVotesPerActa: round(inputs.exteriorValidVotesPerActa, 1),
+        domesticPendingKeikoSharePct: round(inputs.domesticPendingKeikoShare * 100, 3),
+        jeeModelCutPeru: jeeResolutionModel.cutPeru,
+      },
+      priors: {
+        jeeAnnulmentAlpha: round(prior.annulledAlpha, 2),
+        jeeAnnulmentBeta: round(prior.annulledBeta, 2),
+        jeeAnnulmentMean: round(prior.mean, 4),
+        systematicLeanBiasSdPp: round(SYSTEMATIC_LEAN_BIAS_SD_SHARE * 100, 1),
+        domesticPendingShareConcentration: DOMESTIC_PENDING_SHARE_CONCENTRATION,
+        exteriorShareConcentration: EXTERIOR_SHARE_CONCENTRATION,
+        votesPerActaSdPct: VOTES_PER_ACTA_SD_PCT,
+      },
       note:
-        "Pesos manuales de escenarios, publicados para auditoría. El anclaje de conteo rápido decae entre 90% y 95% de avance ONPE; el delta ONPE tardío pierde peso si compara una ventana amplia. No son calibración bayesiana ni probabilidad legal.",
+        "Insumos y priors publicados para auditoría: la composición de los bloques sin resolver viene del snapshot JEE/ciudad-distrito (cutPeru indicado) reescalado a los conteos de actas del corte ONPE vivo. El prior de anulación usa el régimen 2026 (Res. 0180-2025-JNE: recuento sobre anulación); el prior jerárquico 2011/2016/2021 queda publicado como sensibilidad conservadora en el modelo JEE.",
     },
     histogram: buildHistogram(signedMargins),
   };
@@ -1553,7 +1722,8 @@ export function buildPredictionSnapshot(
   const onpe = onpeInput ?? getFallbackOnpe();
   const requirements = buildRequirementRows(onpe);
   const scenarios = buildScenarios(onpe, requirements);
-  const projection = buildProjection(onpe);
+  const exteriorOfficialResults = getExteriorOfficialResults(exteriorInput);
+  const projection = buildProjection(onpe, exteriorOfficialResults);
   const trendSignals = buildTrendSignals(onpe, requirements, projection);
   const status = getProjectionStatus(projection);
   const latestCut = { advancePct: onpe.advancePct, timestamp: onpe.timestamp };
@@ -1563,7 +1733,6 @@ export function buildPredictionSnapshot(
   const exteriorAdjustedPending = buildExteriorAdjustedPendingSanchezPct(onpe);
   const exteriorAdjustedPendingRange = buildExteriorAdjustedPendingSanchezRangePct(onpe);
   const exteriorRoster = getExteriorRoster();
-  const exteriorOfficialResults = getExteriorOfficialResults(exteriorInput);
   const exteriorValidVoteRange = estimateExteriorValidVoteRange();
   const exteriorValidVoteEstimate = estimateExteriorValidVotes();
   const exteriorDatumGapRangeVotes = estimateExteriorDatumGapRangeVotes();

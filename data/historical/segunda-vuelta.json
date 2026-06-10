@@ -51,7 +51,10 @@
         "marginPp": 6.16,
         "marginLeader": "a",
         "exact": true,
-        "ipsosBaseline": { "a": 53.1, "b": 46.9 }
+        "ipsosBaseline": {
+          "a": 53.1,
+          "b": 46.9
+        }
       }
     },
     "metadata": {
@@ -59,7 +62,9 @@
         "Ipsos Comparativo CR+ONPE 100% V3 (2021)",
         "ONPE / JNE resultados oficiales segunda vuelta 2001"
       ],
-      "notes": ["Segunda vuelta: Toledo vs García (3 jun 2001)"]
+      "notes": [
+        "Segunda vuelta: Toledo vs García (3 jun 2001)"
+      ]
     }
   },
   {
@@ -74,8 +79,8 @@
     },
     "instruments": {
       "simulacro": {
-        "a": 53.0,
-        "b": 47.0,
+        "a": 53,
+        "b": 47,
         "labelA": "García",
         "labelB": "Humala",
         "source": "Ipsos simulacro día anterior"
@@ -89,7 +94,7 @@
           "marginPp": 5.6,
           "marginLeader": "a",
           "sampleSize": 20000,
-          "marginOfError": 5.0,
+          "marginOfError": 5,
           "methodologyNote": "MOE y muestra reportados por nota de agencias; ficha primaria no ubicada",
           "source": "Ipsos"
         },
@@ -115,7 +120,7 @@
           "marginPp": 5.4,
           "marginLeader": "a",
           "sampleSize": 1280,
-          "marginOfError": 1.0,
+          "marginOfError": 1,
           "methodologyNote": "1,280 mesas; MOE ±1 reportado por nota secundaria; ficha primaria no ubicada; confianza no publicada",
           "source": "Ipsos"
         }
@@ -130,7 +135,10 @@
         "marginPp": 5.25,
         "marginLeader": "a",
         "exact": true,
-        "ipsosBaseline": { "a": 52.6, "b": 47.4 }
+        "ipsosBaseline": {
+          "a": 52.6,
+          "b": 47.4
+        }
       }
     },
     "metadata": {
@@ -168,7 +176,7 @@
           "marginPp": 5.2,
           "marginLeader": "a",
           "sampleSize": 354,
-          "marginOfError": 3.0,
+          "marginOfError": 3,
           "confidence": 95,
           "methodologyNote": "354 centros de votación",
           "source": "Ipsos"
@@ -192,17 +200,17 @@
           "marginPp": 2.8,
           "marginLeader": "a",
           "sampleSize": 1376,
-          "marginOfError": 1.0,
+          "marginOfError": 1,
           "confidence": 95,
           "methodologyNote": "1,376 mesas de sufragio",
           "source": "Ipsos"
         },
         "datum": {
-          "a": 51.0,
-          "b": 49.0,
+          "a": 51,
+          "b": 49,
           "labelA": "Humala",
           "labelB": "Keiko",
-          "marginPp": 2.0,
+          "marginPp": 2,
           "marginLeader": "a",
           "source": "Datum (reporte periodístico; ficha pública no ubicada)"
         }
@@ -217,7 +225,10 @@
         "marginPp": 2.898,
         "marginLeader": "a",
         "exact": true,
-        "ipsosBaseline": { "a": 51.4, "b": 48.6 }
+        "ipsosBaseline": {
+          "a": 51.4,
+          "b": 48.6
+        }
       }
     },
     "metadata": {
@@ -297,7 +308,7 @@
           "marginPp": 0.8,
           "marginLeader": "a",
           "sampleSize": 362,
-          "marginOfError": 3.0,
+          "marginOfError": 3,
           "confidence": 95,
           "methodologyNote": "362 centros de votación",
           "source": "Ipsos"
@@ -309,10 +320,10 @@
           "b": 49.5,
           "labelA": "PPK",
           "labelB": "Keiko",
-          "marginPp": 1.0,
+          "marginPp": 1,
           "marginLeader": "a",
           "sampleSize": 1610,
-          "marginOfError": 1.0,
+          "marginOfError": 1,
           "confidence": 95,
           "methodologyNote": "1,610 mesas de sufragio",
           "source": "Ipsos"
@@ -328,7 +339,10 @@
         "marginPp": 0.24,
         "marginLeader": "a",
         "exact": true,
-        "ipsosBaseline": { "a": 50.1, "b": 49.9 }
+        "ipsosBaseline": {
+          "a": 50.1,
+          "b": 49.9
+        }
       }
     },
     "metadata": {
@@ -337,7 +351,9 @@
         "https://www.ipsos.com/sites/default/files/publication/2016-05/Opinion%20Data%20Mayo%20IV%202016.pdf",
         "ONPE / El Comercio — resultados al 100% (12 jun 2016)"
       ],
-      "notes": ["ONPE al 100%: PPK 50.120% / Keiko 49.880%; la tabla Ipsos redondea a 50.1 / 49.9"]
+      "notes": [
+        "ONPE al 100%: PPK 50.120% / Keiko 49.880%; la tabla Ipsos redondea a 50.1 / 49.9"
+      ]
     }
   },
   {
@@ -373,7 +389,7 @@
           "b": 49.5,
           "labelA": "Castillo",
           "labelB": "Keiko",
-          "marginPp": 1.0,
+          "marginPp": 1,
           "marginLeader": "a",
           "sampleSize": 1201,
           "marginOfError": 2.8,
@@ -398,7 +414,7 @@
           "marginPp": 0.6,
           "marginLeader": "b",
           "sampleSize": 30000,
-          "marginOfError": 3.0,
+          "marginOfError": 3,
           "methodologyNote": "30,000 personas; MOE publicado en cobertura periodística",
           "source": "Ipsos"
         }
@@ -412,7 +428,7 @@
           "marginPp": 0.4,
           "marginLeader": "a",
           "sampleSize": 1675,
-          "marginOfError": 1.0,
+          "marginOfError": 1,
           "methodologyNote": "1,675 mesas; página oficial Ipsos no publica confianza",
           "source": "Ipsos"
         }
@@ -427,10 +443,17 @@
         "marginPp": 0.252,
         "marginLeader": "a",
         "exact": true,
-        "ipsosBaseline": { "a": 50.2, "b": 49.8 }
+        "ipsosBaseline": {
+          "a": 50.2,
+          "b": 49.8
+        }
       }
     },
-    "participation": { "rate": 74.56, "blank": 0.64, "null": 5.9 },
+    "participation": {
+      "rate": 74.56,
+      "blank": 0.64,
+      "null": 5.9
+    },
     "metadata": {
       "sources": [
         "Ipsos Comparativo CR+ONPE 100% V3 (2021)",
@@ -517,7 +540,7 @@
           "marginLeader": "a",
           "sampleSize": 52343,
           "sampleSizeVerified": true,
-          "marginOfError": 3.0,
+          "marginOfError": 3,
           "sampleSizeNote": "Muestra confirmada por América Noticias citando a Urpi Torrado; ficha primaria pública no ubicada",
           "methodologyNote": "Margen y muestra reportados por América Noticias/Datum; nivel de confianza no publicado en fuente localizada",
           "source": "Datum/América Noticias",
@@ -550,7 +573,7 @@
           "marginLeader": "b",
           "sampleSize": 117199,
           "sampleSizeVerified": false,
-          "marginOfError": 1.0,
+          "marginOfError": 1,
           "sampleSizeNote": "Dato de muestra pendiente de reconciliar con la ficha pública localizada",
           "methodologyNote": "Margen reportado por Datum; nivel de confianza y muestra no tratados como primarios hasta reconciliación documental",
           "source": "Datum",
@@ -560,22 +583,22 @@
       },
       "onpe100": null,
       "onpePartial": {
-        "a": 50.001,
-        "b": 49.999,
+        "a": 49.912,
+        "b": 50.088,
         "labelA": "Keiko",
         "labelB": "Sánchez",
-        "marginPp": 0,
-        "marginLeader": "a",
-        "votesA": 8785887,
-        "votesB": 8785537,
-        "advancePct": 93.87,
-        "timestamp": "2026-06-08T12:52:00.381-05:00",
-        "actasProcesadas": 87079,
+        "marginPp": 0.175,
+        "marginLeader": "b",
+        "votesA": 8944246,
+        "votesB": 8975637,
+        "advancePct": 96.879,
+        "timestamp": "2026-06-10T00:15:19-05:00",
+        "actasProcesadas": 89870,
         "actasTotal": 92766,
-        "actasJee": 1517,
-        "actasPendientes": 4170,
-        "actasJeePct": 1.635,
-        "actasPendientesPct": 4.495,
+        "actasJee": 1563,
+        "actasPendientes": 1333,
+        "actasJeePct": 1.685,
+        "actasPendientesPct": 1.437,
         "source": "ONPE parcial verificado por endpoints oficiales XHR"
       }
     },
@@ -586,19 +609,71 @@
       "source": "Ipsos/Transparencia — Omar Awapara, conferencia CR 07/06/2026"
     },
     "territorial": {
-      "lima_boca": { "a": 66.1, "b": 33.9, "leader": "Keiko" },
-      "lima_cr": { "a": 63.6, "b": 36.4, "leader": "Keiko" },
-      "regiones_boca": { "a": 43.9, "b": 56.1, "leader": "Sánchez" },
-      "regiones_cr": { "a": 42.6, "b": 57.4, "leader": "Sánchez" },
-      "urbano": { "a": 55.5, "b": 44.5, "leader": "Keiko" },
-      "rural": { "a": 32.2, "b": 67.8, "leader": "Sánchez" },
-      "sierra": { "a": 31.3, "b": 68.7, "leader": "Sánchez" },
-      "sur": { "a": 26.1, "b": 73.9, "leader": "Sánchez" },
-      "costa": { "a": 63.0, "b": 37.0, "leader": "Keiko" },
-      "selva": { "a": 43.8, "b": 56.2, "leader": "Sánchez" },
-      "norte": { "a": 51.5, "b": 48.5, "leader": "Keiko" },
-      "centro": { "a": 52.3, "b": 47.7, "leader": "Keiko" },
-      "oriente": { "a": 43.8, "b": 56.2, "leader": "Sánchez" }
+      "lima_boca": {
+        "a": 66.1,
+        "b": 33.9,
+        "leader": "Keiko"
+      },
+      "lima_cr": {
+        "a": 63.6,
+        "b": 36.4,
+        "leader": "Keiko"
+      },
+      "regiones_boca": {
+        "a": 43.9,
+        "b": 56.1,
+        "leader": "Sánchez"
+      },
+      "regiones_cr": {
+        "a": 42.6,
+        "b": 57.4,
+        "leader": "Sánchez"
+      },
+      "urbano": {
+        "a": 55.5,
+        "b": 44.5,
+        "leader": "Keiko"
+      },
+      "rural": {
+        "a": 32.2,
+        "b": 67.8,
+        "leader": "Sánchez"
+      },
+      "sierra": {
+        "a": 31.3,
+        "b": 68.7,
+        "leader": "Sánchez"
+      },
+      "sur": {
+        "a": 26.1,
+        "b": 73.9,
+        "leader": "Sánchez"
+      },
+      "costa": {
+        "a": 63,
+        "b": 37,
+        "leader": "Keiko"
+      },
+      "selva": {
+        "a": 43.8,
+        "b": 56.2,
+        "leader": "Sánchez"
+      },
+      "norte": {
+        "a": 51.5,
+        "b": 48.5,
+        "leader": "Keiko"
+      },
+      "centro": {
+        "a": 52.3,
+        "b": 47.7,
+        "leader": "Keiko"
+      },
+      "oriente": {
+        "a": 43.8,
+        "b": 56.2,
+        "leader": "Sánchez"
+      }
     },
     "metadata": {
       "sources": [
