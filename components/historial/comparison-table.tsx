@@ -115,7 +115,7 @@ export function ComparisonTable({ rows }: ComparisonTableProps) {
                 row.highlight === "2011-boca-error" &&
                   "bg-alerta-muted",
                 row.highlight === "2021-leader-flip" &&
-                  "bg-sanchez-muted"
+                  "bg-accent/50"
               )}
             >
               <th scope="row" className="px-4 py-4 align-top text-left">
@@ -132,7 +132,7 @@ export function ComparisonTable({ rows }: ComparisonTableProps) {
                       row.highlight === "2011-boca-error" &&
                         "font-medium text-alerta",
                       row.highlight === "2021-leader-flip" &&
-                        "font-medium text-sanchez"
+                        "font-medium text-foreground"
                     )}
                   >
                     {row.note}
@@ -175,7 +175,7 @@ export function ComparisonTable({ rows }: ComparisonTableProps) {
           className={cn(
             "rounded-xl border border-card-border bg-card/70 p-4",
             row.highlight === "2011-boca-error" && "bg-alerta-muted",
-            row.highlight === "2021-leader-flip" && "bg-sanchez-muted"
+            row.highlight === "2021-leader-flip" && "bg-accent/50"
           )}
         >
           <div className="flex items-start justify-between gap-3">

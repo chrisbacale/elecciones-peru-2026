@@ -11,7 +11,7 @@ function ErrorCell({ value }: { value: number | null }) {
 
   return (
     <span className={cn("font-mono text-sm tabular-nums", tone)}>
-      {formatPct(value, 2)}
+      {value.toFixed(2)} pp
     </span>
   );
 }

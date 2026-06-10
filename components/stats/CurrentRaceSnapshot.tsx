@@ -62,7 +62,7 @@ export function CurrentRaceSnapshot() {
     const signedMargin = source.data.marginLeader === "b" ? -margin : margin;
     return {
       id: source.id,
-      label: `${source.name} ${source.instrument.replace("Conteo rápido 100%", "CR").replace("Boca de urna", "Boca").replace("Escrutinio parcial", "ONPE")}`,
+      label: `${source.name} ${source.instrument.replace("Conteo rápido 100%", "CR").replace("Boca de urna", "Boca").replace("Escrutinio parcial", "parcial")}`,
       margin,
       signedMargin,
       leader: getLeader(source),

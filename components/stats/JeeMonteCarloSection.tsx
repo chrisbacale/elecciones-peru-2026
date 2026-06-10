@@ -569,9 +569,9 @@ export function JeeMonteCarloSection({ model }: { model: JeeResolutionModel }) {
             tone="onpe"
           />
           <Tile
-            label="Enviadas al JEE"
+            label="Enviadas al JEE (nacional)"
             value={formatVotes(Number(root.enviadasJee))}
-            detail={`${ppFromRatio(model.currentUnresolved.peru.pct_jee, 2)} de actas Perú`}
+            detail={`Incluye exterior; solo Perú: ${formatVotes(model.currentUnresolved.peru.enviadas_jee_observadas)} (${ppFromRatio(model.currentUnresolved.peru.pct_jee, 2)} de actas Perú)`}
             tone="alerta"
           />
           <Tile

@@ -220,8 +220,8 @@ function StatusPanel({
             </h1>
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
               Lectura principal: separar Perú interior, actas JEE/observadas y
-              exterior agregado. La simulación por regímenes queda como lectura
-              secundaria; no sustituye la aritmética por componentes ni proclama
+              exterior agregado. La simulación Monte Carlo por componentes
+              cuantifica la incertidumbre de esa misma aritmética; no proclama
               ganador.
             </p>
           </div>
@@ -349,7 +349,7 @@ function TrendSignalsPanel({ rows }: { rows: TrendSignalRow[] }) {
       <CardHeader>
         <CardTitle>Qué mirar primero</CardTitle>
         <CardDescription>
-          Cuatro señales para leer la predicción sin perderse en todos los gráficos.
+          Cinco señales para leer la predicción sin perderse en todos los gráficos.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -743,7 +743,7 @@ function HowTo100Panel({
               {
                 label: "1. ONPE actual del corte",
                 value: componentRead.officialGapKeikoMinusSanchez,
-                detail: "Brecha oficial antes de sumar bloques no cerrados.",
+                detail: `Brecha oficial nacional; incluye ${formatSignedVotes(componentRead.exteriorCountedGapKeikoMinusSanchez)} del exterior ya contabilizado.`,
               },
               {
                 label: "2. Perú pendiente",
@@ -753,17 +753,17 @@ function HowTo100Panel({
               {
                 label: "3. JEE esperado",
                 value: componentRead.expectedJeeGapKeikoMinusSanchez,
-                detail: `${formatVotes(componentRead.jeeActasAtRisk)} actas en riesgo legal.`,
+                detail: `${formatVotes(componentRead.jeeActasAtRisk)} actas en riesgo legal (incluye JEE exterior).`,
               },
               {
-                label: "4. Solo Perú + JEE",
-                value: componentRead.peruOnlyExpectedGapKeikoMinusSanchez,
-                detail: "Sin voto exterior agregado.",
+                label: "4. Exterior restante (observado)",
+                value: componentRead.exteriorRemainingObservedGapKeikoMinusSanchez,
+                detail: `${formatVotes(componentRead.exteriorRemainingValidEstimate)} votos válidos restantes al patrón oficial exterior.`,
               },
               {
-                label: "5. + exterior 30 pp",
-                value: componentRead.peruPlusExteriorThirtyPpGapKeikoMinusSanchez,
-                detail: `${formatSignedVotes(componentRead.exteriorThirtyPpGapKeikoMinusSanchez)} netos Keiko.`,
+                label: "5. Cierre esperado",
+                value: componentRead.totalWithObservedGapKeikoMinusSanchez,
+                detail: "Suma 1+2+3+4 sin doble conteo del exterior.",
               },
             ].map((row) => (
               <div key={row.label} className="rounded-lg border border-card-border bg-accent/35 p-3">
@@ -779,15 +779,19 @@ function HowTo100Panel({
           </div>
 
           <p className="mt-4 text-sm leading-relaxed text-foreground/85">
-            Lectura directa: el Perú pendiente más JEE todavía deja el cierre
-            alrededor de {formatLeaderGapFromSignedGap(componentRead.peruOnlyExpectedGapKeikoMinusSanchez)}.
-            Si se añade exterior con una ventaja neta de 30 puntos para Keiko,
-            el cierre pasa a {formatLeaderGapFromSignedGap(componentRead.peruPlusExteriorThirtyPpGapKeikoMinusSanchez)}.
+            Lectura directa: solo con votos peruanos (sin nada de exterior) el
+            cierre quedaría alrededor de{" "}
+            {formatLeaderGapFromSignedGap(componentRead.peruOnlyExpectedGapKeikoMinusSanchez)}.
+            Con el exterior restante al patrón observado, el cierre esperado es{" "}
+            {formatLeaderGapFromSignedGap(componentRead.totalWithObservedGapKeikoMinusSanchez)};
+            con Datum CR exterior, {formatLeaderGapFromSignedGap(componentRead.totalWithDatumGapKeikoMinusSanchez)};
+            y en el stress de +30 pp netos para Keiko en lo restante,{" "}
+            {formatLeaderGapFromSignedGap(componentRead.totalWithThirtyPpGapKeikoMinusSanchez)}.
           </p>
           <p className="mt-2 text-xs leading-relaxed text-muted">
-            {componentRead.note} El exterior usado aquí es agregado, sin países,
-            con {formatVotes(componentRead.foreignValidVotesUsed)} votos válidos
-            estimados.
+            {componentRead.note} El exterior restante usado aquí es agregado,
+            sin países, con {formatVotes(componentRead.foreignValidVotesUsed)}{" "}
+            votos válidos estimados por contabilizar.
           </p>
           {districtPreview.length > 0 && (
             <div className="mt-4 rounded-lg border border-card-border bg-background/60 p-3">
@@ -919,8 +923,9 @@ function HowTo100Panel({
               {formatSignedVotes(prediction.exterior.datumProjectedGapVotes)}
             </p>
             <p className="mt-2 text-xs leading-relaxed text-muted">
-              Datum CR exterior queda cerca de 100k si el volumen válido exterior
-              se acerca a {formatVotes(prediction.exterior.validVoteEstimate)} votos.
+              Proyección Datum CR sobre el exterior completo si el volumen
+              válido total se acerca a {formatVotes(prediction.exterior.validVoteEstimate)} votos
+              (de los cuales ya hay {formatVotes(prediction.exterior.officialValidVotes ?? 0)} contabilizados).
             </p>
           </div>
         </div>
@@ -1104,7 +1109,7 @@ function ProjectionPanel({ prediction }: { prediction: PredictionResponse }) {
         <CardHeader>
           <div className="flex items-center justify-between gap-3">
             <div>
-              <CardTitle>Simulación secundaria por regímenes</CardTitle>
+              <CardTitle>Simulación Monte Carlo por componentes</CardTitle>
               <CardDescription>
                 No es la lectura principal. {projection.modelName} ·{" "}
                 {projection.modelVersion} · {formatVotes(projection.simulations)} simulaciones

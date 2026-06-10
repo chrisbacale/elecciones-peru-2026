@@ -30,7 +30,7 @@ export function Positioning2026() {
             </CardTitle>
             <CardDescription className="mt-2 max-w-2xl text-sm">
               Margen {formatPp(marginPp)} a favor de Sánchez según conteo rápido
-              Ipsos/Transparencia (1.037 actas, muestra aleatoria).
+              Ipsos/Transparencia (1,037 actas, muestra aleatoria).
             </CardDescription>
           </div>
           <Badge variant={withinHistory ? "live" : "warning"}>
@@ -59,19 +59,19 @@ export function Positioning2026() {
           <div className="rounded-lg border border-card-border bg-card p-4">
             <p className="text-xs text-muted">Error margen CR — prom. hist.</p>
             <p className="mt-1 font-mono text-2xl font-semibold tabular-nums">
-              {formatPct(metrics.conteoRapido.marginError.mean, 2)}
+              {metrics.conteoRapido.marginError.mean.toFixed(2)} pp
             </p>
           </div>
           <div className="rounded-lg border border-card-border bg-card p-4">
             <p className="text-xs text-muted">Error margen CR — mediana</p>
             <p className="mt-1 font-mono text-2xl font-semibold tabular-nums">
-              {formatPct(metrics.conteoRapido.marginError.median, 2)}
+              {metrics.conteoRapido.marginError.median.toFixed(2)} pp
             </p>
           </div>
           <div className="rounded-lg border border-card-border bg-card p-4">
             <p className="text-xs text-muted">Error margen CR — máximo</p>
             <p className="mt-1 font-mono text-2xl font-semibold tabular-nums">
-              {formatPct(metrics.conteoRapido.marginError.max, 2)}
+              {metrics.conteoRapido.marginError.max.toFixed(2)} pp
             </p>
           </div>
         </div>
@@ -83,8 +83,8 @@ export function Positioning2026() {
             : "supera el máximo histórico observado en conteo rápido"}
           . Esa calibración no es MOE muestral. MOE publicado para este CR:
           {moe !== undefined ? ` ±${moe.toFixed(1)} pp` : " no publicado como valor único"}.
-          Error candidato histórico CR: promedio {formatPct(crErrors.mean, 2)},
-          mediana {formatPct(crErrors.median, 2)}, máximo {formatPct(crErrors.max, 2)}.
+          Error candidato histórico CR: promedio {crErrors.mean.toFixed(2)} pp,
+          mediana {crErrors.median.toFixed(2)} pp, máximo {crErrors.max.toFixed(2)} pp.
         </p>
       </CardContent>
     </Card>

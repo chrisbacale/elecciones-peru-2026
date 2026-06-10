@@ -3,8 +3,21 @@ import { AlertTriangle, BookOpen, ExternalLink, Scale } from "lucide-react";
 import { PageShell } from "@/components/layout/PageShell";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { getErrorMetrics } from "@/lib/data";
-import { formatPp } from "@/lib/format";
+import { flashElectoral, getErrorMetrics } from "@/lib/data";
+
+const onpePartialSnapshot = flashElectoral.sources.find(
+  (s) => s.id === "onpe-parcial",
+);
+const onpePartialReading = (() => {
+  const data = onpePartialSnapshot?.data;
+  if (!data) return "Escrutinio parcial ONPE — oficial pero no final";
+  const leader = data.marginLeader === "b" ? "Sánchez" : "Keiko";
+  const iso = onpePartialSnapshot.publishedAt ?? "";
+  const cut = iso
+    ? `${iso.slice(8, 10)}/${iso.slice(5, 7)} ${iso.slice(11, 16)}`
+    : "";
+  return `${leader} +${data.marginPp} pp al ${data.advancePct}% de avance${cut ? ` (${cut})` : ""} — oficial pero no final`;
+})();
 
 export const metadata: Metadata = {
   title: "Metodología | Radar Electoral Perú",
@@ -23,7 +36,7 @@ const INSTRUMENTS_2026 = [
   {
     instrument: "Datum conteo rápido 100%",
     source: "Datum",
-    margin: "Sin ficha técnica pública equivalente en fuentes abiertas",
+    margin: "±1.0 pp reportado (Datum/El Comercio); confianza y muestra sin ficha primaria localizada",
     reading: "Sánchez +0.28 pp — confirma dirección, margen mínimo",
     type: "muestra" as const,
   },
@@ -45,7 +58,7 @@ const INSTRUMENTS_2026 = [
     instrument: "ONPE parcial",
     source: "ONPE",
     margin: "Sin margen de error muestral (censo parcial de actas)",
-    reading: "Sánchez +0.175 pp al 96.879% de avance (10/06 00:15) — oficial pero no final",
+    reading: onpePartialReading,
     type: "oficial" as const,
   },
   {
@@ -188,7 +201,7 @@ const INSTRUMENT_DEFINITIONS = [
     keyPoints: [
       "Fuente oficial en tiempo real, pero incompleta",
       "Lima suele contarse antes que regiones rurales",
-      "En 2026 el orden importó: Keiko +4.3 pp al 77%, empate al 93.9% y Sánchez +0.175 pp al 96.9%",
+      "En 2026 el orden importó: Keiko +4.3 pp al 77%, empate al 93.9% y Sánchez +0.173 pp al 96.9%",
       "La ONPE pide esperar el 100% antes de inferir ganador",
     ],
   },
@@ -297,11 +310,12 @@ export default function MetodologiaPage() {
             <p className="text-sm leading-relaxed text-muted">
               El parcial de la ONPE no es muestra aleatoria: es un censo
               incompleto cuya composición cambia según qué distritos entran
-              primero. En 2026, Lima —fortaleza de Fujimori— tiende a
+              primero. En 2026, Lima —fortaleza de Fujimori— tendió a
               contabilizarse antes que el interior y la zona rural, donde Ipsos
               proyecta mayor apoyo a Sánchez (regiones ~57%, rural ~69%, sur
-              ~74%). Por eso un parcial con Keiko +5 pp puede coexistir con un
-              conteo rápido en empate técnico a favor de Sánchez.
+              ~75%, según los cortes del CR Ipsos). Por eso un parcial temprano
+              con Keiko +4 pp pudo coexistir con un conteo rápido en empate
+              técnico a favor de Sánchez.
             </p>
           </CardContent>
         </Card>
@@ -314,6 +328,9 @@ export default function MetodologiaPage() {
               Instrumentos y márgenes — Segunda vuelta 2026
             </h2>
           </div>
+          <p className="text-xs text-muted sm:hidden">
+            Desliza horizontalmente para ver las columnas de margen y lectura.
+          </p>
           <div className="overflow-x-auto rounded-xl border border-card-border">
             <table className="w-full min-w-[640px] text-left text-sm">
               <thead>
@@ -373,6 +390,9 @@ export default function MetodologiaPage() {
             . Error por candidato = |estimado − ONPE|; error de margen =
             |margen estimado − margen ONPE|.
           </p>
+          <p className="text-xs text-muted sm:hidden">
+            Desliza horizontalmente para ver la columna de conteo rápido.
+          </p>
           <div className="overflow-x-auto rounded-xl border border-card-border">
             <table className="w-full min-w-[480px] text-left text-sm">
               <thead>
@@ -401,16 +421,10 @@ export default function MetodologiaPage() {
                       {label}
                     </td>
                     <td className="px-4 py-3 font-mono text-foreground">
-                      {formatPp(
-                        metrics.bocaUrna[group][stat],
-                        metrics.bocaUrna[group][stat] % 1 === 0 ? 1 : 2
-                      )}
+                      {metrics.bocaUrna[group][stat].toFixed(2)} pp
                     </td>
                     <td className="px-4 py-3 font-mono text-foreground">
-                      {formatPp(
-                        metrics.conteoRapido[group][stat],
-                        metrics.conteoRapido[group][stat] % 1 === 0 ? 1 : 2
-                      )}
+                      {metrics.conteoRapido[group][stat].toFixed(2)} pp
                     </td>
                   </tr>
                 ))}
@@ -420,7 +434,7 @@ export default function MetodologiaPage() {
           <p className="text-sm text-muted">
             El margen del CR Ipsos 2026 (Sánchez +0.6 pp) está dentro de la
             calibración histórica ex post del conteo rápido: error máximo
-            histórico de margen {formatPp(metrics.conteoRapido.marginError.max)}.
+            histórico de margen {metrics.conteoRapido.marginError.max.toFixed(2)} pp.
             Esa calibración no es MOE muestral; el CR Ipsos 2026 publica MOE
             variable por candidato.
           </p>

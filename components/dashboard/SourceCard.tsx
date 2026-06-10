@@ -70,7 +70,7 @@ export function SourceCard({
             <div>
               <p className="text-muted">Error</p>
               <p className="font-semibold tabular-nums text-foreground">
-                ±{formatPct(data.marginOfError, 1)}
+                ±{data.marginOfError.toFixed(1)} pp
               </p>
             </div>
           )}

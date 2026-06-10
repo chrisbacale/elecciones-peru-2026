@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import {
   BarChart,
   Bar,
@@ -15,6 +16,7 @@ import { ChartTooltip } from "@/components/charts/ChartTooltip";
 import type { FlashElectoral2026 } from "@/lib/types";
 
 export function WaterfallChart({ flash }: { flash: FlashElectoral2026 }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
   const data = flash.movement.map((m) => ({
     stage: m.stage.replace("Simulacro Ipsos", "Sim. Ipsos").replace("Boca Ipsos", "Boca").replace("CR Ipsos", "CR").replace("ONPE parcial", "ONPE"),
     margin:
@@ -23,16 +25,25 @@ export function WaterfallChart({ flash }: { flash: FlashElectoral2026 }) {
         : -m.marginPp,
     leader: m.leader,
   }));
+
+  // El giro que da nombre al gráfico ocurre en los últimos hitos: al montar,
+  // posiciona el scroll en el extremo derecho para que sean visibles.
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el) el.scrollLeft = el.scrollWidth;
+  }, []);
+
   return (
     <Card className="min-w-0">
       <CardHeader>
         <CardTitle>Giro del margen 2026</CardTitle>
         <CardDescription>
-          Secuencia de márgenes desde simulacros hasta el último ONPE. Toca o
-          pasa el cursor para ver cada corte.
+          Secuencia de márgenes desde simulacros hasta el último ONPE. Desliza
+          horizontalmente para ver todos los cortes; el giro final queda a la
+          derecha.
         </CardDescription>
       </CardHeader>
-      <div className="max-w-full overflow-x-auto pb-2">
+      <div ref={scrollRef} className="max-w-full overflow-x-auto pb-2">
         <div className="h-64 min-w-[720px]">
           <ResponsiveContainer
             width="100%"
