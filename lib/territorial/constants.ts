@@ -47,7 +47,7 @@ export type DepartmentMeta = {
 export const DEPARTMENTS: DepartmentMeta[] = [
   {
     slug: "tumbes",
-    code: "240000",
+    code: "230000",
     name: "Tumbes",
     path: "M48,8 L62,6 L68,14 L64,22 L50,20 Z",
     labelX: 58,
@@ -55,7 +55,7 @@ export const DEPARTMENTS: DepartmentMeta[] = [
   },
   {
     slug: "piura",
-    code: "200000",
+    code: "190000",
     name: "Piura",
     path: "M62,6 L88,8 L96,18 L92,28 L70,26 L64,22 Z",
     labelX: 80,
@@ -63,7 +63,7 @@ export const DEPARTMENTS: DepartmentMeta[] = [
   },
   {
     slug: "lambayeque",
-    code: "140000",
+    code: "130000",
     name: "Lambayeque",
     path: "M70,26 L92,28 L94,38 L78,42 L68,36 Z",
     labelX: 82,
@@ -71,7 +71,7 @@ export const DEPARTMENTS: DepartmentMeta[] = [
   },
   {
     slug: "la-libertad",
-    code: "130000",
+    code: "120000",
     name: "La Libertad",
     path: "M68,36 L94,38 L98,50 L82,56 L66,48 Z",
     labelX: 84,
@@ -95,7 +95,7 @@ export const DEPARTMENTS: DepartmentMeta[] = [
   },
   {
     slug: "san-martin",
-    code: "220000",
+    code: "210000",
     name: "San Martín",
     path: "M90,84 L104,88 L108,102 L96,108 L84,98 Z",
     labelX: 96,
@@ -103,7 +103,7 @@ export const DEPARTMENTS: DepartmentMeta[] = [
   },
   {
     slug: "loreto",
-    code: "160000",
+    code: "150000",
     name: "Loreto",
     path: "M84,98 L108,102 L120,118 L118,148 L102,162 L88,150 L78,128 L80,110 Z",
     labelX: 100,
@@ -119,7 +119,7 @@ export const DEPARTMENTS: DepartmentMeta[] = [
   },
   {
     slug: "huanuco",
-    code: "100000",
+    code: "090000",
     name: "Huánuco",
     path: "M58,44 L82,56 L84,68 L72,74 L58,66 L52,54 Z",
     labelX: 68,
@@ -127,7 +127,7 @@ export const DEPARTMENTS: DepartmentMeta[] = [
   },
   {
     slug: "pasco",
-    code: "190000",
+    code: "180000",
     name: "Pasco",
     path: "M72,66 L88,72 L90,84 L78,88 L66,80 L64,74 Z",
     labelX: 78,
@@ -143,7 +143,7 @@ export const DEPARTMENTS: DepartmentMeta[] = [
   },
   {
     slug: "lima",
-    code: "150000",
+    code: "140000",
     name: "Lima",
     path: "M44,28 L58,44 L52,54 L40,52 L36,40 Z",
     labelX: 46,
@@ -151,7 +151,7 @@ export const DEPARTMENTS: DepartmentMeta[] = [
   },
   {
     slug: "callao",
-    code: "070000",
+    code: "240000",
     name: "Callao",
     path: "M36,40 L40,52 L34,56 L30,48 Z",
     labelX: 34,
@@ -159,7 +159,7 @@ export const DEPARTMENTS: DepartmentMeta[] = [
   },
   {
     slug: "junin",
-    code: "120000",
+    code: "110000",
     name: "Junín",
     path: "M52,54 L72,74 L68,88 L54,86 L48,68 Z",
     labelX: 60,
@@ -167,7 +167,7 @@ export const DEPARTMENTS: DepartmentMeta[] = [
   },
   {
     slug: "huancavelica",
-    code: "090000",
+    code: "080000",
     name: "Huancavelica",
     path: "M48,68 L68,88 L62,98 L50,94 L44,78 Z",
     labelX: 56,
@@ -175,7 +175,7 @@ export const DEPARTMENTS: DepartmentMeta[] = [
   },
   {
     slug: "ica",
-    code: "110000",
+    code: "100000",
     name: "Ica",
     path: "M40,52 L52,54 L48,68 L38,72 L32,62 Z",
     labelX: 42,
@@ -199,7 +199,7 @@ export const DEPARTMENTS: DepartmentMeta[] = [
   },
   {
     slug: "cusco",
-    code: "080000",
+    code: "070000",
     name: "Cusco",
     path: "M66,136 L72,124 L88,128 L92,142 L78,152 L64,148 Z",
     labelX: 78,
@@ -207,7 +207,7 @@ export const DEPARTMENTS: DepartmentMeta[] = [
   },
   {
     slug: "madre-de-dios",
-    code: "170000",
+    code: "160000",
     name: "Madre de Dios",
     path: "M92,142 L104,148 L100,168 L88,164 L84,152 Z",
     labelX: 94,
@@ -223,7 +223,7 @@ export const DEPARTMENTS: DepartmentMeta[] = [
   },
   {
     slug: "moquegua",
-    code: "180000",
+    code: "170000",
     name: "Moquegua",
     path: "M28,84 L32,100 L26,108 L20,96 Z",
     labelX: 26,
@@ -231,7 +231,7 @@ export const DEPARTMENTS: DepartmentMeta[] = [
   },
   {
     slug: "tacna",
-    code: "230000",
+    code: "220000",
     name: "Tacna",
     path: "M20,96 L26,108 L22,118 L14,110 L16,100 Z",
     labelX: 20,
@@ -239,7 +239,7 @@ export const DEPARTMENTS: DepartmentMeta[] = [
   },
   {
     slug: "puno",
-    code: "210000",
+    code: "200000",
     name: "Puno",
     path: "M64,148 L78,152 L76,168 L58,172 L52,158 Z",
     labelX: 66,

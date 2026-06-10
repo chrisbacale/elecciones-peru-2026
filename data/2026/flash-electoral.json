@@ -12,26 +12,26 @@
       "type": "oficial",
       "instrument": "Escrutinio parcial",
       "url": "https://resultadosegundavuelta.onpe.gob.pe/main/resumen",
-      "publishedAt": "2026-06-10T00:15:19-05:00",
+      "publishedAt": "2026-06-10T01:18:00-05:00",
       "data": {
-        "a": 49.912,
-        "b": 50.088,
+        "a": 49.914,
+        "b": 50.086,
         "labelA": "Keiko",
         "labelB": "Sánchez",
-        "marginPp": 0.175,
+        "marginPp": 0.173,
         "marginLeader": "b",
-        "votesA": 8944246,
-        "votesB": 8975637,
-        "advancePct": 96.879,
-        "actasProcesadas": 89870,
+        "votesA": 8946667,
+        "votesB": 8977663,
+        "advancePct": 96.918,
+        "actasProcesadas": 89907,
         "actasTotal": 92766,
-        "actasPendientes": 1333,
-        "actasJee": 1563,
-        "actasPendientesPct": 1.437,
-        "actasJeePct": 1.685,
-        "actasNote": "Corte primario ONPE verificado por endpoints XHR: resumen-general/totales y resumen-general/participantes con idEleccion=10 (10/06/2026 00:15 PET)."
+        "actasPendientes": 1282,
+        "actasJee": 1577,
+        "actasPendientesPct": 1.382,
+        "actasJeePct": 1.7,
+        "actasNote": "Corte primario ONPE verificado por endpoints XHR: resumen-general/totales y resumen-general/participantes con idEleccion=10 (10/06/2026 01:18 PET)."
       },
-      "notes": "Corte ONPE al 96.879% verificado el 10/06/2026 00:15 PET: Sánchez 50.088% y Keiko 49.912% (+31,391 votos Sánchez). No es muestra aleatoria; sin margen de error estadístico. El bloque no contabilizado incluye 1,563 actas enviadas al JEE y 1,333 pendientes (1,201 de ellas en el exterior)."
+      "notes": "Corte ONPE al 96.918% verificado el 10/06/2026 01:18 PET: Sánchez 50.086% y Keiko 49.914% (+30,996 votos Sánchez). No es muestra aleatoria; sin margen de error estadístico. El bloque no contabilizado incluye 1,577 actas enviadas al JEE y 1,282 pendientes (1,142 de ellas en el exterior)."
     },
     {
       "id": "onpe-parcial-prev",
@@ -282,26 +282,26 @@
     "officialOnpeExteriorResults": {
       "status": "snapshot",
       "actasTotal": 2543,
-      "actasContabilizadas": 1275,
-      "actasPendientes": 1268,
-      "advancePct": 50.138,
-      "votesA": 97865,
-      "votesB": 58653,
-      "a": 62.526,
-      "b": 37.474,
-      "validVotes": 156518,
-      "marginPp": 25.052,
+      "actasContabilizadas": 1319,
+      "actasPendientes": 1224,
+      "advancePct": 51.868,
+      "votesA": 101070,
+      "votesB": 61151,
+      "a": 62.304,
+      "b": 37.696,
+      "validVotes": 162221,
+      "marginPp": 24.608,
       "marginLeader": "a",
       "source": "ONPE exterior oficial parcial",
       "sourceUrl": "https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/eleccion-presidencial/participantes-ubicacion-geografica-nombre?tipoFiltro=ambito_geografico&idEleccion=10&idAmbitoGeografico=2",
-      "note": "Resultado oficial parcial del ámbito exterior agregado al 50.138% (10/06/2026 00:12 PET): Keiko 62.526% vs Sánchez 37.474%, coherente con el conteo rápido exterior Datum (62.67/37.33). Quedan 1,201 actas exteriores pendientes y 67 en JEE. No desagrega países en la app y no sustituye el cierre ONPE/JNE."
+      "note": "Resultado oficial parcial del ámbito exterior agregado al 51.868% (10/06/2026 01:18 PET): Keiko 62.304% vs Sánchez 37.696%, coherente con el conteo rápido exterior Datum (62.67/37.33). Agregado derivado como nacional menos suma departamental y verificado contra la suma de unidades exteriores (1,319 vs 1,315 actas). Quedan 1,142 actas exteriores pendientes y 82 en JEE. No desagrega países en la app y no sustituye el cierre ONPE/JNE."
     },
     "assumptions": {
       "turnoutPct": 28,
       "turnoutPctRange": [22, 38],
       "validVotePct": 94,
       "validVotePctRange": [91, 96],
-      "note": "Hipótesis de volumen ancladas a lo observado: las 1,275 actas exteriores contabilizadas registran ~131 votos emitidos por acta (~27.5% de participación implícita) y 93.8% de votos válidos. El rango cubre que el mix de ciudades restante difiera del ya contabilizado."
+      "note": "Hipótesis de volumen ancladas a lo observado: las actas exteriores ya contabilizadas registran ~131 votos emitidos por acta (~27.5% de participación implícita) y ~94% de votos válidos. El rango cubre que el mix de ciudades restante difiera del ya contabilizado."
     }
   },
   "movement": [
@@ -330,6 +330,7 @@
     { "stage": "ONPE 93.727%", "marginPp": 0.03, "leader": "Keiko" },
     { "stage": "ONPE 93.771%", "marginPp": 0.02, "leader": "Keiko" },
     { "stage": "ONPE 93.870%", "marginPp": 0, "leader": "Keiko" },
-    { "stage": "ONPE 96.879%", "marginPp": 0.175, "leader": "Sánchez" }
+    { "stage": "ONPE 96.879%", "marginPp": 0.175, "leader": "Sánchez" },
+    { "stage": "ONPE 96.918%", "marginPp": 0.173, "leader": "Sánchez" }
   ]
 }

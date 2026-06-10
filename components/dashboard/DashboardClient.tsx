@@ -60,9 +60,9 @@ export function DashboardClient() {
   const { data: metrics } = useErrorMetrics();
   const onpeSnapshot = flashElectoral.sources.find((s) => s.id === "onpe-parcial");
 
-  const advancePct = onpe?.advancePct ?? onpeSnapshot?.data.advancePct ?? 96.879;
-  const onpeMargin = onpe?.marginPp ?? onpeSnapshot?.data.marginPp ?? 0.175;
-  const timestamp = onpe?.timestamp ?? onpeSnapshot?.publishedAt ?? "2026-06-10T00:15:19-05:00";
+  const advancePct = onpe?.advancePct ?? onpeSnapshot?.data.advancePct ?? 96.918;
+  const onpeMargin = onpe?.marginPp ?? onpeSnapshot?.data.marginPp ?? 0.173;
+  const timestamp = onpe?.timestamp ?? onpeSnapshot?.publishedAt ?? "2026-06-10T01:18:00-05:00";
   const onpeStatus = onpe?.status ?? "snapshot";
   const liveFlashElectoral = useMemo(() => {
     if (!onpe) return flashElectoral;
@@ -164,7 +164,7 @@ export function DashboardClient() {
   const crReading = getCrAverageReading(
     crAverage,
     flashElectoral.candidates.a.split(" ")[0],
-    flashElectoral.candidates.b.split(" ")[0],
+    flashElectoral.candidates.b.split(" ").at(-1) ?? flashElectoral.candidates.b,
     metrics.conteoRapido.marginError.max
   );
 
@@ -294,7 +294,12 @@ export function DashboardClient() {
           <CardContent>
             <MarginGauge
               marginPp={onpeMargin}
-              leader={onpe?.marginLeader ?? "Keiko"}
+              leader={
+                onpe?.marginLeader ??
+                (onpeSnapshot?.data.marginLeader === "b"
+                  ? "Roberto Sánchez"
+                  : "Keiko Fujimori")
+              }
               bands={[
                 {
                   label: "CR histórico",

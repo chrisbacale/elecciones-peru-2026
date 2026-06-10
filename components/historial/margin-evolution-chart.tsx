@@ -31,7 +31,7 @@ const STAGE_LABELS = {
   simulacro: "Simulacro",
   boca: "Boca de urna",
   cr: "Conteo rápido",
-  onpe: "ONPE 100%",
+  onpe: "ONPE 100% (2026: parcial)",
 } as const;
 
 export function MarginEvolutionChart({

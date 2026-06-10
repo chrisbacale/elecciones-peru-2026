@@ -317,7 +317,7 @@ function compactCityForecast(raw) {
         (row) => row.scope_label === "PERU",
       ).length,
       note:
-        "El analisis fuente entrega ranking compacto de mayor impacto; no publica las 621 unidades completas con proyeccion. La app muestra todas las filas peruanas disponibles y no inventa distritos faltantes.",
+        `El analisis fuente entrega ranking compacto de mayor impacto; no publica las ${raw.unresolved_leaf_count} unidades completas con proyección. La app muestra todas las filas peruanas disponibles y no inventa distritos faltantes.`,
     },
     method: raw.method,
     privacyNote:
@@ -692,10 +692,11 @@ function binomial(random, trials, probability) {
 
 function sampleJeeMarginByDepartment({ random, rows, admissionProbability, leanBias = 0 }) {
   if (!Array.isArray(rows) || rows.length === 0) {
-    return { margin: 0, sampledAdmissionRate: admissionProbability };
+    return { margin: 0, marginPeru: 0, sampledAdmissionRate: admissionProbability };
   }
 
   let margin = 0;
+  let marginPeru = 0;
   let sampledCountedActas = 0;
   let totalActas = 0;
 
@@ -710,13 +711,16 @@ function sampleJeeMarginByDepartment({ random, rows, admissionProbability, leanB
     const concentration = Math.max(45, Math.min(520, valid / 120));
     const sampledShare = sampleShare(random, keikoShare, concentration);
 
-    margin += valid * countedRatio * (2 * sampledShare - 1);
+    const rowMargin = valid * countedRatio * (2 * sampledShare - 1);
+    margin += rowMargin;
+    if (row.scope_label === "PERU") marginPeru += rowMargin;
     sampledCountedActas += countedActas;
     totalActas += actas;
   }
 
   return {
     margin,
+    marginPeru,
     sampledAdmissionRate:
       totalActas > 0 ? sampledCountedActas / totalActas : admissionProbability,
   };
@@ -729,9 +733,10 @@ function runMonteCarlo({ sensitivity, historical, scenarioKey, seed }) {
   const finalMargins = [];
   const peruOnlyMargins = [];
   const jeeAdmissionRates = [];
-  const jeeRows = (scenario.top_jee_risk_departments ?? []).filter(
-    (row) => row.scope_label === "PERU",
-  );
+  // Incluye TODAS las filas JEE (Peru + exterior): las 82 actas JEE del
+  // extranjero tambien enfrentan el proceso de admision/anulacion.
+  const jeeRows = scenario.top_jee_risk_departments ?? [];
+  const jeePeruRows = jeeRows.filter((row) => row.scope_label === "PERU");
 
   const SYSTEMATIC_LEAN_BIAS_SD = 0.02;
 
@@ -765,11 +770,16 @@ function runMonteCarlo({ sensitivity, historical, scenarioKey, seed }) {
       ? jeeSample.margin
       : jee.valid * admissionRate *
         (2 * sampleShare(random, jee.keiko / jee.valid + leanBias, 520) - 1);
+    const jeePeruMargin = jeePeruRows.length ? jeeSample.marginPeru : jeeMargin;
     const peruOnlyMargin =
       sensitivity.official_current.margin_keiko_minus_roberto +
       pendingMargin +
-      jeeMargin;
-    const finalMargin = peruOnlyMargin + foreignMargin;
+      jeePeruMargin;
+    const finalMargin =
+      sensitivity.official_current.margin_keiko_minus_roberto +
+      pendingMargin +
+      jeeMargin +
+      foreignMargin;
 
     peruOnlyMargins.push(peruOnlyMargin);
     finalMargins.push(finalMargin);

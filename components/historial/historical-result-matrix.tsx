@@ -172,7 +172,7 @@ function DifferenceCell({ stage }: { stage: MatrixStage }) {
   return (
     <td className="border-l border-card-border px-3 py-2 text-center">
       <div className="font-mono text-sm font-semibold tabular-nums">
-        {formatPct(margin, 2)}
+        {margin.toFixed(2)} pp
       </div>
       <div className="mt-0.5 text-[11px] text-muted">{leaderLabel}</div>
     </td>
@@ -256,7 +256,7 @@ function MobileStage({
           <p className="text-xs text-muted">
             Diferencia:{" "}
             <span className="font-mono font-semibold text-foreground">
-              {formatPct(margin ?? 0, 2)}
+              {(margin ?? 0).toFixed(2)} pp
             </span>
           </p>
         </div>
@@ -426,9 +426,10 @@ export function HistoricalResultMatrix({
       </div>
 
       <p className="text-xs leading-relaxed text-muted">
-        Nota de cobertura: no hubo segunda vuelta presidencial peruana comparable
-        en 2003. La serie presidencial verificable se organiza con 2001, 2006,
-        2011, 2016, 2021 y el proceso 2026 en curso.
+        Nota de cobertura: el balotaje de 2000 se excluye por no ser comparable
+        (retiro de Toledo de la segunda vuelta). La serie presidencial
+        verificable se organiza con 2001, 2006, 2011, 2016, 2021 y el proceso
+        2026 en curso.
       </p>
     </section>
   );

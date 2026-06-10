@@ -51,7 +51,7 @@ describe("buildPredictionSnapshot", () => {
 
     expect(snapshot.projection.modelVersion).toBe("prediction-v3.0");
     expect(snapshot.projection.simulations).toBe(20000);
-    expect(snapshot.projection.countedWeightPct).toBeCloseTo(96.879, 2);
+    expect(snapshot.projection.countedWeightPct).toBeCloseTo(96.918, 2);
     expect(snapshot.projection.weightingNote).toContain("espacio de votos");
     expect(snapshot.projection.probabilityNote).toContain("supuestos auditables");
     expect(snapshot.projection.sanchezCi80[0]).toBeLessThan(
@@ -81,17 +81,35 @@ describe("buildPredictionSnapshot", () => {
     expect(snapshot.componentRead.officialGapKeikoMinusSanchez).toBeLessThan(0);
     expect(snapshot.componentRead.pendingPeruGapKeikoMinusSanchez).toBeLessThan(0);
     expect(snapshot.componentRead.expectedJeeGapKeikoMinusSanchez).toBeGreaterThan(0);
-    expect(snapshot.componentRead.peruOnlyExpectedGapKeikoMinusSanchez).toBeCloseTo(
-      snapshot.componentRead.officialGapKeikoMinusSanchez +
-        snapshot.componentRead.pendingPeruGapKeikoMinusSanchez +
-        snapshot.componentRead.expectedJeeGapKeikoMinusSanchez,
+    // Identidades sin doble conteo del exterior:
+    expect(snapshot.componentRead.officialPeruOnlyGapKeikoMinusSanchez).toBeCloseTo(
+      snapshot.componentRead.officialGapKeikoMinusSanchez -
+        snapshot.componentRead.exteriorCountedGapKeikoMinusSanchez,
       0,
     );
+    expect(snapshot.componentRead.peruOnlyExpectedGapKeikoMinusSanchez).toBeCloseTo(
+      snapshot.componentRead.officialPeruOnlyGapKeikoMinusSanchez +
+        snapshot.componentRead.pendingPeruGapKeikoMinusSanchez +
+        snapshot.componentRead.expectedJeePeruGapKeikoMinusSanchez,
+      0,
+    );
+    expect(snapshot.componentRead.totalWithObservedGapKeikoMinusSanchez).toBeCloseTo(
+      snapshot.componentRead.officialGapKeikoMinusSanchez +
+        snapshot.componentRead.pendingPeruGapKeikoMinusSanchez +
+        snapshot.componentRead.expectedJeeGapKeikoMinusSanchez +
+        snapshot.componentRead.exteriorRemainingObservedGapKeikoMinusSanchez,
+      0,
+    );
+    // El exterior restante proyectado debe ser menor que el estimado total del padrón.
+    expect(snapshot.componentRead.exteriorRemainingValidEstimate).toBeLessThan(
+      snapshot.exterior.validVoteEstimate,
+    );
+    expect(snapshot.componentRead.exteriorRemainingValidEstimate).toBeGreaterThan(0);
     expect(
-      snapshot.componentRead.peruPlusExteriorThirtyPpGapKeikoMinusSanchez,
+      snapshot.componentRead.totalWithThirtyPpGapKeikoMinusSanchez,
     ).toBeGreaterThan(0);
     expect(snapshot.componentRead.foreignValidVotesUsed).toBe(
-      snapshot.exterior.validVoteEstimate,
+      snapshot.componentRead.exteriorRemainingValidEstimate,
     );
   });
 
@@ -109,14 +127,14 @@ describe("buildPredictionSnapshot", () => {
     ]);
     expect(snapshot.exterior.officialResultsStatus).toBe("snapshot");
     expect(snapshot.exterior.actasTotal).toBe(2543);
-    expect(snapshot.exterior.actasContabilizadas).toBe(1275);
-    expect(snapshot.exterior.actasPendientes).toBe(1268);
-    expect(snapshot.exterior.pendingPct).toBeCloseTo(49.86, 2);
-    expect(snapshot.exterior.officialKeikoPct).toBe(62.526);
-    expect(snapshot.exterior.officialSanchezPct).toBe(37.474);
-    expect(snapshot.exterior.officialVotesKeiko).toBe(97865);
-    expect(snapshot.exterior.officialVotesSanchez).toBe(58653);
-    expect(snapshot.exterior.officialObservedGapVotes).toBe(39212);
+    expect(snapshot.exterior.actasContabilizadas).toBe(1319);
+    expect(snapshot.exterior.actasPendientes).toBe(1224);
+    expect(snapshot.exterior.pendingPct).toBeCloseTo(48.13, 2);
+    expect(snapshot.exterior.officialKeikoPct).toBe(62.304);
+    expect(snapshot.exterior.officialSanchezPct).toBe(37.696);
+    expect(snapshot.exterior.officialVotesKeiko).toBe(101070);
+    expect(snapshot.exterior.officialVotesSanchez).toBe(61151);
+    expect(snapshot.exterior.officialObservedGapVotes).toBe(39919);
     expect(snapshot.exterior.datumProjectedGapVotes).toBeGreaterThan(60000);
     expect(snapshot.exterior.datumProjectedKeikoVotes).toBeGreaterThan(
       snapshot.exterior.datumProjectedSanchezVotes,
@@ -161,28 +179,28 @@ describe("buildPredictionSnapshot", () => {
     const base = buildPredictionSnapshot();
     const onpe: OnpeResumen = {
       status: "live",
-      timestamp: "2026-06-10T00:15:19-05:00",
-      advancePct: 96.879,
-      actasProcesadas: 89870,
+      timestamp: "2026-06-10T01:18:00-05:00",
+      advancePct: 96.918,
+      actasProcesadas: 89907,
       actasTotal: 92766,
-      actasEnviadasJee: 1563,
-      actasPendientesJee: 1333,
-      actasEnviadasJeePct: 1.685,
-      actasPendientesJeePct: 1.437,
+      actasEnviadasJee: 1577,
+      actasPendientesJee: 1282,
+      actasEnviadasJeePct: 1.7,
+      actasPendientesJeePct: 1.382,
       candidates: {
-        keiko: { votes: 8944246, pct: 49.912 },
-        sanchez: { votes: 8975637, pct: 50.088 },
+        keiko: { votes: 8946667, pct: 49.914 },
+        sanchez: { votes: 8977663, pct: 50.086 },
       },
-      validVotes: 17919883,
+      validVotes: 17924330,
       blankVotes: null,
       nullVotes: null,
-      marginPp: 0.175,
+      marginPp: 0.173,
       marginLeader: "Roberto Sánchez",
       source: "test",
     };
     const shifted = buildPredictionSnapshot({
       ...onpe,
-      timestamp: "2026-06-10T01:00:00.000-05:00",
+      timestamp: "2026-06-10T02:00:00.000-05:00",
     });
 
     expect(buildPredictionSnapshot(onpe).projection.seed).toBe(base.projection.seed);

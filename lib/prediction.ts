@@ -177,15 +177,19 @@ export type PredictionSnapshot = {
     cutUtc: string;
     status: "snapshot" | "live";
     officialGapKeikoMinusSanchez: number;
+    exteriorCountedGapKeikoMinusSanchez: number;
+    officialPeruOnlyGapKeikoMinusSanchez: number;
     pendingPeruGapKeikoMinusSanchez: number;
     expectedJeeGapKeikoMinusSanchez: number;
+    expectedJeePeruGapKeikoMinusSanchez: number;
     peruOnlyExpectedGapKeikoMinusSanchez: number;
-    exteriorDatumGapKeikoMinusSanchez: number;
-    exteriorExitPollGapKeikoMinusSanchez: number;
-    exteriorThirtyPpGapKeikoMinusSanchez: number;
-    peruPlusDatumGapKeikoMinusSanchez: number;
-    peruPlusExitPollGapKeikoMinusSanchez: number;
-    peruPlusExteriorThirtyPpGapKeikoMinusSanchez: number;
+    exteriorRemainingValidEstimate: number;
+    exteriorRemainingDatumGapKeikoMinusSanchez: number;
+    exteriorRemainingObservedGapKeikoMinusSanchez: number;
+    exteriorRemainingThirtyPpGapKeikoMinusSanchez: number;
+    totalWithDatumGapKeikoMinusSanchez: number;
+    totalWithObservedGapKeikoMinusSanchez: number;
+    totalWithThirtyPpGapKeikoMinusSanchez: number;
     pendingPeruActas: number;
     jeeActasAtRisk: number;
     foreignAggregateActas: number;
@@ -254,6 +258,7 @@ const HISTORICAL_CUTS: CompletionCut[] = [
   { advancePct: 90.488, timestamp: "2026-06-08T04:16:00-05:00" },
   { advancePct: 93.87, timestamp: "2026-06-08T12:52:00-05:00" },
   { advancePct: 96.879, timestamp: "2026-06-10T00:15:19-05:00" },
+  { advancePct: 96.918, timestamp: "2026-06-10T01:18:00-05:00" },
 ];
 
 const SIMULATION_COUNT = 20_000;
@@ -809,6 +814,26 @@ function estimateExteriorValidVoteRange(): [number, number] {
   ];
 }
 
+function getObservedExteriorCountedValid(): number {
+  return getStaticExteriorOfficialResults()?.validVotes ?? 0;
+}
+
+// Votos válidos exteriores que FALTAN por contabilizar: el estimado total por
+// padrón menos lo ya observado. Evita contar dos veces el exterior al mezclarlo
+// con el bloque pendiente nacional.
+function estimateExteriorRemainingValidVotes(): number {
+  return Math.max(
+    0,
+    estimateExteriorValidVotes() - getObservedExteriorCountedValid(),
+  );
+}
+
+function estimateExteriorRemainingValidVoteRange(): [number, number] {
+  const observed = getObservedExteriorCountedValid();
+  const [low, high] = estimateExteriorValidVoteRange();
+  return [Math.max(0, low - observed), Math.max(0, high - observed)];
+}
+
 function estimateExteriorCandidateVotesWith(validVotes: number, pct: number): number {
   return Math.round(validVotes * (pct / 100));
 }
@@ -898,13 +923,13 @@ function getExteriorPreferenceLabel(): string {
 function estimateExteriorShareOfPending(onpe: OnpeResumen): number | null {
   const pendingValidVotes = estimatePendingValidVotes(onpe);
   if (pendingValidVotes == null || pendingValidVotes <= 0) return null;
-  return clamp(estimateExteriorValidVotes() / pendingValidVotes, 0, 0.6);
+  return clamp(estimateExteriorRemainingValidVotes() / pendingValidVotes, 0, 0.6);
 }
 
 function estimateExteriorShareRangeOfPending(onpe: OnpeResumen): [number, number] | null {
   const pendingValidVotes = estimatePendingValidVotes(onpe);
   if (pendingValidVotes == null || pendingValidVotes <= 0) return null;
-  const [lowVotes, highVotes] = estimateExteriorValidVoteRange();
+  const [lowVotes, highVotes] = estimateExteriorRemainingValidVoteRange();
   return [
     clamp(lowVotes / pendingValidVotes, 0, 0.6),
     clamp(highVotes / pendingValidVotes, 0, 0.6),
@@ -927,7 +952,7 @@ function estimateDomesticSanchezPctToOffsetExteriorGap(
 function estimateDomesticSanchezPctToOffsetExteriorGapRange(
   onpe: OnpeResumen,
 ): [number, number] | null {
-  const [lowVotes, highVotes] = estimateExteriorValidVoteRange();
+  const [lowVotes, highVotes] = estimateExteriorRemainingValidVoteRange();
   const low = estimateDomesticSanchezPctToOffsetExteriorGap(onpe, lowVotes);
   const high = estimateDomesticSanchezPctToOffsetExteriorGap(onpe, highVotes);
   if (low == null || high == null) return null;
@@ -937,7 +962,10 @@ function estimateDomesticSanchezPctToOffsetExteriorGapRange(
 function buildExteriorAdjustedPendingSanchezPct(onpe: OnpeResumen): number | null {
   const pendingValidVotes = estimatePendingValidVotes(onpe);
   if (pendingValidVotes == null || pendingValidVotes <= 0) return null;
-  return buildExteriorAdjustedPendingSanchezPctWith(onpe, estimateExteriorValidVotes());
+  return buildExteriorAdjustedPendingSanchezPctWith(
+    onpe,
+    estimateExteriorRemainingValidVotes(),
+  );
 }
 
 function buildExteriorAdjustedPendingSanchezPctWith(
@@ -962,7 +990,7 @@ function buildExteriorAdjustedPendingSanchezPctWith(
 function buildExteriorAdjustedPendingSanchezRangePct(
   onpe: OnpeResumen,
 ): [number, number] | null {
-  const [lowVotes, highVotes] = estimateExteriorValidVoteRange();
+  const [lowVotes, highVotes] = estimateExteriorRemainingValidVoteRange();
   const lowMix = buildExteriorAdjustedPendingSanchezPctWith(onpe, lowVotes);
   const highMix = buildExteriorAdjustedPendingSanchezPctWith(onpe, highVotes);
   if (lowMix == null || highMix == null) return null;
@@ -1482,7 +1510,9 @@ function buildCriticalDrivers(
       source: "Ipsos territorial + ONPE pendientes",
       pendingActas: actasNoContabilizadas,
       estimatedVotes:
-        pendingValidVotes != null ? Math.max(0, pendingValidVotes - estimateExteriorValidVotes()) : null,
+        pendingValidVotes != null
+          ? Math.max(0, pendingValidVotes - estimateExteriorRemainingValidVotes())
+          : null,
       sanchezPct: round(domesticMean, 2),
       impactPp: estimateMarginShiftFromPending(onpe, domesticMean),
       note: "En esta sensibilidad, si el pendiente doméstico se parece al interior/regiones, favorece a Sánchez. El volumen exterior se mantiene separado para no mezclar padrón con voto observado.",
@@ -1495,7 +1525,7 @@ function buildCriticalDrivers(
         exteriorOfficialResults?.actasPendientes ??
         exteriorOfficialResults?.actasTotal ??
         null,
-      estimatedVotes: estimateExteriorValidVotes(),
+      estimatedVotes: estimateExteriorRemainingValidVotes(),
       sanchezPct: exteriorMean,
       impactPp: estimateMarginShiftFromPending(onpe, exteriorMean),
       note: `La app muestra solo el agregado exterior ONPE, sin países. El ${exteriorPreferenceLabel} ubica el exterior más favorable a Keiko; el modelo lo pondera como ${exteriorShare == null ? "peso no estimable" : `${round(exteriorShare * 100, 1)}%`} del voto válido pendiente estimado, no como padrón completo.`,
@@ -1582,7 +1612,7 @@ function buildTrendSignals(
             ? "sanchez"
             : "keiko",
       detail: `Mix de pendiente doméstico + exterior Datum (${formatExteriorShare(exteriorShare)} del pendiente estimado).`,
-      note: "La preferencia exterior oficial agregada se muestra aparte. Esta señal conserva Datum como sensibilidad porque ONPE exterior todavía está en avance inicial.",
+      note: "La preferencia exterior oficial agregada se muestra aparte. Esta señal conserva Datum como sensibilidad porque el mix de países del exterior restante puede diferir del ya contabilizado (~52% de avance exterior).",
     },
     {
       id: "modeled-margin",
@@ -1609,12 +1639,53 @@ function buildComponentRead(): PredictionSnapshot["componentRead"] {
   const expectedJeeGap =
     jeeResolutionModel.components.expectedJeeResolution
       .expectedCountedMarginKeikoMinusSanchez;
-  const peruOnlyExpectedGap = officialGap + pendingPeruGap + expectedJeeGap;
-  const exteriorDatumGap = estimateExteriorDatumGapVotes();
-  const exteriorExitPollGap = estimateExteriorExitPollGapVotes();
-  const exteriorThirtyPpGap = Math.round(
-    estimateExteriorValidVotes() * 0.3,
+  const expectedJeePeruGap = jeeResolutionModel.departmentRows.reduce(
+    (sum, row) =>
+      sum + (row.estimates.expectedJeeCountedGapKeikoMinusSanchez ?? 0),
+    0,
   );
+
+  // Exterior contabilizado (ya dentro de la brecha oficial nacional): se separa
+  // explícitamente para no contarlo dos veces al proyectar el exterior restante.
+  const exteriorObserved = getStaticExteriorOfficialResults();
+  const exteriorCountedGap =
+    exteriorObserved?.votesA != null && exteriorObserved.votesB != null
+      ? exteriorObserved.votesA - exteriorObserved.votesB
+      : 0;
+  const exteriorCountedValid = exteriorObserved?.validVotes ?? 0;
+  const exteriorCountedActas = exteriorObserved?.actasContabilizadas ?? 0;
+  const exteriorVpa =
+    exteriorCountedActas > 0 ? exteriorCountedValid / exteriorCountedActas : 123;
+  const foreignJeeActas =
+    jeeResolutionModel.currentUnresolved.foreignAggregate
+      ?.enviadas_jee_observadas ?? 0;
+  const exteriorUnresolvedActas =
+    exteriorObserved?.actasPendientes ??
+    jeeResolutionModel.components.foreignPendingAggregate.actas;
+  // Las actas JEE del exterior ya están dentro del bloque JEE esperado; aquí
+  // solo se proyectan las pendientes operativas restantes.
+  const exteriorRemainingActas = Math.max(
+    0,
+    exteriorUnresolvedActas - foreignJeeActas,
+  );
+  const exteriorRemainingValid = Math.round(exteriorRemainingActas * exteriorVpa);
+
+  const officialPeruOnlyGap = officialGap - exteriorCountedGap;
+  const peruOnlyExpectedGap =
+    officialPeruOnlyGap + pendingPeruGap + expectedJeePeruGap;
+  const nationalCoreGap = officialGap + pendingPeruGap + expectedJeeGap;
+
+  const remainingGapWith = (keikoPct: number, sanchezPct: number) =>
+    Math.round(exteriorRemainingValid * ((keikoPct - sanchezPct) / 100));
+  const exteriorRemainingDatumGap = remainingGapWith(
+    getExteriorDatumKeikoPct(),
+    getExteriorDatumSanchezPct(),
+  );
+  const exteriorRemainingObservedGap =
+    exteriorObserved?.a != null && exteriorObserved.b != null
+      ? remainingGapWith(exteriorObserved.a, exteriorObserved.b)
+      : exteriorRemainingDatumGap;
+  const exteriorRemainingThirtyPpGap = Math.round(exteriorRemainingValid * 0.3);
 
   return {
     source: "data/2026/jee-resolution-model.json",
@@ -1622,32 +1693,35 @@ function buildComponentRead(): PredictionSnapshot["componentRead"] {
     cutUtc: jeeResolutionModel.cutUtc,
     status: jeeResolutionModel.status,
     officialGapKeikoMinusSanchez: round(officialGap, 1) ?? officialGap,
+    exteriorCountedGapKeikoMinusSanchez: exteriorCountedGap,
+    officialPeruOnlyGapKeikoMinusSanchez:
+      round(officialPeruOnlyGap, 1) ?? officialPeruOnlyGap,
     pendingPeruGapKeikoMinusSanchez: round(pendingPeruGap, 1) ?? pendingPeruGap,
     expectedJeeGapKeikoMinusSanchez: round(expectedJeeGap, 1) ?? expectedJeeGap,
+    expectedJeePeruGapKeikoMinusSanchez:
+      round(expectedJeePeruGap, 1) ?? expectedJeePeruGap,
     peruOnlyExpectedGapKeikoMinusSanchez:
       round(peruOnlyExpectedGap, 1) ?? peruOnlyExpectedGap,
-    exteriorDatumGapKeikoMinusSanchez: exteriorDatumGap,
-    exteriorExitPollGapKeikoMinusSanchez: exteriorExitPollGap,
-    exteriorThirtyPpGapKeikoMinusSanchez: exteriorThirtyPpGap,
-    peruPlusDatumGapKeikoMinusSanchez: round(
-      peruOnlyExpectedGap + exteriorDatumGap,
-      1,
-    ) ?? (peruOnlyExpectedGap + exteriorDatumGap),
-    peruPlusExitPollGapKeikoMinusSanchez: round(
-      peruOnlyExpectedGap + exteriorExitPollGap,
-      1,
-    ) ?? (peruOnlyExpectedGap + exteriorExitPollGap),
-    peruPlusExteriorThirtyPpGapKeikoMinusSanchez: round(
-      peruOnlyExpectedGap + exteriorThirtyPpGap,
-      1,
-    ) ?? (peruOnlyExpectedGap + exteriorThirtyPpGap),
+    exteriorRemainingValidEstimate: exteriorRemainingValid,
+    exteriorRemainingDatumGapKeikoMinusSanchez: exteriorRemainingDatumGap,
+    exteriorRemainingObservedGapKeikoMinusSanchez: exteriorRemainingObservedGap,
+    exteriorRemainingThirtyPpGapKeikoMinusSanchez: exteriorRemainingThirtyPpGap,
+    totalWithDatumGapKeikoMinusSanchez:
+      round(nationalCoreGap + exteriorRemainingDatumGap, 1) ??
+      nationalCoreGap + exteriorRemainingDatumGap,
+    totalWithObservedGapKeikoMinusSanchez:
+      round(nationalCoreGap + exteriorRemainingObservedGap, 1) ??
+      nationalCoreGap + exteriorRemainingObservedGap,
+    totalWithThirtyPpGapKeikoMinusSanchez:
+      round(nationalCoreGap + exteriorRemainingThirtyPpGap, 1) ??
+      nationalCoreGap + exteriorRemainingThirtyPpGap,
     pendingPeruActas: jeeResolutionModel.components.pendingPeru.actas,
     jeeActasAtRisk: jeeResolutionModel.components.jeeAtRisk.actas,
     foreignAggregateActas:
       jeeResolutionModel.components.foreignPendingAggregate.actas,
-    foreignValidVotesUsed: estimateExteriorValidVotes(),
+    foreignValidVotesUsed: exteriorRemainingValid,
     note:
-      "Lectura principal auditada: snapshot JEE/ciudad-distrito para Peru y sensibilidad exterior agregada. Se mantiene separada del modelo secundario live por regimenes.",
+      "Lectura principal auditada sin doble conteo: la brecha oficial nacional ya incluye el exterior contabilizado (separado en su propia fila); el bloque JEE esperado incluye las actas JEE del exterior; y las proyecciones de exterior se aplican solo a las actas exteriores pendientes restantes.",
   };
 }
 
@@ -1835,7 +1909,7 @@ export function buildPredictionSnapshot(
       domesticSanchezPctToOffsetDatumExterior:
         estimateDomesticSanchezPctToOffsetExteriorGap(
           onpe,
-          exteriorValidVoteEstimate,
+          estimateExteriorRemainingValidVotes(),
         ),
       domesticSanchezPctToOffsetDatumExteriorRange: domesticOffsetRange,
       turnoutAssumptionPct: getExteriorTurnoutAssumptionPct(),
@@ -1869,7 +1943,7 @@ export function buildPredictionSnapshot(
         url: "https://resultadosegundavuelta.onpe.gob.pe/main/resumen",
       },
       {
-        label: "RPP — Ipsos/Transparencia CR",
+        label: "Ipsos/Transparencia — conteo rápido",
         url: getSource("ipsos-cr").url ?? "",
       },
       {

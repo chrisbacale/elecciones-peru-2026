@@ -199,7 +199,7 @@ export function getKnownOnpeSnapshot(): OnpeResumen {
           : null,
     blankVotes: null,
     nullVotes: null,
-    marginPp: data?.marginPp ?? onpePartial?.marginPp ?? 0.175,
+    marginPp: data?.marginPp ?? onpePartial?.marginPp ?? 0.173,
     marginLeader: keikoPct >= sanchezPct ? "Keiko Fujimori" : "Roberto Sánchez",
     source: "data/2026/flash-electoral.json",
     message:
@@ -475,7 +475,7 @@ export async function fetchOnpeResumen(
     validVotes: result.actas?.totalVotosValidos ?? validVotes,
     blankVotes: result.actas?.totalVotosBlancos ?? null,
     nullVotes: result.actas?.totalVotosNulos ?? null,
-    marginPp: Math.round(marginPp * 100) / 100,
+    marginPp: Math.round(marginPp * 1000) / 1000,
     marginLeader: keikoPct >= sanchezPct ? "Keiko Fujimori" : "Roberto Sánchez",
     source: result.source,
   };

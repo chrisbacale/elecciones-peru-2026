@@ -22,6 +22,7 @@ const TERRITORIAL_PROFILE = [
   { id: "sierra", label: "Sierra (Ipsos)", pct: 70.2 },
   { id: "sur", label: "Sur (Ipsos)", pct: 75.0 },
   { id: "rural", label: "Rural (Ipsos)", pct: 69.0 },
+  { id: "exterior", label: "Exterior (ONPE observado)", pct: 37.7 },
 ] as const;
 
 function compareToProfile(required: number, profile: number) {
@@ -48,14 +49,18 @@ export function ConsistencyCalculator() {
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader className="flex-row items-center justify-between space-y-0">
+        <CardHeader className="flex-row flex-wrap items-center justify-between gap-2 space-y-0">
           <div>
             <CardTitle>Calculadora en vivo</CardTitle>
             <CardDescription>
               Voto pendiente necesario para igualar el CR Ipsos
             </CardDescription>
           </div>
-          {data && <StatusBadge status={data.status} />}
+          {data && (
+            <div className="shrink-0 whitespace-nowrap">
+              <StatusBadge status={data.status} />
+            </div>
+          )}
         </CardHeader>
         <CardContent>
           {isLoading && (
@@ -132,7 +137,7 @@ export function ConsistencyCalculator() {
                     {formatPct(TARGET_SANCHEZ, 1)}
                   </p>
                   <p className="mt-1 text-xs text-muted">
-                    Margen {formatPct(ipsosCr?.data.marginPp ?? 0.6, 1)} Sánchez
+                    Margen +{(ipsosCr?.data.marginPp ?? 0.6).toFixed(1)} pp Sánchez
                   </p>
                 </div>
               </div>
@@ -147,11 +152,11 @@ export function ConsistencyCalculator() {
             <CardTitle>Comparación con perfil territorial Ipsos</CardTitle>
             <CardDescription>
               ¿El {formatPct(required, 2)} requerido en actas pendientes es
-              coherente con el voto de Sánchez en zonas aún poco contabilizadas?
+              coherente con el voto de Sánchez en los bloques que faltan?
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-3 sm:grid-cols-3">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {TERRITORIAL_PROFILE.map((zone) => {
                 const cmp = compareToProfile(required, zone.pct);
                 return (
@@ -170,6 +175,14 @@ export function ConsistencyCalculator() {
                 );
               })}
             </div>
+            <p className="mt-3 text-xs leading-relaxed text-muted">
+              Composición real del bloque pendiente al corte actual: ~9 de cada 10
+              actas pendientes operativas son del exterior, donde Sánchez obtiene
+              ~37.7% (ONPE observado al ~52% de avance exterior), no de la
+              sierra/sur rural. Las actas JEE domésticas se concentran en
+              Lima/Callao. Por eso el requerido alto frente a sierra/sur/rural no
+              implica viabilidad: esos territorios ya están casi contabilizados.
+            </p>
           </CardContent>
         </Card>
       )}

@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatPct } from "@/lib/format";
 import type { ErrorMetrics } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -34,19 +33,19 @@ function MetricCard({
           <div>
             <dt className="text-xs text-muted">Promedio</dt>
             <dd className="mt-0.5 font-mono text-xl font-semibold tabular-nums">
-              {formatPct(metrics.mean, 2)}
+              {metrics.mean.toFixed(2)} pp
             </dd>
           </div>
           <div>
             <dt className="text-xs text-muted">Mediana</dt>
             <dd className="mt-0.5 font-mono text-xl font-semibold tabular-nums">
-              {formatPct(metrics.median, 2)}
+              {metrics.median.toFixed(2)} pp
             </dd>
           </div>
           <div>
             <dt className="text-xs text-muted">Máximo</dt>
             <dd className="mt-0.5 font-mono text-xl font-semibold tabular-nums">
-              {formatPct(metrics.max, 2)}
+              {metrics.max.toFixed(2)} pp
             </dd>
           </div>
         </dl>
