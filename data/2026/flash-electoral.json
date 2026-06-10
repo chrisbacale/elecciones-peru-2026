@@ -12,6 +12,33 @@
       "type": "oficial",
       "instrument": "Escrutinio parcial",
       "url": "https://resultadosegundavuelta.onpe.gob.pe/main/resumen",
+      "publishedAt": "2026-06-10T00:15:19-05:00",
+      "data": {
+        "a": 49.912,
+        "b": 50.088,
+        "labelA": "Keiko",
+        "labelB": "Sánchez",
+        "marginPp": 0.175,
+        "marginLeader": "b",
+        "votesA": 8944246,
+        "votesB": 8975637,
+        "advancePct": 96.879,
+        "actasProcesadas": 89870,
+        "actasTotal": 92766,
+        "actasPendientes": 1333,
+        "actasJee": 1563,
+        "actasPendientesPct": 1.437,
+        "actasJeePct": 1.685,
+        "actasNote": "Corte primario ONPE verificado por endpoints XHR: resumen-general/totales y resumen-general/participantes con idEleccion=10 (10/06/2026 00:15 PET)."
+      },
+      "notes": "Corte ONPE al 96.879% verificado el 10/06/2026 00:15 PET: Sánchez 50.088% y Keiko 49.912% (+31,391 votos Sánchez). No es muestra aleatoria; sin margen de error estadístico. El bloque no contabilizado incluye 1,563 actas enviadas al JEE y 1,333 pendientes (1,201 de ellas en el exterior)."
+    },
+    {
+      "id": "onpe-parcial-prev",
+      "name": "ONPE (corte previo)",
+      "type": "oficial",
+      "instrument": "Escrutinio parcial previo",
+      "url": "https://resultadosegundavuelta.onpe.gob.pe/main/resumen",
       "publishedAt": "2026-06-08T12:52:00.381-05:00",
       "data": {
         "a": 50.001,
@@ -23,38 +50,11 @@
         "votesA": 8785887,
         "votesB": 8785537,
         "advancePct": 93.87,
-        "actasProcesadas": 87079,
         "actasTotal": 92766,
-        "actasPendientes": 4170,
-        "actasJee": 1517,
         "actasPendientesPct": 4.495,
-        "actasJeePct": 1.635,
-        "actasNote": "Corte primario ONPE verificado por endpoints XHR: resumen-general/totales y participantes con idEleccion=10."
+        "actasJeePct": 1.635
       },
-      "notes": "Corte ONPE al 93.870% verificado el 08/06/2026 12:52 PET: Keiko 50.001% y Sánchez 49.999%. No es muestra aleatoria; sin margen de error estadístico. El bloque no contabilizado incluye 1,517 actas enviadas al JEE y 4,170 pendientes."
-    },
-    {
-      "id": "onpe-parcial-prev",
-      "name": "ONPE (cross-check)",
-      "type": "oficial",
-      "instrument": "Escrutinio parcial previo",
-      "url": "https://www.infobae.com/peru/2026/06/07/resultados-onpe-en-vivo-conteo-oficial-de-votos-de-keiko-fujimori-y-roberto-sanchez-en-la-segunda-vuelta-de-elecciones-2026/?outputType=amp-type",
-      "publishedAt": "2026-06-08T01:08:00-05:00",
-      "data": {
-        "a": 51.672,
-        "b": 48.328,
-        "labelA": "Keiko",
-        "labelB": "Sánchez",
-        "marginPp": 3.344,
-        "marginLeader": "a",
-        "votesA": 8040623,
-        "votesB": 7520293,
-        "advancePct": 80.988,
-        "actasTotal": 92766,
-        "actasPendientesPct": 17.509,
-        "actasJeePct": 1.503
-      },
-      "notes": "Infobae replica ONPE al 80.988% de actas contabilizadas (08/06/2026 01:08), con votos absolutos y 1.503% de actas enviadas al JEE."
+      "notes": "Corte ONPE previo al 93.870% (08/06/2026 12:52 PET) con votos absolutos, usado para medir el delta de llegada tardía: entre 93.870% y 96.879% Sánchez sumó 190,100 votos vs 158,359 de Keiko (54.55% del delta)."
     },
     {
       "id": "ipsos-boca",
@@ -282,26 +282,26 @@
     "officialOnpeExteriorResults": {
       "status": "snapshot",
       "actasTotal": 2543,
-      "actasContabilizadas": 12,
-      "actasPendientes": 2531,
-      "advancePct": 0.472,
-      "votesA": 1164,
-      "votesB": 881,
-      "a": 56.919,
-      "b": 43.081,
-      "validVotes": 2045,
-      "marginPp": 13.838,
+      "actasContabilizadas": 1275,
+      "actasPendientes": 1268,
+      "advancePct": 50.138,
+      "votesA": 97865,
+      "votesB": 58653,
+      "a": 62.526,
+      "b": 37.474,
+      "validVotes": 156518,
+      "marginPp": 25.052,
       "marginLeader": "a",
       "source": "ONPE exterior oficial parcial",
       "sourceUrl": "https://resultadosegundavuelta.onpe.gob.pe/presentacion-backend/eleccion-presidencial/participantes-ubicacion-geografica-nombre?tipoFiltro=ambito_geografico&idEleccion=10&idAmbitoGeografico=2",
-      "note": "Resultado oficial parcial del ámbito exterior agregado. No desagrega países en la app y no sustituye el cierre ONPE/JNE."
+      "note": "Resultado oficial parcial del ámbito exterior agregado al 50.138% (10/06/2026 00:12 PET): Keiko 62.526% vs Sánchez 37.474%, coherente con el conteo rápido exterior Datum (62.67/37.33). Quedan 1,201 actas exteriores pendientes y 67 en JEE. No desagrega países en la app y no sustituye el cierre ONPE/JNE."
     },
     "assumptions": {
-      "turnoutPct": 34,
-      "turnoutPctRange": [25, 45],
+      "turnoutPct": 28,
+      "turnoutPctRange": [22, 38],
       "validVotePct": 94,
-      "validVotePctRange": [90, 97],
-      "note": "Hipótesis de volumen para sensibilidad; no es resultado oficial ni participación exterior final. El rango evita tratar el volumen exterior como punto observado."
+      "validVotePctRange": [91, 96],
+      "note": "Hipótesis de volumen ancladas a lo observado: las 1,275 actas exteriores contabilizadas registran ~131 votos emitidos por acta (~27.5% de participación implícita) y 93.8% de votos válidos. El rango cubre que el mix de ciudades restante difiera del ya contabilizado."
     }
   },
   "movement": [
@@ -329,6 +329,7 @@
     { "stage": "ONPE 93.698%", "marginPp": 0.04, "leader": "Keiko" },
     { "stage": "ONPE 93.727%", "marginPp": 0.03, "leader": "Keiko" },
     { "stage": "ONPE 93.771%", "marginPp": 0.02, "leader": "Keiko" },
-    { "stage": "ONPE 93.870%", "marginPp": 0, "leader": "Keiko" }
+    { "stage": "ONPE 93.870%", "marginPp": 0, "leader": "Keiko" },
+    { "stage": "ONPE 96.879%", "marginPp": 0.175, "leader": "Sánchez" }
   ]
 }

@@ -369,9 +369,50 @@ function buildHistoricalModel() {
     annulledBeta: pooled.countedObservedActas + 1,
     countedAlpha: pooled.countedObservedActas + 1,
     countedBeta: pooled.annulledActas + 1,
+    note:
+      "Prior agrupado acta-a-acta. Sobreconfiado porque trata 2011/2016/2021 como intercambiables; se publica solo para comparacion.",
+  };
+  pooled.hierarchicalBetaPrior = buildHierarchicalBetaPrior(rows);
+  pooled.regime2026Prior = {
+    annulledAlpha: 1,
+    annulledBeta: 19,
+    mean: 0.05,
+    ci80: [0.0055, 0.114],
+    basis:
+      "Res. 0180-2025-JNE ordena recuento unico e inimpugnable en lugar de anulacion (al 9-jun-2026 solo 13 de 1,086 expedientes a recuento) y en 2021 el 100% de pedidos de nulidad partidarios fue rechazado (945/945). La tasa efectiva 2026 se proyecta muy por debajo del historico 13.3-18.3%.",
+    note:
+      "Prior usado por el Monte Carlo para 2026. El prior jerarquico historico se publica como sensibilidad conservadora.",
   };
 
   return { rows, pooled };
+}
+
+function buildHierarchicalBetaPrior(rows) {
+  // Ajuste por momentos sobre las tasas anuales de anulacion: la varianza
+  // ENTRE elecciones (13.3%, 18.3%, 13.7%) define cuanta confianza real hay
+  // para 2026, en lugar de agrupar 7,831 actas como si fueran un solo proceso.
+  const rates = rows.map((row) => ratioPct(row.annulledActas, row.observedActas));
+  const mean = rates.reduce((acc, rate) => acc + rate, 0) / rates.length;
+  const variance =
+    rates.reduce((acc, rate) => acc + (rate - mean) ** 2, 0) /
+    Math.max(1, rates.length - 1);
+  const effectiveN = Math.max(8, (mean * (1 - mean)) / variance - 1);
+  const alpha = mean * effectiveN;
+  const beta = (1 - mean) * effectiveN;
+
+  return {
+    annulledAlpha: alpha,
+    annulledBeta: beta,
+    mean,
+    betweenElectionSd: Math.sqrt(variance),
+    effectiveSampleSize: effectiveN,
+    yearlyRates: rows.map((row) => ({
+      year: row.year,
+      annulledRateOfObserved: ratioPct(row.annulledActas, row.observedActas),
+    })),
+    note:
+      "Prior jerarquico Beta(media*n_eff, (1-media)*n_eff) con n_eff derivado de la varianza entre segundas vueltas 2011/2016/2021. Es el prior usado por el Monte Carlo.",
+  };
 }
 
 function byName(rows, nameField) {
@@ -399,8 +440,8 @@ function buildDepartmentRows({
     "department_or_continent",
   );
 
-  const admissionRate = historical.pooled.countedRateOfObserved;
-  const annulmentRate = historical.pooled.annulledRateOfObserved;
+  const annulmentRate = historical.pooled.regime2026Prior.mean;
+  const admissionRate = 1 - annulmentRate;
 
   return audit.top_departments
     .filter((row) => row.scope_label === "PERU")
@@ -649,7 +690,7 @@ function binomial(random, trials, probability) {
   return count;
 }
 
-function sampleJeeMarginByDepartment({ random, rows, admissionProbability }) {
+function sampleJeeMarginByDepartment({ random, rows, admissionProbability, leanBias = 0 }) {
   if (!Array.isArray(rows) || rows.length === 0) {
     return { margin: 0, sampledAdmissionRate: admissionProbability };
   }
@@ -665,7 +706,7 @@ function sampleJeeMarginByDepartment({ random, rows, admissionProbability }) {
 
     const countedActas = binomial(random, actas, admissionProbability);
     const countedRatio = countedActas / actas;
-    const keikoShare = ratioPct(Number(row.keiko_votes_at_risk ?? 0), valid);
+    const keikoShare = ratioPct(Number(row.keiko_votes_at_risk ?? 0), valid) + leanBias;
     const concentration = Math.max(45, Math.min(520, valid / 120));
     const sampledShare = sampleShare(random, keikoShare, concentration);
 
@@ -692,16 +733,24 @@ function runMonteCarlo({ sensitivity, historical, scenarioKey, seed }) {
     (row) => row.scope_label === "PERU",
   );
 
+  const SYSTEMATIC_LEAN_BIAS_SD = 0.02;
+
   for (let i = 0; i < iterations; i += 1) {
     const pending = scenario.components.pending_peru;
     const foreign = scenario.components.foreign_pending;
     const jee = scenario.components.jee_at_risk;
-    const pendingShare = sampleShare(random, pending.keiko / pending.valid, 900);
-    const foreignShare = sampleShare(random, foreign.keiko / foreign.valid, 360);
+    // Sesgo sistematico compartido: las cuotas de voto de los bloques sin
+    // resolver son ESTIMACIONES por patron territorial, no contenido real de
+    // actas. Un error de estimacion correlacionado entre componentes (orden de
+    // llegada, mix de paises restante, fallback ridge-logit) se modela como un
+    // shift comun en share de Keiko con sd 2 pp.
+    const leanBias = normal(random) * SYSTEMATIC_LEAN_BIAS_SD;
+    const pendingShare = sampleShare(random, pending.keiko / pending.valid + leanBias, 900);
+    const foreignShare = sampleShare(random, foreign.keiko / foreign.valid + leanBias, 360);
     const annulRate = beta(
       random,
-      historical.pooled.betaPrior.annulledAlpha,
-      historical.pooled.betaPrior.annulledBeta,
+      historical.pooled.regime2026Prior.annulledAlpha,
+      historical.pooled.regime2026Prior.annulledBeta,
     );
     const admissionRate = 1 - annulRate;
     const pendingMargin = pending.valid * (2 * pendingShare - 1);
@@ -710,11 +759,12 @@ function runMonteCarlo({ sensitivity, historical, scenarioKey, seed }) {
       random,
       rows: jeeRows,
       admissionProbability: admissionRate,
+      leanBias,
     });
     const jeeMargin = jeeRows.length
       ? jeeSample.margin
       : jee.valid * admissionRate *
-        (2 * sampleShare(random, jee.keiko / jee.valid, 520) - 1);
+        (2 * sampleShare(random, jee.keiko / jee.valid + leanBias, 520) - 1);
     const peruOnlyMargin =
       sensitivity.official_current.margin_keiko_minus_roberto +
       pendingMargin +
@@ -739,9 +789,12 @@ function runMonteCarlo({ sensitivity, historical, scenarioKey, seed }) {
       foreignShareConcentration: 360,
       jeeDepartmentShareConcentrationMin: 45,
       jeeDepartmentShareConcentrationMax: 520,
+      systematicLeanBiasSdShare: 0.02,
       jeeResolutionSampling: "binomial_por_departamento",
       jeeLegalResolutionPrior:
-        "Beta(anuladas+1, observadas_contadas+1)",
+        "Beta(1,19) regimen 2026: Res. 0180-2025-JNE favorece recuento sobre anulacion; media 5%, CI80 [0.6%, 11.4%]. Sensibilidad conservadora: Beta jerarquico 2011/2016/2021 (media 15.1%)",
+      systematicBiasNote:
+        "Sesgo sistematico compartido N(0, 2 pp) sobre la cuota Keiko de todos los bloques sin resolver: captura error correlacionado de estimacion territorial (orden de llegada, mix de paises del exterior restante, fallbacks).",
     },
   };
 }
@@ -762,8 +815,8 @@ function mapSensitivityRows(rows) {
 function buildJeeModel({ audit, city, sensitivity, territorial }) {
   const historical = buildHistoricalModel();
   const reconciledTerritorial = reconcileTerritorialToPeruAudit(territorial, audit);
-  const admissionRate = historical.pooled.countedRateOfObserved;
-  const annulmentRate = historical.pooled.annulledRateOfObserved;
+  const annulmentRate = historical.pooled.regime2026Prior.mean;
+  const admissionRate = 1 - annulmentRate;
   const primary = sensitivity.scenarios.city_weighted;
   const jee = primary.components.jee_at_risk;
 

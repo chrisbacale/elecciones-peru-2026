@@ -45,7 +45,7 @@ const INSTRUMENTS_2026 = [
     instrument: "ONPE parcial",
     source: "ONPE",
     margin: "Sin margen de error muestral (censo parcial de actas)",
-    reading: "Keiko +4.312 pp al 76.966% de avance — oficial pero no final",
+    reading: "Sánchez +0.175 pp al 96.879% de avance (10/06 00:15) — oficial pero no final",
     type: "oficial" as const,
   },
   {
@@ -188,7 +188,7 @@ const INSTRUMENT_DEFINITIONS = [
     keyPoints: [
       "Fuente oficial en tiempo real, pero incompleta",
       "Lima suele contarse antes que regiones rurales",
-      "En 2026: Keiko +4.312 pp al 76.966% — divergente del CR en empate",
+      "En 2026 el orden importó: Keiko +4.3 pp al 77%, empate al 93.9% y Sánchez +0.175 pp al 96.9%",
       "La ONPE pide esperar el 100% antes de inferir ganador",
     ],
   },
