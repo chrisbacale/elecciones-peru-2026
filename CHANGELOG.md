@@ -5,6 +5,8 @@
 Security automation hardening.
 
 - Enabled Dependabot update configuration for npm and GitHub Actions.
+- Focused npm Dependabot automation on security updates to avoid noisy major-version PRs.
+- Updated GitHub Actions checkout/setup-node actions to current major versions.
 - Updated Next.js and eslint-config-next to 16.2.9.
 - Updated Vitest to 4.1.9, removing the low-severity esbuild development-server alert.
 
