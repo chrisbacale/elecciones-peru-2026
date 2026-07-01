@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.1.3 - 2026-07-01
+
+ONPE contract tests.
+
+- Added offline contract tests for public non-contractual ONPE presentation-backend routes.
+- Covered national, foreign-vote, and territorial ONPE fetch flows with mocked responses.
+- Verified request headers, route/query parameters, schema variants, and snapshot fallback behavior for HTML, invalid JSON, empty body, non-200 responses, `success:false`, and missing candidate data.
+- Added `npm run test:onpe-contract`.
+
 ## v0.1.2 - 2026-07-01
 
 Official methodology links.
