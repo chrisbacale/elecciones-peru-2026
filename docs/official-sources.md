@@ -2,6 +2,8 @@
 
 Esta pagina define la jerarquia de fuentes primarias para Radar Electoral Peru. Su objetivo es evitar que resultados oficiales, registros, metricas derivadas y simulaciones se mezclen sin trazabilidad.
 
+El registro estructurado y validado por tests vive en [`data/sources/official-sources.json`](../data/sources/official-sources.json). Si se agrega una fuente oficial nueva, debe actualizarse esta pagina y el registro JSON.
+
 ## Jerarquia
 
 | Fuente | Uso principal | URL | Regla de uso |
@@ -27,6 +29,8 @@ Toda fuente agregada al proyecto debe conservar:
 - `source_type`: `official_result`, `official_registry`, `official_legal`, `derived_metric` o `simulation`.
 - `document_date`: fecha del documento cuando aplique.
 - `sha256`: hash de PDF, CSV, XLSX o snapshot descargado cuando aplique.
+
+El test `lib/official-sources.test.ts` falla si una fuente no declara URL HTTPS, entidad, tipo, uso esperado y regla de no uso.
 
 ## Regla dura
 

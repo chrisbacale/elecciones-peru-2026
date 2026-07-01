@@ -1,0 +1,124 @@
+{
+  "schema_version": "1.0.0",
+  "retrieved_at": "2026-07-01T01:30:00-05:00",
+  "project_rule": "Official legal, registry, result, derived, and simulation data must remain semantically separated in code, UI, and documentation.",
+  "sources": [
+    {
+      "id": "pcm-ds-039-2025",
+      "source_entity": "PCM/Gob.pe",
+      "source_type": "official_legal",
+      "title": "Decreto Supremo 039-2025-PCM - convocatoria a Elecciones Generales 2026",
+      "source_url": "https://www.gob.pe/institucion/pcm/normas-legales/6709184-039-2025-pcm",
+      "document_date": "2025-04-15",
+      "expected_use": "Legal call for the electoral process and official process dates.",
+      "must_not_use_for": "Vote totals, candidate percentages, or winner proclamation."
+    },
+    {
+      "id": "jne-eg-2026",
+      "source_entity": "JNE",
+      "source_type": "official_legal",
+      "title": "JNE - Elecciones Generales 2026",
+      "source_url": "https://portal.jne.gob.pe/portal/Pagina/Ver/979/page/Elecciones-Generales-2026",
+      "document_date": null,
+      "expected_use": "Electoral calendar, resolutions, candidate/legal status, and final proclamation context.",
+      "must_not_use_for": "Live processed acta totals before the official electoral process publishes them."
+    },
+    {
+      "id": "onpe-eg-2026",
+      "source_entity": "ONPE",
+      "source_type": "official_result",
+      "title": "ONPE - Elecciones Generales 2026",
+      "source_url": "https://eg2026.onpe.gob.pe/",
+      "document_date": null,
+      "expected_use": "Official ONPE process information and public result entrypoint.",
+      "must_not_use_for": "JNE proclamation or legal resolution status."
+    },
+    {
+      "id": "onpe-resultados",
+      "source_entity": "ONPE",
+      "source_type": "official_result",
+      "title": "ONPE - Resultado electoral",
+      "source_url": "https://resultadoelectoral.onpe.gob.pe/",
+      "document_date": null,
+      "expected_use": "Public interface for progressive electoral results and acta-level exploration when available.",
+      "must_not_use_for": "Treating a partial processed count as a random sample or final proclamation."
+    },
+    {
+      "id": "onpe-segunda-vuelta",
+      "source_entity": "ONPE",
+      "source_type": "official_result",
+      "title": "ONPE - Resultados segunda vuelta",
+      "source_url": "https://resultadosegundavuelta.onpe.gob.pe/",
+      "document_date": null,
+      "expected_use": "Second-round public results host when active for the relevant process.",
+      "must_not_use_for": "Long-term archival citation without a captured timestamp and fallback snapshot."
+    },
+    {
+      "id": "reniec-eg-2026",
+      "source_entity": "RENIEC",
+      "source_type": "official_registry",
+      "title": "RENIEC - Elecciones Generales 2026",
+      "source_url": "https://identidad.reniec.gob.pe/elecciones-generales-2026",
+      "document_date": null,
+      "expected_use": "Aggregated registry, padrón, and identity-process context.",
+      "must_not_use_for": "Publishing personal data, DNI-level lookups, or voter-level records."
+    },
+    {
+      "id": "jne-plataforma-electoral",
+      "source_entity": "JNE",
+      "source_type": "official_legal",
+      "title": "JNE - Plataforma Electoral",
+      "source_url": "https://plataformaelectoral.jne.gob.pe/",
+      "document_date": null,
+      "expected_use": "Candidate files, plans, personeros, observers, nullity filings, and electoral justice documents.",
+      "must_not_use_for": "Replacing ONPE processed results."
+    },
+    {
+      "id": "jne-voto-informado",
+      "source_entity": "JNE",
+      "source_type": "official_registry",
+      "title": "JNE - Voto Informado",
+      "source_url": "https://votoinformado.jne.gob.pe/",
+      "document_date": null,
+      "expected_use": "Candidate profiles, plans, and voter information when available.",
+      "must_not_use_for": "Final legal proclamation or processed acta totals."
+    },
+    {
+      "id": "cancilleria-voto-exterior",
+      "source_entity": "Cancilleria/Gob.pe",
+      "source_type": "official_registry",
+      "title": "Gob.pe - Tu voto cruza fronteras",
+      "source_url": "https://www.gob.pe/tuvotocruzafronteras",
+      "document_date": null,
+      "expected_use": "Foreign voting logistics and consular guidance.",
+      "must_not_use_for": "Domestic vote totals or candidate simulations."
+    },
+    {
+      "id": "onpe-datos-abiertos",
+      "source_entity": "ONPE",
+      "source_type": "official_result",
+      "title": "Datos Abiertos - ONPE",
+      "source_url": "https://www.datosabiertos.gob.pe/group/oficina-nacional-de-procesos-electorales-onpe",
+      "document_date": null,
+      "expected_use": "Downloadable official datasets after validating file name, date, format, and hash.",
+      "must_not_use_for": "Unversioned automated ingestion without checksum and retrieval metadata."
+    },
+    {
+      "id": "jne-infogob",
+      "source_entity": "JNE",
+      "source_type": "official_registry",
+      "title": "JNE - Infogob",
+      "source_url": "https://infogob.jne.gob.pe/",
+      "document_date": null,
+      "expected_use": "Historical electoral context and public electoral records.",
+      "must_not_use_for": "Replacing process-specific 2026 official publications when a direct source exists."
+    }
+  ],
+  "source_types": [
+    "official_result",
+    "official_registry",
+    "official_legal",
+    "derived_metric",
+    "simulation"
+  ]
+}

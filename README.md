@@ -1,16 +1,30 @@
 # Radar Electoral Perú
 
+[![Verify](https://github.com/chrisbacale/elecciones-peru-2026/actions/workflows/verify.yml/badge.svg)](https://github.com/chrisbacale/elecciones-peru-2026/actions/workflows/verify.yml)
+[![Release](https://img.shields.io/github/v/release/chrisbacale/elecciones-peru-2026?label=release)](https://github.com/chrisbacale/elecciones-peru-2026/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Live app](https://img.shields.io/badge/live-Vercel-black)](https://elecciones-peru-2026-liart.vercel.app)
+
 Dashboard interactivo y open source para seguir y analizar la segunda vuelta presidencial peruana. Combina el estado en vivo del escrutinio ONPE, flashes de encuestadoras (Ipsos, Datum) y una auditoría histórica del margen de error de cada instrumento electoral desde 2001.
 
 > **Aviso cívico:** este proyecto no es una fuente oficial de resultados electorales. ONPE presenta resultados procesados y el JNE resuelve/proclama. Las proyecciones, simulaciones y métricas derivadas de este repositorio son análisis no oficiales y deben leerse separadas de los datos oficiales.
+
+## Estado del proyecto
+
+- **Repositorio público:** https://github.com/chrisbacale/elecciones-peru-2026
+- **Aplicación pública:** https://elecciones-peru-2026-liart.vercel.app
+- **Release actual:** [`v0.1.0`](https://github.com/chrisbacale/elecciones-peru-2026/releases/tag/v0.1.0)
+- **Mantenimiento OSS:** issues, CI, release notes, guías de contribución, seguridad y gobernanza están publicados en este repositorio.
+- **Plan de uso de Codex:** [`docs/codex-maintenance-plan.md`](docs/codex-maintenance-plan.md) explica cómo Codex/API credits se usarían solo para mantenimiento open source.
 
 ## ¿Qué hace?
 
 - **Última hora 2026**: compara ONPE parcial, boca de urna y conteo rápido en una sola vista.
 - **Historial 2001–2021**: serie curada de simulacro, boca de urna, conteo rápido y ONPE al 100% para cada segunda vuelta.
 - **Estadística de error**: mide cuánto se desvió Ipsos del resultado oficial y si el margen actual cae dentro del rango histórico.
-- **Metodología transparente**: explica diferencias entre instrumentos, disclaimers y fuentes con URL en [`/metodologia`](http://localhost:3000/metodologia).
+- **Metodología transparente**: explica diferencias entre instrumentos, disclaimers y fuentes con URL en [`/metodologia`](https://elecciones-peru-2026-liart.vercel.app/metodologia).
 - **Catálogo de fuentes oficiales**: mantiene una jerarquía de fuentes primarias en [`docs/official-sources.md`](docs/official-sources.md).
+- **Registro verificable de fuentes**: [`data/sources/official-sources.json`](data/sources/official-sources.json) se valida en tests para evitar fuentes sin entidad, URL, tipo y regla de uso.
 
 ## Inicio rápido
 
@@ -41,6 +55,8 @@ elecciones-peru-2026/
 ├── data/
 │   ├── historical/
 │   │   └── segunda-vuelta.json   # Serie 2001–2026 curada
+│   ├── sources/
+│   │   └── official-sources.json  # Registro validado de fuentes oficiales
 │   └── 2026/
 │       └── flash-electoral.json  # Snapshot flashes 2026
 ├── lib/
@@ -126,6 +142,7 @@ Estrategia de resiliencia implementada:
 | `npm run build` | Compilación de producción |
 | `npm run start` | Servidor sobre `.next` |
 | `npm run lint` | ESLint (config Next.js) |
+| `npm test` | Tests de estadística, predicción y registro de fuentes oficiales |
 | `npm run verify` | Gate completo antes de publicar: lint + tests + build |
 
 ## Actualización y despliegue
@@ -143,7 +160,14 @@ caen a ese snapshot si el backend público está intermitente.
 
 ## Comunidad y seguridad
 
-Las contribuciones deben seguir [`CONTRIBUTING.md`](CONTRIBUTING.md), [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) y [`SECURITY.md`](SECURITY.md). En particular, no abras issues con datos personales, documentos de identidad, padrones nominales, capturas privadas ni credenciales.
+Las contribuciones deben seguir [`CONTRIBUTING.md`](CONTRIBUTING.md), [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md), [`GOVERNANCE.md`](GOVERNANCE.md), [`MAINTAINERS.md`](MAINTAINERS.md) y [`SECURITY.md`](SECURITY.md). En particular, no abras issues con datos personales, documentos de identidad, padrones nominales, capturas privadas ni credenciales.
+
+Tareas buenas para nuevos contribuidores:
+
+- Mejorar enlaces permanentes a fuentes ONPE/JNE/RENIEC.
+- Agregar pruebas de contrato para fallos de endpoints públicos no documentados.
+- Revisar textos de metodología para distinguir mejor resultado oficial, métrica derivada y simulación.
+- Mejorar accesibilidad, contraste, navegación por teclado y copy cívico.
 
 ## Licencia y uso
 
