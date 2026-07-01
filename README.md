@@ -13,7 +13,7 @@ Dashboard interactivo y open source para seguir y analizar la segunda vuelta pre
 
 - **Repositorio público:** https://github.com/chrisbacale/elecciones-peru-2026
 - **Aplicación pública:** https://elecciones-peru-2026-liart.vercel.app
-- **Release actual:** [`v0.1.2`](https://github.com/chrisbacale/elecciones-peru-2026/releases/tag/v0.1.2)
+- **Release actual:** [`v0.1.3`](https://github.com/chrisbacale/elecciones-peru-2026/releases/tag/v0.1.3)
 - **Mantenimiento OSS:** issues, CI, release notes, guías de contribución, seguridad y gobernanza están publicados en este repositorio.
 - **Plan de uso de Codex:** [`docs/codex-maintenance-plan.md`](docs/codex-maintenance-plan.md) explica cómo Codex/API credits se usarían solo para mantenimiento open source.
 
@@ -143,6 +143,7 @@ Estrategia de resiliencia implementada:
 | `npm run start` | Servidor sobre `.next` |
 | `npm run lint` | ESLint (config Next.js) |
 | `npm test` | Tests de estadística, predicción y registro de fuentes oficiales |
+| `npm run test:onpe-contract` | Contrato offline de endpoints ONPE no documentados; usa mocks y no llama sistemas oficiales |
 | `npm run verify` | Gate completo antes de publicar: lint + tests + build |
 
 ## Actualización y despliegue

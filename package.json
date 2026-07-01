@@ -1,6 +1,6 @@
 {
   "name": "elecciones-peru-2026",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "private": false,
   "license": "MIT",
   "scripts": {
@@ -11,6 +11,7 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:stats": "vitest run lib/stats.test.ts",
+    "test:onpe-contract": "vitest run lib/onpe-client.contract.test.ts",
     "verify": "npm run lint && npm test && npm run build"
   },
   "dependencies": {
