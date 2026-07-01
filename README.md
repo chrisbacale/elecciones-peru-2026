@@ -1,6 +1,8 @@
 # Radar Electoral Perú
 
-Dashboard interactivo para seguir y analizar la segunda vuelta presidencial peruana. Combina el estado en vivo del escrutinio ONPE, flashes de encuestadoras (Ipsos, Datum) y una auditoría histórica del margen de error de cada instrumento electoral desde 2001.
+Dashboard interactivo y open source para seguir y analizar la segunda vuelta presidencial peruana. Combina el estado en vivo del escrutinio ONPE, flashes de encuestadoras (Ipsos, Datum) y una auditoría histórica del margen de error de cada instrumento electoral desde 2001.
+
+> **Aviso cívico:** este proyecto no es una fuente oficial de resultados electorales. ONPE presenta resultados procesados y el JNE resuelve/proclama. Las proyecciones, simulaciones y métricas derivadas de este repositorio son análisis no oficiales y deben leerse separadas de los datos oficiales.
 
 ## ¿Qué hace?
 
@@ -8,6 +10,7 @@ Dashboard interactivo para seguir y analizar la segunda vuelta presidencial peru
 - **Historial 2001–2021**: serie curada de simulacro, boca de urna, conteo rápido y ONPE al 100% para cada segunda vuelta.
 - **Estadística de error**: mide cuánto se desvió Ipsos del resultado oficial y si el margen actual cae dentro del rango histórico.
 - **Metodología transparente**: explica diferencias entre instrumentos, disclaimers y fuentes con URL en [`/metodologia`](http://localhost:3000/metodologia).
+- **Catálogo de fuentes oficiales**: mantiene una jerarquía de fuentes primarias en [`docs/official-sources.md`](docs/official-sources.md).
 
 ## Inicio rápido
 
@@ -67,6 +70,17 @@ elecciones-peru-2026/
 
 **Importante:** Ipsos y Datum son encuestadoras privadas registradas ante el JNE, no autoridades electorales. Solo ONPE/JNE emiten resultados oficiales.
 
+### Regla de trazabilidad
+
+Cada dato electoral debe conservar, cuando aplique:
+
+- `source_url`: enlace directo a ONPE, JNE, RENIEC, PCM/Gob.pe u otra fuente primaria.
+- `retrieved_at`: fecha y hora de consulta.
+- `source_type`: `official_result`, `official_registry`, `official_legal`, `derived_metric` o `simulation`.
+- `cutoff_time` y avance de actas para resultados ONPE parciales.
+
+No mezcles datos oficiales, métricas derivadas y simulaciones en una misma columna semántica sin etiquetarlas visualmente y en datos.
+
 ## Limitaciones de la API ONPE
 
 El cliente en `lib/onpe-client.ts` consume endpoints no documentados públicamente del backend de presentación:
@@ -116,17 +130,21 @@ Estrategia de resiliencia implementada:
 
 ## Actualización y despliegue
 
-Repositorio privado en GitHub y despliegue público en Vercel son capas separadas:
+Repositorio público en GitHub y despliegue público en Vercel son capas separadas:
 
 1. Actualizar datos o UI en el código local.
 2. Ejecutar `npm run verify`.
-3. Confirmar cambios con Git y subirlos al repo privado.
+3. Confirmar cambios con Git y subirlos al repositorio público.
 4. Desplegar a producción con `vercel --prod`.
 
 Cuando se actualice el snapshot electoral de 2026, el archivo principal es
 `data/2026/flash-electoral.json`. Las rutas API intentan leer ONPE en vivo y
 caen a ese snapshot si el backend público está intermitente.
 
+## Comunidad y seguridad
+
+Las contribuciones deben seguir [`CONTRIBUTING.md`](CONTRIBUTING.md), [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) y [`SECURITY.md`](SECURITY.md). En particular, no abras issues con datos personales, documentos de identidad, padrones nominales, capturas privadas ni credenciales.
+
 ## Licencia y uso
 
-Proyecto privado (`"private": true`). Los datos electorales oficiales son de dominio público (ONPE/JNE). Los informes Ipsos/Datum están sujetos a sus respectivas licencias de difusión.
+Código bajo licencia MIT. Los datos electorales oficiales son publicados por sus respectivas entidades (ONPE/JNE/RENIEC/PCM) y deben citarse con sus URLs y fechas de consulta. Los informes Ipsos/Datum están sujetos a sus respectivas licencias de difusión.
