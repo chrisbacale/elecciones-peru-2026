@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+Security automation hardening.
+
+- Enabled Dependabot update configuration for npm and GitHub Actions.
+- Updated Next.js and eslint-config-next to 16.2.9.
+- Updated Vitest to 4.1.9, removing the low-severity esbuild development-server alert.
+
 ## v0.1.3 - 2026-07-01
 
 ONPE contract tests.
