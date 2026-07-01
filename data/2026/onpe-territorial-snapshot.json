@@ -1,6 +1,9 @@
 {
   "status": "snapshot",
   "timestamp": "2026-06-10T06:24:16.242Z",
+  "retrieved_at": "2026-06-10T06:24:16.242Z",
+  "source_type": "official_result",
+  "source_url": "https://resultadosegundavuelta.onpe.gob.pe/",
   "source": "ONPE territorial live fetch capturado localmente (resumen-general/totales + participantes por ubigeo_nivel_01)",
   "departments": [
     {
