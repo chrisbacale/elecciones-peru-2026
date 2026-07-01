@@ -3,7 +3,7 @@
 [![Verify](https://github.com/chrisbacale/elecciones-peru-2026/actions/workflows/verify.yml/badge.svg)](https://github.com/chrisbacale/elecciones-peru-2026/actions/workflows/verify.yml)
 [![Release](https://img.shields.io/github/v/release/chrisbacale/elecciones-peru-2026?label=release)](https://github.com/chrisbacale/elecciones-peru-2026/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Live app](https://img.shields.io/badge/live-Vercel-black)](https://elecciones-peru-2026-liart.vercel.app)
+[![CI](https://img.shields.io/badge/ci-verified-brightgreen)](https://github.com/chrisbacale/elecciones-peru-2026/actions/workflows/verify.yml)
 
 Dashboard interactivo y open source para seguir y analizar la segunda vuelta presidencial peruana. Combina el estado en vivo del escrutinio ONPE, flashes de encuestadoras (Ipsos, Datum) y una auditoría histórica del margen de error de cada instrumento electoral desde 2001.
 
@@ -12,7 +12,7 @@ Dashboard interactivo y open source para seguir y analizar la segunda vuelta pre
 ## Estado del proyecto
 
 - **Repositorio público:** https://github.com/chrisbacale/elecciones-peru-2026
-- **Aplicación pública:** https://elecciones-peru-2026-liart.vercel.app
+- **Aplicación pública:** despliegue de producción enlazado desde GitHub Deployments.
 - **Release actual:** [`v0.1.3`](https://github.com/chrisbacale/elecciones-peru-2026/releases/tag/v0.1.3)
 - **Mantenimiento OSS:** issues, CI, release notes, guías de contribución, seguridad y gobernanza están publicados en este repositorio.
 - **Plan de uso de Codex:** [`docs/codex-maintenance-plan.md`](docs/codex-maintenance-plan.md) explica cómo Codex/API credits se usarían solo para mantenimiento open source.
@@ -22,7 +22,7 @@ Dashboard interactivo y open source para seguir y analizar la segunda vuelta pre
 - **Última hora 2026**: compara ONPE parcial, boca de urna y conteo rápido en una sola vista.
 - **Historial 2001–2021**: serie curada de simulacro, boca de urna, conteo rápido y ONPE al 100% para cada segunda vuelta.
 - **Estadística de error**: mide cuánto se desvió Ipsos del resultado oficial y si el margen actual cae dentro del rango histórico.
-- **Metodología transparente**: explica diferencias entre instrumentos, disclaimers y fuentes con URL en [`/metodologia`](https://elecciones-peru-2026-liart.vercel.app/metodologia).
+- **Metodología transparente**: explica diferencias entre instrumentos, disclaimers y fuentes en la ruta `/metodologia`.
 - **Catálogo de fuentes oficiales**: mantiene una jerarquía de fuentes primarias en [`docs/official-sources.md`](docs/official-sources.md).
 - **Registro verificable de fuentes**: [`data/sources/official-sources.json`](data/sources/official-sources.json) se valida en tests para evitar fuentes sin entidad, URL, tipo y regla de uso.
 

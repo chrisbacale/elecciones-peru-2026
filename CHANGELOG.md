@@ -33,7 +33,7 @@ Source-governance hardening.
 - Added a structured official-source registry validated by tests.
 - Added canonical source metadata adapters for legacy election datasets.
 - Added maintainer, governance, changelog, and Codex maintenance-plan documentation.
-- Added `.mailmap` attribution for early commits created before Git author details were configured.
+- Added historical maintainer attribution for early commits created before Git author details were configured.
 - Updated README badges, live methodology link, and contributor-friendly task guidance.
 - Added explicit metadata to the ONPE territorial snapshot: `source_url`, `retrieved_at`, and `source_type`.
 

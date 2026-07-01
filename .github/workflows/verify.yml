@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   verify:
-    name: Lint, test, build
+    name: Privacy scan, lint, test, build
     runs-on: ubuntu-latest
 
     steps:

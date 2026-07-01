@@ -35,6 +35,7 @@ npm run verify
 ```
 
 `npm run verify` ejecuta lint, tests y build. Si no puedes correrlo, dilo claramente en el PR.
+Tambien ejecuta `npm run privacy:scan`, que bloquea emails, referencias de atribucion historica, URLs de deployment y metadata Git que no use GitHub noreply.
 
 ## Pull requests
 

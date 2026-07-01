@@ -23,11 +23,7 @@ const TERRITORIAL_FALLBACK = path.join(
   PUBLIC_DATA_DIR,
   "onpe-territorial-snapshot.json",
 );
-const DEFAULT_TERRITORIAL_LIVE_URL =
-  "https://elecciones-peru-2026-liart.vercel.app/api/onpe/territorial";
-const TERRITORIAL_LIVE_URL =
-  process.env.TERRITORIAL_LIVE_URL ??
-  (process.env.USE_LIVE_TERRITORIAL === "1" ? DEFAULT_TERRITORIAL_LIVE_URL : null);
+const TERRITORIAL_LIVE_URL = process.env.TERRITORIAL_LIVE_URL ?? null;
 const PUBLIC_SOURCE_LABELS = {
   cityForecast: "onpe-rla-analysis/output/sep2026_city_level_forecast.json",
   jeeAudit: "onpe-rla-analysis/output/sep2026_pending_jee_audit.json",

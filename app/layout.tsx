@@ -31,11 +31,14 @@ const themeInitScript = `
 })();
 `;
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://github.com/chrisbacale/elecciones-peru-2026";
+
 export const metadata: Metadata = {
   title: "Radar Electoral Perú — Segunda vuelta 2001–2026",
   description:
     "Dashboard en vivo de ONPE 2026, histórico Ipsos vs ONPE 2001–2021 y análisis estadístico de boca de urna, conteo rápido y resultado oficial.",
-  metadataBase: new URL("https://elecciones-peru-2026-liart.vercel.app"),
+  metadataBase: new URL(siteUrl),
   openGraph: {
     title: "Radar Electoral Perú — Segunda vuelta 2001–2026",
     description:

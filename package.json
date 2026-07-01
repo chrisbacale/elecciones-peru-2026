@@ -9,10 +9,11 @@
     "build:models": "node scripts/build-2026-models.mjs",
     "start": "next start",
     "lint": "eslint",
+    "privacy:scan": "node scripts/privacy-scan.mjs",
     "test": "vitest run",
     "test:stats": "vitest run lib/stats.test.ts",
     "test:onpe-contract": "vitest run lib/onpe-client.contract.test.ts",
-    "verify": "npm run lint && npm test && npm run build"
+    "verify": "npm run privacy:scan && npm run lint && npm test && npm run build"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.101.0",
