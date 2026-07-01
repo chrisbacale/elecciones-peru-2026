@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.1.2 - 2026-07-01
+
+Official methodology links.
+
+- Added more visible official 2026 sources to the methodology page: PCM/Gob.pe, JNE EG2026, ONPE EG2026, ONPE timeline, RENIEC EG2026, foreign voting, and ONPE open data.
+- Updated the README current release link.
+
 ## v0.1.1 - 2026-07-01
 
 Source-governance hardening.
