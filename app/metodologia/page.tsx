@@ -86,6 +86,46 @@ const INSTRUMENTS_2026 = [
 
 const AUDITED_SOURCES = [
   {
+    category: "Fuentes oficiales 2026 — proceso, padrón y logística",
+    items: [
+      {
+        label: "PCM/Gob.pe — Decreto Supremo 039-2025-PCM",
+        url: "https://www.gob.pe/institucion/pcm/normas-legales/6709184-039-2025-pcm",
+        note: "Convocatoria legal del proceso electoral 2026",
+      },
+      {
+        label: "JNE — Elecciones Generales 2026",
+        url: "https://portal.jne.gob.pe/portal/Pagina/Ver/979/page/Elecciones-Generales-2026",
+        note: "Cronograma, resoluciones y marco de justicia electoral",
+      },
+      {
+        label: "ONPE — Elecciones Generales 2026",
+        url: "https://eg2026.onpe.gob.pe/",
+        note: "Organización del proceso, materiales y acceso a resultados",
+      },
+      {
+        label: "ONPE — Línea de tiempo EG2026",
+        url: "https://eg2026.onpe.gob.pe/la-organizacion/linea-de-tiempo/",
+        note: "Hitos oficiales del proceso electoral",
+      },
+      {
+        label: "RENIEC — Elecciones Generales 2026",
+        url: "https://identidad.reniec.gob.pe/elecciones-generales-2026",
+        note: "Padrón, identidad y reglas de cierre registral",
+      },
+      {
+        label: "Gob.pe — Tu voto cruza fronteras",
+        url: "https://www.gob.pe/tuvotocruzafronteras",
+        note: "Información oficial para voto en el exterior",
+      },
+      {
+        label: "Datos Abiertos — ONPE",
+        url: "https://www.datosabiertos.gob.pe/group/oficina-nacional-de-procesos-electorales-onpe",
+        note: "Datasets oficiales descargables cuando estén publicados",
+      },
+    ],
+  },
+  {
     category: "ONPE — resultados oficiales",
     items: [
       {
